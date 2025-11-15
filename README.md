@@ -98,7 +98,7 @@ npm run build
 npm run preview
 ```
 
-Environment variables should be prefixed with `VITE_` and live in `.env.local`, `.env.production`, etc. Access via `import.meta.env.VITE_KEY_NAME`.
+Environment variables should be prefixed with `VITE_` and live in `.env.local`, `.env.production`, etc. Access via `import.meta.env.VITE_KEY_NAME`. For the contact form, set `VITE_FORMSPREE_FORM_ID=mwpabokg` (replace with your Formspree form ID).
 
 ---
 

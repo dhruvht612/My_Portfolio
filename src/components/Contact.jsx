@@ -1,4 +1,12 @@
+import { useForm, ValidationError } from '@formspree/react'
+
+const FORMSPREE_FORM_ID = import.meta.env.VITE_FORMSPREE_FORM_ID ?? 'mwpabokg'
+
 function Contact({ contactCards, heroSocials, altContactLinks }) {
+  const [state, handleSubmit] = useForm(FORMSPREE_FORM_ID)
+  const isSubmitting = state.submitting
+  const isSuccess = state.succeeded
+
   return (
     <section id="contact" className="py-20 px-6 bg-[#0f172a] relative overflow-hidden" aria-labelledby="contact-heading">
       <div className="absolute inset-0 opacity-5">
@@ -79,7 +87,7 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
                 <i className="fas fa-paper-plane text-[#14b8a6]" />
                 Send Me a Message
               </h3>
-              <form id="contact-form" action="https://formspree.io/f/xrbonqka" method="POST" className="space-y-6" aria-label="Contact form">
+              <form id="contact-form" method="POST" className="space-y-6" aria-label="Contact form" onSubmit={handleSubmit}>
                 <div>
                   <label htmlFor="name" className="block text-sm font-semibold text-gray-300 mb-2">
                     <i className="fas fa-user text-[#14b8a6] mr-2" />
@@ -101,13 +109,19 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
                   </label>
                   <input
                     type="email"
-                    name="_replyto"
+                    name="email"
                     id="email"
                     required
                     className="w-full px-4 py-3 text-white bg-gray-700/50 border-2 border-gray-600 rounded-xl focus:border-[#22d3ee] focus:ring-2 focus:ring-[#22d3ee]/50 transition-all outline-none"
                     placeholder="john@example.com"
                   />
                 </div>
+                <ValidationError
+                  prefix="Email"
+                  field="email"
+                  errors={state.errors}
+                  className="text-sm text-rose-400"
+                />
                 <div>
                   <label htmlFor="message" className="block text-sm font-semibold text-gray-300 mb-2">
                     <i className="fas fa-comment-dots text-[#14b8a6] mr-2" />
@@ -122,16 +136,35 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
                     placeholder="Tell me about your project or idea..."
                   />
                 </div>
+                <ValidationError
+                  prefix="Message"
+                  field="message"
+                  errors={state.errors}
+                  className="text-sm text-rose-400"
+                />
                 <input type="text" name="_gotcha" className="hidden" aria-hidden="true" />
                 <button
                   type="submit"
-                  className="w-full py-4 bg-gradient-to-r from-[#14b8a6] to-[#22d3ee] hover:from-[#22d3ee] hover:to-[#14b8a6] text-white font-bold rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:ring-offset-2 focus:ring-offset-gray-900"
+                  disabled={isSubmitting || isSuccess}
+                  className="w-full py-4 bg-gradient-to-r from-[#14b8a6] to-[#22d3ee] hover:from-[#22d3ee] hover:to-[#14b8a6] text-white font-bold rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <span className="flex items-center justify-center gap-2">
                     <i className="fas fa-paper-plane" />
-                    Send Message
+                    {isSubmitting ? 'Sending...' : isSuccess ? 'Message Sent' : 'Send Message'}
                   </span>
                 </button>
+                <div className="min-h-[1.5rem]" aria-live="polite">
+                  {isSuccess ? (
+                    <p className="text-sm font-medium text-emerald-400">Thanks for reaching out! I will respond soon.</p>
+                  ) : (
+                    <ValidationError
+                      prefix="Form"
+                      field="FORM"
+                      errors={state.errors}
+                      className="text-sm font-medium text-rose-400"
+                    />
+                  )}
+                </div>
               </form>
               <div className="mt-6 pt-6 border-t border-gray-700">
                 <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-400">
