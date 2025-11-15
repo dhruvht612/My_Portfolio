@@ -3,7 +3,7 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
     <section id="projects" className="py-20 px-6 bg-[#0f172a] relative overflow-hidden" aria-labelledby="projects-heading">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#14b8a6]/5 to-transparent pointer-events-none" />
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[#14b8a6] rounded-full" />
             <i className="fas fa-project-diagram text-4xl text-[#14b8a6] animate-pulse" />
@@ -108,18 +108,22 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
                 ) : (
                   <>
                     <a
-                      href={project.links?.live ?? '#'}
+                      href={project.links?.live || '#'}
+                      target="_blank"
+                      rel="noreferrer"
                       className="flex-1 bg-gradient-to-r from-[#14b8a6] to-[#22d3ee] hover:from-[#22d3ee] hover:to-[#14b8a6] text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-300 text-center shadow-lg hover:shadow-[0_0_20px_rgba(20,184,166,0.5)] transform hover:scale-105"
                     >
                       <i className="fas fa-external-link-alt mr-2" />
                       Live Demo
                     </a>
                     <a
-                      href={project.links?.code ?? '#'}
+                      href={project.links?.code || '#'}
+                      target="_blank"
+                      rel="noreferrer"
                       className="flex-1 bg-gray-700/50 hover:bg-gray-600 text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-300 text-center border border-gray-600 hover:border-gray-500"
                     >
                       <i className="fab fa-github mr-2" />
-                      Code
+                      GitHub
                     </a>
                   </>
                 )}
