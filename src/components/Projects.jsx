@@ -72,28 +72,8 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
               <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-[#14b8a6] to-[#22d3ee] bg-clip-text text-transparent group-hover:from-[#22d3ee] group-hover:to-[#14b8a6] transition-all duration-300">
                 {project.title}
               </h3>
-              <p className="text-gray-300 mb-4 text-sm leading-relaxed flex-1">{project.description}</p>
-              {project.features && (
-                <div className="mb-4">
-                  <h4 className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">Key Features</h4>
-                  <ul className="space-y-1 text-sm text-gray-400">
-                    {project.features.map((feature) => (
-                      <li key={feature} className="flex items-start">
-                        <i className="fas fa-check-circle text-[#14b8a6] mr-2 mt-1 text-xs" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {project.tech?.map((tech) => (
-                  <span key={tech} className="bg-[#14b8a6]/20 text-[#14b8a6] px-3 py-1 rounded-full text-xs font-semibold border border-[#14b8a6]/30">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-              <div className="flex gap-2 pt-4 border-t border-gray-700/50">
+              <p className="text-gray-300 mb-4 text-sm leading-relaxed">{project.description}</p>
+              <div className="flex gap-2 flex-wrap mb-4 pt-4 border-t border-gray-700/50">
                 {project.disabled ? (
                   <>
                     <button disabled className="flex-1 bg-gray-600/50 text-gray-400 px-4 py-2.5 rounded-lg text-xs font-bold cursor-not-allowed opacity-60">
@@ -111,7 +91,7 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
                       href={project.links?.live || '#'}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex-1 bg-gradient-to-r from-[#14b8a6] to-[#22d3ee] hover:from-[#22d3ee] hover:to-[#14b8a6] text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-300 text-center shadow-lg hover:shadow-[0_0_20px_rgba(20,184,166,0.5)] transform hover:scale-105"
+                      className="flex-1 min-w-[140px] bg-gradient-to-r from-[#14b8a6] to-[#22d3ee] hover:from-[#22d3ee] hover:to-[#14b8a6] text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-300 text-center shadow-lg hover:shadow-[0_0_20px_rgba(20,184,166,0.5)] transform hover:scale-105"
                     >
                       <i className="fas fa-external-link-alt mr-2" />
                       Live Demo
@@ -120,13 +100,33 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
                       href={project.links?.code || '#'}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex-1 bg-gray-700/50 hover:bg-gray-600 text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-300 text-center border border-gray-600 hover:border-gray-500"
+                      className="flex-1 min-w-[140px] bg-gray-700/50 hover:bg-gray-600 text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-300 text-center border border-gray-600 hover:border-gray-500"
                     >
                       <i className="fab fa-github mr-2" />
                       GitHub
                     </a>
                   </>
                 )}
+              </div>
+              {project.features && (
+                <div className="mb-4">
+                  <h4 className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">Key Features</h4>
+                  <ul className="space-y-1 text-sm text-gray-400">
+                    {project.features.map((feature) => (
+                      <li key={feature} className="flex items-start">
+                        <i className="fas fa-check-circle text-[#14b8a6] mr-2 mt-1 text-xs" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div className="flex flex-wrap gap-2">
+                {project.tech?.map((tech) => (
+                  <span key={tech} className="bg-[#14b8a6]/20 text-[#14b8a6] px-3 py-1 rounded-full text-xs font-semibold border border-[#14b8a6]/30">
+                    {tech}
+                  </span>
+                ))}
               </div>
             </div>
           </div>

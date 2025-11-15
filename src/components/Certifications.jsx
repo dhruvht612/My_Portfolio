@@ -25,9 +25,9 @@ function Certifications({ certifications }) {
               className="group relative bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-3xl border border-white/10 hover:border-white/40 hover:shadow-[0_0_35px_rgba(255,255,255,0.15)] transition-all duration-500 hover:-translate-y-2"
             >
               <div className="flex items-start gap-4">
-                <div className="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
+                <div className="w-20 h-20 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center p-2">
                   {cert.logo ? (
-                    <img src={cert.logo} alt={`${cert.issuer} logo`} className="w-10 h-10 object-contain" loading="lazy" />
+                    <img src={cert.logo} alt={`${cert.issuer} logo`} className="w-full h-full object-contain" loading="lazy" />
                   ) : (
                     <span className="font-bold text-xl text-white">OR</span>
                   )}
