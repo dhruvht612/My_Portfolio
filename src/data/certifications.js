@@ -10,7 +10,7 @@ export const certifications = [
     logo: MEDIA.freeCodeCamp,
     credentialId: 'dhruvht612-dv',
     credentialUrl: 'https://www.freecodecamp.org/certification/dhruvht612/data-visualization',
-    accent: 'from-[#14b8a6]/20 to-[#14b8a6]/60',
+    accent: 'from-[#4169E1]/20 to-[#4169E1]/60',
   },
   {
     title: 'Front End Development Libraries',
@@ -21,7 +21,7 @@ export const certifications = [
     logo: MEDIA.freeCodeCamp,
     credentialId: 'dhruvht612-fedl',
     credentialUrl: 'https://www.freecodecamp.org/certification/dhruvht612/front-end-development-libraries',
-    accent: 'from-[#22d3ee]/20 to-[#22d3ee]/60',
+    accent: 'from-[#5b7cf5]/20 to-[#5b7cf5]/60',
   },
   {
     title: 'Legacy Front End',

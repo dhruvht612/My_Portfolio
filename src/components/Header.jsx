@@ -1,5 +1,10 @@
 import { MEDIA } from '../constants/media'
 
+/**
+ * Reusable global navigation bar.
+ * Uses CSS variables from :root for pill glass, accent, and CTA.
+ * Scrolls with page by default; set fixed={true} for sticky/fixed behavior.
+ */
 function Header({
   navLinks,
   activeSection,
@@ -10,101 +15,158 @@ function Header({
   onToggleMenu,
   onCloseMenu,
   scrollProgressRef,
+  heroSocials = [],
+  fixed = false,
 }) {
+  const mainNavLinks = navLinks.filter((link) => link.id !== 'contact')
+
   return (
     <header
       id="main-header"
-      className={`sticky top-0 z-50 bg-[#0f172a]/95 backdrop-blur-xl border-b border-[#14b8a6]/30 shadow-lg text-white transition-all duration-300 ${
-        isHeaderScrolled ? 'shadow-2xl border-b-[#14b8a6]/60' : ''
-      }`}
+      className={`z-50 pt-3 px-3 sm:pt-4 sm:px-4 transition-all duration-300 ${fixed ? 'fixed top-0 left-0 right-0' : 'relative'}`}
       role="banner"
     >
-      <div
-        ref={scrollProgressRef}
-        className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-[#14b8a6] via-[#22d3ee] to-[#06b6d4] transition-all duration-150"
-      />
-      <nav className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center" role="navigation" aria-label="Main navigation">
+      {/* Optional scroll progress bar (ref used by App to set width) */}
+      <div className="absolute top-0 left-0 right-0 h-0.5 pointer-events-none" aria-hidden="true">
+        <div
+          ref={scrollProgressRef}
+          className="h-full bg-gradient-to-r from-[var(--nav-accent)] via-[var(--nav-accent-secondary)] to-[var(--nav-accent)] transition-all duration-150"
+        />
+      </div>
+
+      {/* Pill glass nav container – blends with hero when at top */}
+      <nav
+        className={`global-nav max-w-6xl mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3 ${isHeaderScrolled ? 'is-scrolled' : ''} ${activeSection === 'home' && !isHeaderScrolled ? 'global-nav-in-hero' : ''}`}
+        role="navigation"
+        aria-label="Main navigation"
+      >
+        {/* Gradient logo / brand */}
         <a
           href="#home"
-          className="group flex items-center gap-3 text-2xl font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-[#22d3ee] focus:ring-offset-2 focus:ring-offset-gray-900 rounded-lg px-2 py-1 transition-all duration-300 hover:scale-105"
+          className="flex items-center gap-2 rounded-[var(--nav-pill-radius)] bg-[var(--color-bg-card)]/50 hover:bg-[var(--color-bg-card)]/80 border border-[var(--color-border)]/50 px-3 py-2 sm:px-4 sm:py-2.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--nav-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)] shrink-0 logo-pill"
           aria-label="Dhruv Thakar - Go to home"
         >
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#14b8a6] to-[#22d3ee] rounded-full blur-md opacity-50 group-hover:opacity-100 transition-opacity" />
-            <img
-              src={MEDIA.logo}
-              alt="Dhruv Thakar Logo"
-              className="relative w-10 h-10 rounded-full border-2 border-[#14b8a6] group-hover:border-[#22d3ee] transition-all duration-300 sm:inline-block hidden"
-              loading="eager"
-            />
-          </div>
-          <span className="bg-gradient-to-r from-[#22d3ee] via-[#14b8a6] to-[#22d3ee] bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
-            Dhruv Thakar
+          <img
+            src={MEDIA.logo}
+            alt=""
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-[var(--nav-accent)]/50 object-cover shrink-0"
+            loading="eager"
+          />
+          <span className="text-lg sm:text-xl font-bold tracking-tight">
+            <span className="text-[var(--color-text)]">Dhruv</span>
+            <span className="global-nav-logo-accent"> Thakar</span>
           </span>
         </a>
-        <div className="hidden md:flex items-center gap-2">
-          <ul id="nav-links" role="menubar" className="flex items-center gap-1">
-            {navLinks.map((link) => (
+
+        {/* Desktop nav links with underline effect */}
+        <ul
+          id="nav-links"
+          role="menubar"
+          className="hidden md:flex items-center gap-1 flex-1 justify-center"
+        >
+          {mainNavLinks.map((link) => {
+            const isActive = activeSection === link.id
+            return (
               <li key={link.id} role="none">
                 <a
                   href={`#${link.id}`}
                   role="menuitem"
-                  className={`nav-link group relative px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:bg-[#14b8a6]/10 ${
-                    activeSection === link.id ? 'active-link' : ''
+                  className={`nav-link inline-block relative px-4 py-2.5 rounded-[var(--radius)] text-sm font-semibold transition-all duration-300 ${
+                    isActive
+                      ? 'active-link'
+                      : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
                   }`}
-                  aria-current={activeSection === link.id ? 'page' : undefined}
+                  aria-current={isActive ? 'page' : undefined}
                 >
-                  <span className="relative z-10">{link.label}</span>
-                  <span className="active-underline absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-[#14b8a6] to-[#22d3ee] transition-all duration-300" />
+                  {link.label}
+                  <span className={`active-underline absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300 ${isActive ? 'w-6' : 'w-0'}`} />
                 </a>
               </li>
-            ))}
-            <li role="none">
+            )
+          })}
+        </ul>
+
+        {/* CTA + socials + theme + hamburger */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <a
+            href="#contact"
+            className="global-nav-cta hidden sm:inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 font-bold text-sm rounded-[var(--nav-pill-radius)] hover:opacity-90 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]"
+            role="menuitem"
+          >
+            <i className="fas fa-arrow-right text-xs" aria-hidden="true" />
+            Contact
+          </a>
+          <div className="hidden md:flex items-center gap-2 border-l border-white/10 pl-3">
+            {heroSocials.slice(0, 4).map((social) => (
               <a
-                href="#contact"
-                className="px-6 py-2.5 bg-gradient-to-r from-[#14b8a6] to-[#22d3ee] hover:from-[#22d3ee] hover:to-[#14b8a6] rounded-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(20,184,166,0.5)]"
-                role="menuitem"
+                key={social.label}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 flex items-center justify-center rounded-lg text-[var(--color-text-muted)] hover:text-[var(--nav-accent)] hover:bg-[var(--color-bg-card)]/80 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
+                aria-label={social.label}
               >
-                Contact
+                <i className={`${social.icon} text-base`} aria-hidden="true" />
               </a>
-            </li>
-          </ul>
+            ))}
+          </div>
           <button
             type="button"
             onClick={onToggleTheme}
-            className="ml-2 w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-[#14b8a6] text-[#22d3ee] hover:text-white transition-all duration-300 hover:scale-110 hover:rotate-12 focus:outline-none focus:ring-2 focus:ring-[#22d3ee]"
-            aria-label="Toggle dark mode"
+            className="w-9 h-9 flex items-center justify-center rounded-lg text-[var(--color-text-muted)] hover:text-[var(--nav-accent)] hover:bg-[var(--color-bg-card)]/80 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
+            aria-label="Toggle theme"
             title="Toggle theme"
           >
             <i className={isDarkMode ? 'fas fa-moon' : 'fas fa-sun'} aria-hidden="true" />
           </button>
+          <button
+            type="button"
+            id="menu-btn"
+            onClick={onToggleMenu}
+            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-[var(--color-bg-card)]/80 text-[var(--color-text-muted)] hover:text-[var(--nav-accent)] hover:bg-[var(--color-bg-card)] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
+            aria-label="Open menu"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-nav"
+          >
+            <i className={isMenuOpen ? 'fas fa-times' : 'fas fa-bars'} aria-hidden="true" />
+          </button>
         </div>
-        <button
-          type="button"
-          id="menu-btn"
-          onClick={onToggleMenu}
-          className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-[#14b8a6] text-[#22d3ee] hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#22d3ee]"
-          aria-label="Toggle navigation menu"
-          aria-expanded={isMenuOpen}
-          aria-controls="mobile-nav"
-        >
-          <i className={isMenuOpen ? 'fas fa-times' : 'fas fa-bars'} aria-hidden="true" />
-        </button>
       </nav>
-      <div id="mobile-nav" className={`${isMenuOpen ? 'block' : 'hidden'} md:hidden bg-[#0f172a]/98 backdrop-blur-xl border-t border-[#14b8a6]/30`}>
-        <ul className="px-6 py-4 space-y-2">
-          {navLinks.map((link) => (
+
+      {/* Mobile slide-in menu (frosted glass pill) */}
+      <div
+        id="mobile-nav"
+        className={`global-nav-mobile md:hidden mt-2 mx-3 overflow-hidden ${
+          isMenuOpen ? 'max-h-[80vh] opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-2'
+        }`}
+        style={{ transition: 'max-height var(--nav-transition), opacity var(--nav-transition), transform var(--nav-transition)' }}
+      >
+        <ul className="px-4 py-4 space-y-1">
+          {mainNavLinks.map((link) => (
             <li key={link.id}>
               <a
                 href={`#${link.id}`}
-                className="block px-4 py-3 rounded-lg font-semibold hover:bg-[#14b8a6]/20 hover:text-[#14b8a6] transition-all duration-300 border-l-4 border-transparent hover:border-[#14b8a6]"
+                className={`block px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                  activeSection === link.id
+                    ? 'bg-[var(--color-bg-card)]/80 text-[var(--nav-accent)]'
+                    : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
+                }`}
                 onClick={onCloseMenu}
               >
-                <i className="fas fa-chevron-right w-6" />
                 {link.label}
               </a>
             </li>
           ))}
+          <li className="pt-2">
+            <a
+              href="#contact"
+              className="global-nav-cta flex items-center justify-center gap-2 px-4 py-3 rounded-[var(--nav-pill-radius)] font-bold text-sm"
+              onClick={onCloseMenu}
+            >
+              <i className="fas fa-arrow-right text-xs" aria-hidden="true" />
+              Contact
+            </a>
+          </li>
         </ul>
       </div>
     </header>
@@ -112,4 +174,3 @@ function Header({
 }
 
 export default Header
-

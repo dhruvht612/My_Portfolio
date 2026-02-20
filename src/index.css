@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,6 +9,85 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* === Dark blue base === */
+  --color-bg: #0a0e17;
+  --color-bg-elevated: #111827;
+  --color-bg-card: #1a2234;
+
+  /* === Blue palette (royal blue #4169e1) === */
+  --color-blue: #4169e1;
+  --color-blue-soft: rgba(65, 105, 225, 0.15);
+  --color-blue-medium: rgba(65, 105, 225, 0.25);
+  --color-blue-strong: rgba(65, 105, 225, 0.4);
+
+  /* === Accent (sky blue for links, highlights) === */
+  --color-accent: #7dd3fc;
+  --color-accent-hover: #38bdf8;
+
+  /* === Orange (CTAs, focus) === */
+  --color-orange: #f97316;
+  --color-orange-hover: #fb923c;
+
+  /* === Text === */
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+
+  /* === UI === */
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+
+  /* === Typography === */
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* === Spacing & shape === */
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px rgb(0 0 0 / 0.06);
+
+  /* === Glassmorphism === */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg-strong: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-strong: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --glass-blur: blur(16px);
+  --glass-blur-strong: blur(24px);
+
+  /* === Theme gradients === */
+  --theme-gradient-page: radial-gradient(ellipse 80% 80% at 70% 20%, var(--color-blue-soft), transparent 50%),
+    radial-gradient(ellipse 60% 60% at 20% 80%, rgba(249, 115, 22, 0.08), transparent 50%),
+    radial-gradient(ellipse 50% 50% at 90% 60%, rgba(65, 105, 225, 0.1), transparent 40%);
+  --theme-gradient-hero: radial-gradient(ellipse 80% 50% at 50% 0%, var(--color-blue-medium), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(249, 115, 22, 0.12), transparent 50%),
+    linear-gradient(to bottom, rgba(10, 14, 23, 0.4) 0%, transparent 40%);
+
+  /* Global nav (pill glass) – derived from theme */
+  --nav-bg: rgba(10, 14, 23, 0.85);
+  --nav-bg-scrolled: rgba(17, 24, 39, 0.95);
+  --nav-border: var(--glass-border);
+  --nav-border-accent: var(--color-blue-strong);
+  --nav-pill-radius: var(--radius);
+  --nav-pill-radius-lg: var(--radius-lg);
+  --nav-accent: var(--color-accent);
+  --nav-accent-secondary: var(--color-accent-hover);
+  --nav-cta-gradient-start: var(--color-orange);
+  --nav-cta-gradient-end: var(--color-orange-hover);
+  --nav-cta-text: #fff;
+  --nav-blur: 24px;
+  --nav-shadow: 0 10px 40px rgba(65, 105, 225, 0.15);
+  --nav-transition: 300ms ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
@@ -14,16 +95,63 @@ html {
 }
 
 body {
-  @apply bg-gray-900 text-gray-100 font-sans antialiased;
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {
   min-height: 100vh;
 }
 
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-orange);
+  outline-offset: 2px;
+}
+
+/* === Page background utility === */
+.theme-dark-blue-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--theme-gradient-page);
+  pointer-events: none;
+}
+
+/* === Hero section gradient === */
+.theme-dark-blue-hero-bg {
+  background: var(--theme-gradient-hero);
+}
+
+/* Nav link active state */
 .nav-link.active-link {
-  background: linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(34, 211, 238, 0.1));
-  color: #14b8a6;
+  background: var(--color-blue-soft);
+  color: var(--color-accent);
 }
 
 .nav-link .active-underline {
@@ -32,6 +160,77 @@ body {
 
 .nav-link.active-link .active-underline {
   width: 100%;
+}
+
+/* Global nav pill glass */
+.global-nav {
+  background-color: var(--nav-bg);
+  backdrop-filter: blur(var(--nav-blur));
+  -webkit-backdrop-filter: blur(var(--nav-blur));
+  border: 1px solid var(--nav-border);
+  border-radius: var(--nav-pill-radius-lg);
+  transition: background-color var(--nav-transition), border-color var(--nav-transition), box-shadow var(--nav-transition);
+}
+
+/* When in hero (top of page), nav blends with background – no bar */
+.global-nav.global-nav-in-hero:not(.is-scrolled) {
+  background-color: rgba(10, 14, 23, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+
+.global-nav.global-nav-in-hero:not(.is-scrolled) .logo-pill {
+  background: rgba(26, 34, 52, 0.4) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.global-nav.is-scrolled {
+  background-color: var(--nav-bg-scrolled);
+  border-color: var(--nav-border-accent);
+  box-shadow: var(--nav-shadow);
+}
+
+.global-nav .nav-link {
+  display: inline-block;
+  position: relative;
+  border-radius: var(--radius);
+  transition: color var(--nav-transition), background-color var(--nav-transition);
+}
+
+.global-nav .nav-link .active-underline {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 2px;
+  background: var(--nav-accent);
+  border-radius: 2px;
+  transition: width var(--nav-transition);
+}
+
+.global-nav .nav-link.active-link {
+  color: var(--nav-accent);
+}
+
+.global-nav-cta {
+  background: linear-gradient(135deg, var(--nav-cta-gradient-start), var(--nav-cta-gradient-end));
+  color: var(--nav-cta-text);
+  transition: opacity var(--nav-transition), transform var(--nav-transition), box-shadow var(--nav-transition);
+}
+
+.global-nav-logo-accent {
+  color: var(--nav-accent);
+}
+
+.global-nav-mobile {
+  background-color: var(--nav-bg-scrolled);
+  backdrop-filter: blur(var(--nav-blur));
+  -webkit-backdrop-filter: blur(var(--nav-blur));
+  border: 1px solid var(--nav-border);
+  border-radius: var(--nav-pill-radius-lg);
+  transition: transform var(--nav-transition), opacity var(--nav-transition);
 }
 
 .project-card {

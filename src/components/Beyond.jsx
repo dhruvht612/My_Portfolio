@@ -1,16 +1,17 @@
 function Beyond({ beyondStats, goals, leadershipRoles }) {
   return (
-    <section id="beyond" className="py-20 px-6 bg-gradient-to-b from-gray-900 via-[#0f172a] to-gray-900 text-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-[#14b8a6] rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#22d3ee] rounded-full blur-3xl" />
+    <section id="beyond" className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)]" aria-hidden="true" />
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-[var(--color-accent)] rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-80 h-80 bg-[var(--color-blue)] rounded-full blur-3xl" />
       </div>
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-3 mb-4">
-            <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[#14b8a6] rounded-full" />
-            <i className="fas fa-bullseye text-5xl text-[#14b8a6] animate-pulse" />
-            <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[#22d3ee] rounded-full" />
+            <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
+            <i className="fas fa-bullseye text-5xl text-[var(--color-accent)] animate-pulse" />
+            <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
           </div>
           <h2 className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">Beyond the Classroom</h2>
           <p className="text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed">
@@ -35,17 +36,17 @@ function Beyond({ beyondStats, goals, leadershipRoles }) {
               className={`group relative bg-gradient-to-br ${goal.accent} p-8 rounded-2xl border border-white/10 shadow-xl hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2`}
             >
               <div className="absolute -top-4 left-8">
-                <span className="bg-gradient-to-r from-[#22d3ee] to-[#14b8a6] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">{goal.badge}</span>
+                <span className="bg-gradient-to-r from-[var(--color-blue)] to-[var(--color-blue)] text-[var(--color-text)] px-4 py-2 rounded-full text-sm font-bold shadow-lg">{goal.badge}</span>
               </div>
               <div className="flex items-center gap-4 mb-6 mt-2">
                 <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform duration-300">
-                  <i className={`${goal.icon} text-3xl text-white`} />
+                  <i className={`${goal.icon} text-3xl text-[var(--color-text)]`} />
                 </div>
-                <h3 className="text-2xl font-bold text-white">{goal.title}</h3>
+                <h3 className="text-2xl font-bold text-[var(--color-text)]">{goal.title}</h3>
               </div>
               <ul className="space-y-4">
                 {goal.bullets.map((bullet) => (
-                  <li key={bullet} className="flex items-start gap-3 text-gray-200 hover:text-white transition-colors duration-200">
+                  <li key={bullet} className="flex items-start gap-3 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors duration-200">
                     <div className="mt-1.5 w-2 h-2 bg-white rounded-full flex-shrink-0" />
                     <span>{bullet}</span>
                   </li>
@@ -53,7 +54,7 @@ function Beyond({ beyondStats, goals, leadershipRoles }) {
               </ul>
               {goal.progress && (
                 <div className="mt-6 pt-6 border-t border-white/10">
-                  <div className="flex justify-between text-sm text-gray-200 mb-2">
+                  <div className="flex justify-between text-sm text-[var(--color-text-muted)] mb-2">
                     <span>Progress Tracker</span>
                     <span className="text-[#fb7185] font-semibold">{goal.progressLabel}</span>
                   </div>
@@ -66,7 +67,7 @@ function Beyond({ beyondStats, goals, leadershipRoles }) {
                 <div className="mt-6 pt-6 border-t border-white/10">
                   <div className="flex items-center gap-2 text-sm">
                     <i className="fas fa-star text-yellow-300" />
-                    <span className="text-gray-200">
+                    <span className="text-[var(--color-text-muted)]">
                       Vision: <span className="text-pink-200 font-semibold">{goal.vision}</span>
                     </span>
                   </div>
@@ -89,28 +90,28 @@ function Beyond({ beyondStats, goals, leadershipRoles }) {
               className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 shadow-xl border border-white/10 hover:border-white/30 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2"
             >
               <div className="absolute -top-3 -right-3">
-                <span className={`bg-gradient-to-r ${role.badge.color} text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1`}>
+                <span className={`bg-gradient-to-r ${role.badge.color} text-[var(--color-text)] text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1`}>
                   <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
                   {role.badge.text}
                 </span>
               </div>
               <div className="relative mb-4">
                 <div className="w-20 h-20 mx-auto bg-gradient-to-br from-white/5 to-white/10 rounded-2xl flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                  <i className={`${role.icon} text-4xl text-white`} />
+                  <i className={`${role.icon} text-4xl text-[var(--color-text)]`} />
                 </div>
               </div>
               <img src={role.logo} alt={`${role.org} Logo`} className="w-16 h-16 mx-auto rounded-lg object-contain border-2 border-gray-700 bg-white p-2 mb-4 shadow-lg" loading="lazy" />
-              <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#14b8a6] transition-colors">{role.title}</h3>
-              <p className="text-[#14b8a6] font-semibold text-sm mb-1">{role.org}</p>
+              <h3 className="text-lg font-bold text-[var(--color-text)] mb-2 group-hover:text-[var(--color-blue)] transition-colors">{role.title}</h3>
+              <p className="text-[var(--color-blue)] font-semibold text-sm mb-1">{role.org}</p>
               <p className="text-gray-500 text-xs mb-4 flex items-center justify-center gap-1">
                 <i className="fas fa-calendar-alt" />
                 {role.date}
               </p>
-              <div className="w-16 h-1 bg-gradient-to-r from-transparent via-[#14b8a6] to-transparent mx-auto mb-4" />
+              <div className="w-16 h-1 bg-gradient-to-r from-transparent via-[var(--color-blue)] to-transparent mx-auto mb-4" />
               <ul className="text-left text-sm text-gray-300 space-y-2">
                 {role.bullets.map((bullet) => (
                   <li key={bullet} className="flex items-start gap-2">
-                    <i className="fas fa-check-circle text-[#14b8a6] mt-1 flex-shrink-0" />
+                    <i className="fas fa-check-circle text-[var(--color-blue)] mt-1 flex-shrink-0" />
                     <span>{bullet}</span>
                   </li>
                 ))}

@@ -41,14 +41,14 @@ const heroSocials = [
     href: 'https://github.com/dhruvht612',
     label: "Visit Dhruv's GitHub profile (opens in new tab)",
     icon: 'fab fa-github',
-    ring: 'focus:ring-[#22d3ee]',
+    ring: 'focus:ring-[#5b7cf5]',
     tooltip: 'GitHub',
   },
   {
     href: 'https://linkedin.com/in/dhruv-thakar-ba46aa296',
     label: "Visit Dhruv's LinkedIn profile (opens in new tab)",
     icon: 'fab fa-linkedin',
-    ring: 'focus:ring-[#14b8a6]',
+    ring: 'focus:ring-[#4169E1]',
     tooltip: 'LinkedIn',
   },
   {
@@ -68,23 +68,23 @@ const heroSocials = [
 ]
 
 const quickStats = [
-  { value: '11+', label: 'Projects', accent: 'text-[#22d3ee]' },
-  { value: '5+', label: 'Technologies', accent: 'text-[#14b8a6]' },
-  { value: '2028', label: 'Graduation', accent: 'text-[#22d3ee]' },
+  { value: '11+', label: 'Projects', accent: 'text-theme-accent' },
+  { value: '5+', label: 'Technologies', accent: 'text-theme-accent-hover' },
+  { value: '2028', label: 'Graduation', accent: 'text-theme-accent' },
 ]
 
 const aboutCounters = [
-  { target: 11, label: 'Projects Completed', accent: 'text-[#22d3ee]', suffix: '+' },
-  { target: 6, label: 'Technologies Mastered', accent: 'text-[#14b8a6]', suffix: '+' },
-  { target: 3, label: 'Years of Experience', accent: 'text-purple-400', suffix: '' },
-  { target: 5, label: 'Leadership Roles', accent: 'text-yellow-400', suffix: '+' },
+  { target: 11, label: 'Projects Completed', accent: 'text-theme-accent', suffix: '+' },
+  { target: 6, label: 'Technologies Mastered', accent: 'text-theme-accent-hover', suffix: '+' },
+  { target: 3, label: 'Years of Experience', accent: 'text-theme-accent', suffix: '' },
+  { target: 5, label: 'Leadership Roles', accent: 'text-theme-accent-hover', suffix: '+' },
 ]
 
 const projectStats = [
-  { value: '15+', label: 'Total Projects', gradient: 'from-[#14b8a6]/10 to-[#22d3ee]/10', accent: 'text-[#14b8a6]' },
-  { value: '8+', label: 'Technologies', gradient: 'from-purple-500/10 to-pink-500/10', accent: 'text-purple-400' },
-  { value: '100%', label: 'Open Source', gradient: 'from-yellow-500/10 to-orange-500/10', accent: 'text-yellow-400' },
-  { value: '2025', label: 'Latest Update', gradient: 'from-blue-500/10 to-cyan-500/10', accent: 'text-blue-400' },
+  { value: '15+', label: 'Total Projects', gradient: 'from-[var(--color-blue-soft)] to-[var(--color-accent)]/20', accent: 'text-theme-accent' },
+  { value: '8+', label: 'Technologies', gradient: 'from-[var(--color-accent)]/10 to-[var(--color-blue-soft)]', accent: 'text-theme-accent-hover' },
+  { value: '100%', label: 'Open Source', gradient: 'from-[var(--color-blue-soft)] to-[var(--color-orange)]/10', accent: 'text-theme-accent' },
+  { value: '2025', label: 'Latest Update', gradient: 'from-[var(--color-orange)]/10 to-[var(--color-accent)]/20', accent: 'text-theme-accent-hover' },
 ]
 
 const beyondStats = [
@@ -130,19 +130,19 @@ const contactCards = [
     value: 'thakardhruvh@gmail.com',
     icon: 'fas fa-envelope',
     href: 'mailto:thakardhruvh@gmail.com',
-    accent: 'from-[#14b8a6]/20 to-[#22d3ee]/20',
+    accent: 'from-[var(--color-blue-soft)] to-[var(--color-blue-medium)]',
   },
   {
     title: 'Location',
     value: 'Oshawa, Ontario, Canada',
     icon: 'fas fa-map-marker-alt',
-    accent: 'from-[#22d3ee]/20 to-[#06b6d4]/20',
+    accent: 'from-[var(--color-blue-medium)] to-[var(--color-blue-soft)]',
   },
   {
     title: 'Availability',
     value: 'Open to Opportunities',
     icon: 'fas fa-check-circle',
-    accent: 'from-green-500/20 to-emerald-500/20',
+    accent: 'from-[var(--color-success)]/20 to-emerald-500/20',
   },
 ]
 
@@ -151,7 +151,7 @@ const altContactLinks = [
     label: 'GitHub Profile',
     href: 'https://github.com/dhruvht612',
     icon: 'fab fa-github',
-    hover: 'hover:bg-[#14b8a6] hover:border-[#14b8a6]',
+    hover: 'hover:bg-theme-blue hover:border-theme-blue',
   },
   {
     label: 'LinkedIn',
@@ -163,7 +163,7 @@ const altContactLinks = [
     label: 'Download Resume',
     href: 'https://drive.google.com/uc?export=download&id=1',
     icon: 'fas fa-download',
-    hover: 'hover:bg-[#22d3ee] hover:border-[#22d3ee]',
+    hover: 'hover:bg-theme-blue hover:border-theme-blue',
   },
 ]
 
@@ -355,8 +355,12 @@ function App() {
 
   const filteredProjects = useMemo(() => {
     if (projectFilter === 'all') return projects
-    return projects.filter((project) => project.categories?.map((cat) => cat.toLowerCase()).includes(projectFilter))
-  }, [projectFilter])
+    const filter = projectFilter.toLowerCase().trim()
+    return projects.filter((project) => {
+      const categories = project.categories?.map((cat) => String(cat).toLowerCase().trim()) ?? []
+      return Array.isArray(categories) && categories.includes(filter)
+    })
+  }, [projectFilter, projects])
 
   const toggleTheme = () => {
     const root = document.documentElement
@@ -394,23 +398,32 @@ function App() {
   const handleChatInputChange = (event) => setChatInput(event.target.value)
 
   return (
-    <div className="bg-gray-900 text-gray-100">
+    <div className="min-h-screen text-[var(--color-text)]">
+      <div className="theme-dark-blue-bg" aria-hidden="true" />
       <SkipLink />
       {isLoading && <Preloader />}
       <div id="main-content" className={isLoading ? 'hidden' : 'block'}>
-        <Header
-          navLinks={navLinks}
-          activeSection={activeSection}
-          isHeaderScrolled={isHeaderScrolled}
-          isDarkMode={isDarkMode}
-          onToggleTheme={toggleTheme}
-          isMenuOpen={isMenuOpen}
-          onToggleMenu={toggleMenu}
-          onCloseMenu={closeMenu}
-          scrollProgressRef={scrollProgressRef}
-        />
+        <div className="theme-dark-blue-hero-bg min-h-screen">
+          <Header
+            navLinks={navLinks}
+            activeSection={activeSection}
+            isHeaderScrolled={isHeaderScrolled}
+            isDarkMode={isDarkMode}
+            onToggleTheme={toggleTheme}
+            isMenuOpen={isMenuOpen}
+            onToggleMenu={toggleMenu}
+            onCloseMenu={closeMenu}
+            scrollProgressRef={scrollProgressRef}
+            heroSocials={heroSocials}
+            fixed={false}
+          />
+          <Hero
+            typedText={typedText}
+            heroSocials={heroSocials}
+            quickStats={quickStats}
+          />
+        </div>
         <main>
-          <Hero typedText={typedText} heroSocials={heroSocials} quickStats={quickStats} />
           <About aboutTab={aboutTab} setAboutTab={setAboutTab} aboutTabs={aboutTabs} aboutCounters={aboutCounters} />
           <Projects
             projectStats={projectStats}
