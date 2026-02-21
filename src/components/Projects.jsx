@@ -1,6 +1,9 @@
+import SpaceBackground from './SpaceBackground'
+
 function Projects({ projectStats, filters, projectFilter, onFilterChange, projects }) {
   return (
     <section id="projects" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="projects-heading">
+      <SpaceBackground />
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="max-w-7xl mx-auto relative z-10">

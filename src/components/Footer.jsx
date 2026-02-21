@@ -1,8 +1,10 @@
 import { MEDIA } from '../constants/media'
+import SpaceBackground from './SpaceBackground'
 
 function Footer({ navLinks, heroSocials, footerBadges }) {
   return (
     <footer className="relative bg-[var(--color-bg)] text-[var(--color-text-muted)] pt-16 pb-8 overflow-hidden border-t border-[var(--color-border)]">
+      <SpaceBackground />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-bg-elevated)]/30 to-[var(--color-bg)]" aria-hidden="true" />
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-10 left-10 w-96 h-96 bg-[var(--color-blue)] rounded-full blur-3xl" />

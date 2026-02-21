@@ -1,6 +1,9 @@
+import SpaceBackground from './SpaceBackground'
+
 function Certifications({ certifications }) {
   return (
     <section id="certifications" className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden">
+      <SpaceBackground />
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)]" aria-hidden="true" />
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-24 left-16 w-64 h-64 bg-[var(--color-accent)] rounded-full blur-3xl" />

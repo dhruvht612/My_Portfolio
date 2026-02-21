@@ -1,6 +1,9 @@
+import SpaceBackground from './SpaceBackground'
+
 function Beyond({ beyondStats, goals, leadershipRoles }) {
   return (
     <section id="beyond" className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden">
+      <SpaceBackground />
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)]" aria-hidden="true" />
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-20 left-10 w-64 h-64 bg-[var(--color-accent)] rounded-full blur-3xl" />

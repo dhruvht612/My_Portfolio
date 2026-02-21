@@ -1,6 +1,9 @@
+import SpaceBackground from './SpaceBackground'
+
 function Skills({ skillGroups }) {
   return (
     <section id="skills" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden">
+      <SpaceBackground />
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/30 to-[var(--color-bg-elevated)]" aria-hidden="true" />
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16">

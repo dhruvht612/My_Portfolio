@@ -1,4 +1,5 @@
 import { useForm, ValidationError } from '@formspree/react'
+import SpaceBackground from './SpaceBackground'
 
 const FORMSPREE_FORM_ID = import.meta.env.VITE_FORMSPREE_FORM_ID ?? 'mwpabokg'
 
@@ -9,6 +10,7 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
 
   return (
     <section id="contact" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="contact-heading">
+      <SpaceBackground />
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)]" aria-hidden="true" />
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-20 left-10 w-96 h-96 bg-[var(--color-blue)] rounded-full blur-3xl" />

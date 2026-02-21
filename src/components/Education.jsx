@@ -1,8 +1,10 @@
 import { MEDIA } from '../constants/media'
+import SpaceBackground from './SpaceBackground'
 
 function Education({ focusAreas, highlightCards }) {
   return (
     <section id="education" className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden">
+      <SpaceBackground />
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)]" aria-hidden="true" />
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-10 left-10 w-72 h-72 bg-[var(--color-accent)] rounded-full blur-3xl" />

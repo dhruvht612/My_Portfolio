@@ -148,6 +148,14 @@ select {
   background: var(--theme-gradient-hero);
 }
 
+/* Hero space theme: twinkling stars */
+.hero-star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-accent);
+  pointer-events: none;
+}
+
 /* Nav link active state */
 .nav-link.active-link {
   background: var(--color-blue-soft);
