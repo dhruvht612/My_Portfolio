@@ -13,12 +13,12 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
       <SpaceBackground />
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/80 to-[var(--color-bg-elevated)]" aria-hidden="true" />
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
+        <header className="glass rounded-2xl p-8 mb-12 text-center border border-[var(--glass-border)]">
           <h2 id="about-heading" className="text-4xl md:text-5xl font-extrabold animate-gradient mb-4">
             About Me
           </h2>
           <p className="text-[var(--color-text-muted)] text-lg">Get to know me better</p>
-        </div>
+        </header>
         <div className="grid md:grid-cols-5 gap-10 mb-16">
           <div className="md:col-span-2 flex flex-col items-center">
             <div className="relative mb-8 group">
@@ -31,7 +31,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
               />
             </div>
             <div className="w-full space-y-3 mb-6">
-              <div className="bg-[var(--color-bg-card)]/50 backdrop-blur-sm p-4 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all">
+              <div className="glass p-4 rounded-xl hover:border-[var(--color-accent)]/50 transition-all">
                 <div className="flex items-center gap-3">
                   <i className="fas fa-graduation-cap text-2xl text-[var(--color-accent)]" />
                   <div>
@@ -40,7 +40,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                   </div>
                 </div>
               </div>
-              <div className="bg-[var(--color-bg-card)]/50 backdrop-blur-sm p-4 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-accent-hover)] transition-all">
+              <div className="glass p-4 rounded-xl hover:border-[var(--color-accent-hover)]/50 transition-all">
                 <div className="flex items-center gap-3">
                   <i className="fas fa-map-marker-alt text-2xl text-[var(--color-accent-hover)]" />
                   <div>
@@ -49,7 +49,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                   </div>
                 </div>
               </div>
-              <div className="bg-[var(--color-bg-card)]/50 backdrop-blur-sm p-4 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all">
+              <div className="glass p-4 rounded-xl hover:border-[var(--color-accent)]/50 transition-all">
                 <div className="flex items-center gap-3">
                   <i className="fas fa-envelope text-2xl text-[var(--color-accent)]" />
                   <div>
@@ -94,7 +94,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                 </button>
               ))}
             </div>
-            <div>
+            <div className="glass-strong rounded-xl p-6 border border-[var(--glass-border)]">
               {aboutTab === 'story' && (
                 <div className="space-y-4">
                   {aboutTabs.story.map((paragraph, idx) => (
@@ -110,7 +110,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                       )}
                     </p>
                   ))}
-                  <div className="bg-[var(--color-bg-card)]/50 backdrop-blur-sm p-6 rounded-xl border-l-4 border-[var(--color-accent)] mt-6">
+                  <div className="glass p-6 rounded-xl border-l-4 border-[var(--color-accent)] mt-6">
                     <p className="text-[var(--color-text)] italic">
                       <i className="fas fa-quote-left text-[var(--color-accent)] mr-2" />
                       I believe that technology should be accessible, innovative, and impactful. Every line of code is an opportunity to create something meaningful.
@@ -122,7 +122,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
               {aboutTab === 'interests' && (
                 <div className="grid sm:grid-cols-2 gap-4">
                   {aboutTabs.interests.map((interest) => (
-                    <div key={interest.title} className="bg-[var(--color-bg-card)]/50 backdrop-blur-sm p-5 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all hover:scale-105">
+                    <div key={interest.title} className="glass p-5 rounded-xl hover:border-[var(--color-accent)]/50 transition-all hover:scale-105">
                       <div className="flex items-start gap-3">
                         <i className={`${interest.icon} text-3xl text-[var(--color-accent)]`} />
                         <div>
@@ -154,7 +154,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
           {aboutCounters.map((counter) => (
             <div
               key={counter.label}
-              className="bg-[var(--color-bg-card)]/80 backdrop-blur-sm p-6 rounded-xl border border-[var(--color-accent)]/20 text-center hover:scale-105 hover:border-[var(--color-accent)]/40 transition-all"
+              className="glass p-6 rounded-xl border border-[var(--color-accent)]/20 text-center hover:scale-105 hover:border-[var(--color-accent)]/40 transition-all"
             >
               <div className={`text-4xl font-bold mb-2 ${counter.accent}`} data-count={counter.target} data-suffix={counter.suffix}>
                 0

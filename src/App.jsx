@@ -2,15 +2,17 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { aboutTabs } from './data/about'
 import { PROJECT_FILTERS, projects } from './data/projects'
 import { certifications } from './data/certifications'
-import { leadershipRoles } from './data/leadership'
+import { experienceByOrg } from './data/experience'
 import { skillGroups } from './data/skills'
 import SkipLink from './components/SkipLink'
 import Preloader from './components/Preloader'
+import Landing from './components/Landing'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import About from './components/About'
 import Projects from './components/Projects'
 import Beyond from './components/Beyond'
+import Experience from './components/Experience'
 import Education from './components/Education'
 import CertificationsSection from './components/Certifications'
 import Skills from './components/Skills'
@@ -23,6 +25,7 @@ const navLinks = [
   { id: 'home', label: 'Home' },
   { id: 'about', label: 'About' },
   { id: 'projects', label: 'Projects' },
+  { id: 'experience', label: 'Experience' },
   { id: 'skills', label: 'Skills' },
   { id: 'education', label: 'Education' },
   { id: 'certifications', label: 'Certifications' },
@@ -201,7 +204,7 @@ const initialChatMessages = [
 ]
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
@@ -212,6 +215,7 @@ function App() {
   const [chatOpen, setChatOpen] = useState(false)
   const [chatMessages, setChatMessages] = useState(initialChatMessages)
   const [chatInput, setChatInput] = useState('')
+  const [hasEnteredPortfolio, setHasEnteredPortfolio] = useState(false)
 
   const scrollProgressRef = useRef(null)
   const chatMessagesRef = useRef(null)
@@ -398,11 +402,13 @@ function App() {
   const handleChatInputChange = (event) => setChatInput(event.target.value)
 
   return (
-    <div className="min-h-screen text-[var(--color-text)]">
+    <div className="min-h-screen" style={{ minHeight: '100vh', backgroundColor: '#0a0e17', color: '#f1f5f9' }}>
       <div className="theme-dark-blue-bg" aria-hidden="true" />
       <SkipLink />
-      {isLoading && <Preloader />}
-      <div id="main-content" className={isLoading ? 'hidden' : 'block'}>
+      <div id="main-content" className="block">
+        {!hasEnteredPortfolio && (
+          <Landing onEnter={() => setHasEnteredPortfolio(true)} />
+        )}
         <div className="theme-dark-blue-hero-bg min-h-screen">
           <Header
             navLinks={navLinks}
@@ -432,7 +438,8 @@ function App() {
             onFilterChange={handleFilterChange}
             projects={filteredProjects}
           />
-          <Beyond beyondStats={beyondStats} goals={goals} leadershipRoles={leadershipRoles} />
+          <Beyond beyondStats={beyondStats} goals={goals} />
+          <Experience experienceByOrg={experienceByOrg} />
           <Education focusAreas={focusAreas} highlightCards={educationHighlights} />
           <CertificationsSection certifications={certifications} />
           <Skills skillGroups={skillGroups} />

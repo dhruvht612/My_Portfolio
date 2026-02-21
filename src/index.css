@@ -56,7 +56,26 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   --glass-blur: blur(16px);
   --glass-blur-strong: blur(24px);
+}
 
+/* Reusable glass panels */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur-strong);
+  -webkit-backdrop-filter: var(--glass-blur-strong);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: var(--glass-shadow);
+}
+
+:root {
   /* === Theme gradients === */
   --theme-gradient-page: radial-gradient(ellipse 80% 80% at 70% 20%, var(--color-blue-soft), transparent 50%),
     radial-gradient(ellipse 60% 60% at 20% 80%, rgba(249, 115, 22, 0.08), transparent 50%),
@@ -104,6 +123,12 @@ body {
 }
 
 #root {
+  min-height: 100vh;
+  display: block;
+}
+
+#main-content {
+  display: block;
   min-height: 100vh;
 }
 
@@ -250,4 +275,79 @@ select {
 .project-card.animate-in {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Experience section: timeline + scroll-in */
+.experience-card {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.experience-card.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.experience-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Certifications: scroll-in */
+.certification-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.certification-card-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Landing: fade-in-up (transform only so content stays visible) */
+@keyframes fade-in-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0.6;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s ease forwards;
+  opacity: 0.6; /* visible fallback before animation runs */
+}
+
+.landing-cta {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.landing-cta:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 28px rgba(125, 211, 252, 0.4);
+}
+.landing-cta:focus-visible {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 3px;
+}
+
+/* Skills: animated progress bars */
+.skill-bar {
+  background: var(--color-bg-elevated);
+}
+
+.skill-progress {
+  width: 0;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
