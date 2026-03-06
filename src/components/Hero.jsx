@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { MEDIA } from '../constants/media'
 
 /* Starfield: positions (%), size (px), animation delay (ms) – theme accent */
@@ -94,19 +95,19 @@ function Hero({ typedText, heroSocials, quickStats }) {
             className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-8 animate-hero-reveal"
             style={{ animationDelay: '400ms' }}
           >
-            <a
-              href="#projects"
+            <Link
+              to="/projects"
               className="group inline-flex items-center gap-2 bg-[var(--color-orange)] hover:bg-[var(--color-orange-hover)] text-white font-bold px-7 py-3.5 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_24px_rgba(249,115,22,0.4)] focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]"
             >
               View My Projects
               <i className="fas fa-arrow-right group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              to="/contact"
               className="text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] font-semibold underline underline-offset-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)] rounded"
             >
               Get in touch
-            </a>
+            </Link>
           </div>
 
           {/* Compact stats line */}
@@ -149,9 +150,9 @@ function Hero({ typedText, heroSocials, quickStats }) {
 
       {/* Scroll cue */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
-        <a href="#about" className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors animate-bounce" aria-label="Scroll to about">
+        <Link to="/about" className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors animate-bounce" aria-label="Go to about">
           <i className="fas fa-chevron-down text-xl" />
-        </a>
+        </Link>
       </div>
     </section>
   )

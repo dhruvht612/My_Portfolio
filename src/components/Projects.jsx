@@ -17,7 +17,7 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
             Featured Projects
           </h2>
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
-            Explore my collection of innovative projects spanning web development, algorithms, robotics, and electronics.
+            Indoor accessibility and sensory-aware navigation—helping people move through spaces safely and comfortably.
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl mx-auto">
@@ -56,7 +56,7 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
         {projects.map((project) => (
           <div
             key={project.id}
-            className="project-card group relative bg-gradient-to-br from-[var(--color-bg)] to-[var(--color-bg-elevated)] border border-[var(--color-blue)]/20 rounded-2xl overflow-hidden shadow-xl transition-all duration-500 hover:border-[var(--color-blue)] hover:shadow-[0_0_30px_rgba(65,105,225,0.3)] hover:scale-[1.03] hover:-translate-y-2"
+            className="project-card animate-in group relative bg-gradient-to-br from-[var(--color-bg)] to-[var(--color-bg-elevated)] border border-[var(--color-blue)]/20 rounded-2xl overflow-hidden shadow-xl transition-all duration-500 hover:border-[var(--color-blue)] hover:shadow-[0_0_30px_rgba(65,105,225,0.3)] hover:scale-[1.03] hover:-translate-y-2"
             data-category={project.categories?.join(' ')}
           >
             {project.badge && (

@@ -1,3 +1,4 @@
+import { NavLink, useLocation } from 'react-router-dom'
 import { MEDIA } from '../constants/media'
 
 /**
@@ -41,8 +42,8 @@ function Header({
         aria-label="Main navigation"
       >
         {/* Gradient logo / brand */}
-        <a
-          href="#home"
+        <NavLink
+          to="/home"
           className="flex items-center gap-2 rounded-[var(--nav-pill-radius)] bg-[var(--color-bg-card)]/50 hover:bg-[var(--color-bg-card)]/80 border border-[var(--color-border)]/50 px-3 py-2 sm:px-4 sm:py-2.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--nav-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)] shrink-0 logo-pill"
           aria-label="Dhruv Thakar - Go to home"
         >
@@ -56,7 +57,7 @@ function Header({
             <span className="text-[var(--color-text)]">Dhruv</span>
             <span className="global-nav-logo-accent"> Thakar</span>
           </span>
-        </a>
+        </NavLink>
 
         {/* Desktop nav links with underline effect */}
         <ul
@@ -66,21 +67,20 @@ function Header({
         >
           {mainNavLinks.map((link) => {
             const isActive = activeSection === link.id
+            const path = link.path ?? `/${link.id}`
             return (
               <li key={link.id} role="none">
-                <a
-                  href={`#${link.id}`}
+                <NavLink
+                  to={path}
                   role="menuitem"
                   className={`nav-link inline-block relative px-4 py-2.5 rounded-[var(--radius)] text-sm font-semibold transition-all duration-300 ${
-                    isActive
-                      ? 'active-link'
-                      : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
+                    isActive ? 'active-link' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
                   }`}
                   aria-current={isActive ? 'page' : undefined}
                 >
                   {link.label}
                   <span className={`active-underline absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300 ${isActive ? 'w-6' : 'w-0'}`} />
-                </a>
+                </NavLink>
               </li>
             )
           })}
@@ -88,14 +88,14 @@ function Header({
 
         {/* CTA + socials + theme + hamburger */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <a
-            href="#contact"
+          <NavLink
+            to="/contact"
             className="global-nav-cta hidden sm:inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 font-bold text-sm rounded-[var(--nav-pill-radius)] hover:opacity-90 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]"
             role="menuitem"
           >
             <i className="fas fa-arrow-right text-xs" aria-hidden="true" />
             Contact
-          </a>
+          </NavLink>
           <div className="hidden md:flex items-center gap-2 border-l border-white/10 pl-3">
             {heroSocials.slice(0, 4).map((social) => (
               <a
@@ -142,30 +142,32 @@ function Header({
         style={{ transition: 'max-height var(--nav-transition), opacity var(--nav-transition), transform var(--nav-transition)' }}
       >
         <ul className="px-4 py-4 space-y-1">
-          {mainNavLinks.map((link) => (
-            <li key={link.id}>
-              <a
-                href={`#${link.id}`}
-                className={`block px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                  activeSection === link.id
-                    ? 'bg-[var(--color-bg-card)]/80 text-[var(--nav-accent)]'
-                    : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
-                }`}
-                onClick={onCloseMenu}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {mainNavLinks.map((link) => {
+            const path = link.path ?? `/${link.id}`
+            const isActive = activeSection === link.id
+            return (
+              <li key={link.id}>
+                <NavLink
+                  to={path}
+                  className={`block px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                    isActive ? 'bg-[var(--color-bg-card)]/80 text-[var(--nav-accent)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
+                  }`}
+                  onClick={onCloseMenu}
+                >
+                  {link.label}
+                </NavLink>
+              </li>
+            )
+          })}
           <li className="pt-2">
-            <a
-              href="#contact"
+            <NavLink
+              to="/contact"
               className="global-nav-cta flex items-center justify-center gap-2 px-4 py-3 rounded-[var(--nav-pill-radius)] font-bold text-sm"
               onClick={onCloseMenu}
             >
               <i className="fas fa-arrow-right text-xs" aria-hidden="true" />
               Contact
-            </a>
+            </NavLink>
           </li>
         </ul>
       </div>

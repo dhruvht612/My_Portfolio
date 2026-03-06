@@ -1,11 +1,11 @@
+import { useNavigate } from 'react-router-dom'
 import SpaceBackground from './SpaceBackground'
 
-function Landing({ onEnter }) {
+function Landing() {
+  const navigate = useNavigate()
   const handleEnter = (e) => {
     e?.preventDefault?.()
-    onEnter?.()
-    const el = document.getElementById('home')
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    navigate('/home')
   }
 
   return (
@@ -133,7 +133,7 @@ function Landing({ onEnter }) {
         </div>
       </div>
       <a
-        href="#home"
+        href="/home"
         onClick={handleEnter}
         className="animate-fade-in-up"
         style={{

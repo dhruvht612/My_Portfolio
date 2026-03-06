@@ -1,464 +1,64 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { aboutTabs } from './data/about'
-import { PROJECT_FILTERS, projects } from './data/projects'
-import { certifications } from './data/certifications'
-import { experienceByOrg } from './data/experience'
-import { skillGroups } from './data/skills'
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom'
+import { PortfolioProvider } from './context/PortfolioContext'
 import SkipLink from './components/SkipLink'
-import Preloader from './components/Preloader'
 import Landing from './components/Landing'
-import Header from './components/Header'
-import Hero from './components/Hero'
-import About from './components/About'
-import Projects from './components/Projects'
-import Beyond from './components/Beyond'
-import Experience from './components/Experience'
-import Education from './components/Education'
-import CertificationsSection from './components/Certifications'
-import Skills from './components/Skills'
-import Contact from './components/Contact'
-import Footer from './components/Footer'
-import ChatWidget from './components/ChatWidget'
+import Layout from './components/Layout'
+import HomePage from './pages/HomePage'
+import AboutPage from './pages/AboutPage'
+import ProjectsPage from './pages/ProjectsPage'
+import BeyondPage from './pages/BeyondPage'
+import ExperiencePage from './pages/ExperiencePage'
+import EducationPage from './pages/EducationPage'
+import CertificationsPage from './pages/CertificationsPage'
+import SkillsPage from './pages/SkillsPage'
+import ContactPage from './pages/ContactPage'
 import './index.css'
 
-const navLinks = [
-  { id: 'home', label: 'Home' },
-  { id: 'about', label: 'About' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'education', label: 'Education' },
-  { id: 'certifications', label: 'Certifications' },
-  { id: 'contact', label: 'Contact' },
-]
-
-const typedRoles = [
-  'Computer Science Student',
-  'Full-Stack Developer',
-  'Embedded Systems Enthusiast',
-  'Community Builder',
-]
-
-const heroSocials = [
-  {
-    href: 'https://github.com/dhruvht612',
-    label: "Visit Dhruv's GitHub profile (opens in new tab)",
-    icon: 'fab fa-github',
-    ring: 'focus:ring-[#5b7cf5]',
-    tooltip: 'GitHub',
-  },
-  {
-    href: 'https://linkedin.com/in/dhruv-thakar-ba46aa296',
-    label: "Visit Dhruv's LinkedIn profile (opens in new tab)",
-    icon: 'fab fa-linkedin',
-    ring: 'focus:ring-[#4169E1]',
-    tooltip: 'LinkedIn',
-  },
-  {
-    href: 'mailto:thakardhruvh@gmail.com',
-    label: 'Send email to thakardhruvh@gmail.com',
-    icon: 'fas fa-envelope',
-    ring: 'focus:ring-[#facc15]',
-    tooltip: 'Email',
-  },
-  {
-    href: 'https://www.instagram.com/dhruv_200612/?hl=en',
-    label: "Visit Dhruv's Instagram profile (opens in new tab)",
-    icon: 'fab fa-instagram',
-    ring: 'focus:ring-[#ec4899]',
-    tooltip: 'Instagram',
-  },
-]
-
-const quickStats = [
-  { value: '11+', label: 'Projects', accent: 'text-theme-accent' },
-  { value: '5+', label: 'Technologies', accent: 'text-theme-accent-hover' },
-  { value: '2028', label: 'Graduation', accent: 'text-theme-accent' },
-]
-
-const aboutCounters = [
-  { target: 11, label: 'Projects Completed', accent: 'text-theme-accent', suffix: '+' },
-  { target: 6, label: 'Technologies Mastered', accent: 'text-theme-accent-hover', suffix: '+' },
-  { target: 3, label: 'Years of Experience', accent: 'text-theme-accent', suffix: '' },
-  { target: 5, label: 'Leadership Roles', accent: 'text-theme-accent-hover', suffix: '+' },
-]
-
-const projectStats = [
-  { value: '15+', label: 'Total Projects', gradient: 'from-[var(--color-blue-soft)] to-[var(--color-accent)]/20', accent: 'text-theme-accent' },
-  { value: '8+', label: 'Technologies', gradient: 'from-[var(--color-accent)]/10 to-[var(--color-blue-soft)]', accent: 'text-theme-accent-hover' },
-  { value: '100%', label: 'Open Source', gradient: 'from-[var(--color-blue-soft)] to-[var(--color-orange)]/10', accent: 'text-theme-accent' },
-  { value: '2025', label: 'Latest Update', gradient: 'from-[var(--color-orange)]/10 to-[var(--color-accent)]/20', accent: 'text-theme-accent-hover' },
-]
-
-const beyondStats = [
-  { value: '5+', label: 'Leadership Roles', accent: 'text-red-400', gradient: 'from-red-500/10 to-orange-500/10' },
-  { value: '500+', label: 'Students Reached', accent: 'text-teal-400', gradient: 'from-teal-500/10 to-cyan-500/10' },
-  { value: '10+', label: 'Events Organized', accent: 'text-purple-400', gradient: 'from-purple-500/10 to-pink-500/10' },
-  { value: '100%', label: 'Passion Driven', accent: 'text-yellow-400', gradient: 'from-yellow-500/10 to-orange-500/10' },
-]
-
-const goals = [
-  {
-    title: 'Short-Term Goals',
-    badge: '2025-2026',
-    icon: 'fas fa-rocket',
-    accent: 'from-red-500/20 to-orange-500/20',
-    bullets: [
-      'Build and contribute to personal projects in web and app development',
-      'Stay current with industry trends and emerging technologies',
-      'Secure internship experience in software or research by 2026',
-      'Continue developing skills in frameworks, design, and data handling',
-    ],
-    progressLabel: 'In Progress',
-    progress: 45,
-  },
-  {
-    title: 'Long-Term Goals',
-    badge: '2026-2030',
-    icon: 'fas fa-graduation-cap',
-    accent: 'from-pink-500/20 to-purple-500/20',
-    bullets: [
-      'Contribute to innovative research and impactful real-world solutions',
-      'Pursue advanced education or leadership roles in technology',
-      'Mentor and inspire future computer scientists and developers',
-      'Collaborate on projects that bridge technology and social impact',
-    ],
-    vision: 'Future Tech Leader',
-  },
-]
-
-const contactCards = [
-  {
-    title: 'Email',
-    value: 'thakardhruvh@gmail.com',
-    icon: 'fas fa-envelope',
-    href: 'mailto:thakardhruvh@gmail.com',
-    accent: 'from-[var(--color-blue-soft)] to-[var(--color-blue-medium)]',
-  },
-  {
-    title: 'Location',
-    value: 'Oshawa, Ontario, Canada',
-    icon: 'fas fa-map-marker-alt',
-    accent: 'from-[var(--color-blue-medium)] to-[var(--color-blue-soft)]',
-  },
-  {
-    title: 'Availability',
-    value: 'Open to Opportunities',
-    icon: 'fas fa-check-circle',
-    accent: 'from-[var(--color-success)]/20 to-emerald-500/20',
-  },
-]
-
-const altContactLinks = [
-  {
-    label: 'GitHub Profile',
-    href: 'https://github.com/dhruvht612',
-    icon: 'fab fa-github',
-    hover: 'hover:bg-theme-blue hover:border-theme-blue',
-  },
-  {
-    label: 'LinkedIn',
-    href: 'https://linkedin.com/in/dhruv-thakar',
-    icon: 'fab fa-linkedin',
-    hover: 'hover:bg-[#0077b5] hover:border-[#0077b5]',
-  },
-  {
-    label: 'Download Resume',
-    href: 'https://drive.google.com/uc?export=download&id=1',
-    icon: 'fas fa-download',
-    hover: 'hover:bg-theme-blue hover:border-theme-blue',
-  },
-]
-
-const footerBadges = [
-  'https://img.shields.io/badge/HTML5-%23E34F26.svg?&style=flat&logo=html5&logoColor=white',
-  'https://img.shields.io/badge/Tailwind-%2306B6D4.svg?&style=flat&logo=tailwind-css&logoColor=white',
-  'https://img.shields.io/badge/JavaScript-%23F7DF1E.svg?&style=flat&logo=javascript&logoColor=black',
-]
-
-const focusAreas = ['Software Development', 'Data Structures', 'Algorithms', 'OOP (C++, Python, Java)', 'Web Development', 'Statistics & Mathematics']
-
-const educationHighlights = [
-  {
-    title: 'Core Coursework',
-    icon: 'fas fa-book-open',
-    accent: 'from-blue-500/20 to-blue-600/20',
-    bullets: ['Data Structures & Algorithms', 'Object-Oriented Programming', 'Database Systems & Web Dev'],
-  },
-  {
-    title: 'Hands-On Learning',
-    icon: 'fas fa-laptop-code',
-    accent: 'from-teal-500/20 to-teal-600/20',
-    bullets: ['15+ course projects completed', 'Hackathon participation', 'Collaborative team projects'],
-  },
-  {
-    title: 'Technical Growth',
-    icon: 'fas fa-code',
-    accent: 'from-purple-500/20 to-purple-600/20',
-    bullets: ['8+ programming languages', 'Modern frameworks & tools', 'Version control & DevOps basics'],
-  },
-]
-
-const initialChatMessages = [
-  { id: 1, from: 'bot', text: 'Hey there! 👋 Ready to build something amazing together?' },
-]
-
-function App() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState('home')
-  const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
-  const [projectFilter, setProjectFilter] = useState('all')
-  const [aboutTab, setAboutTab] = useState('story')
-  const [typedText, setTypedText] = useState('')
-  const [isDarkMode, setIsDarkMode] = useState(true)
-  const [chatOpen, setChatOpen] = useState(false)
-  const [chatMessages, setChatMessages] = useState(initialChatMessages)
-  const [chatInput, setChatInput] = useState('')
-  const [hasEnteredPortfolio, setHasEnteredPortfolio] = useState(false)
-
-  const scrollProgressRef = useRef(null)
-  const chatMessagesRef = useRef(null)
-  const typedRoleRef = useRef(0)
-  const typedCharRef = useRef(0)
-  const typedDeletingRef = useRef(false)
-
-  useEffect(() => {
-    const handleLoad = () => setIsLoading(false)
-    window.addEventListener('load', handleLoad)
-    const timer = setTimeout(() => setIsLoading(false), 1200)
-    return () => {
-      window.removeEventListener('load', handleLoad)
-      clearTimeout(timer)
-    }
-  }, [])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const currentRole = typedRoles[typedRoleRef.current]
-      if (!typedDeletingRef.current) {
-        typedCharRef.current += 1
-        if (typedCharRef.current >= currentRole.length) {
-          typedDeletingRef.current = true
-        }
-      } else {
-        typedCharRef.current -= 1
-        if (typedCharRef.current <= 0) {
-          typedDeletingRef.current = false
-          typedRoleRef.current = (typedRoleRef.current + 1) % typedRoles.length
-        }
-      }
-      setTypedText(currentRole.slice(0, typedCharRef.current))
-    }, 120)
-    return () => clearInterval(interval)
-  }, [])
-
-  useEffect(() => {
-    let ticking = false
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrollableHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
-          const scrolled = scrollableHeight > 0 ? (window.scrollY / scrollableHeight) * 100 : 0
-          if (scrollProgressRef.current) {
-            scrollProgressRef.current.style.width = `${scrolled}%`
-          }
-          setIsHeaderScrolled(window.scrollY > 50)
-          const sections = document.querySelectorAll('section[id]')
-          let current = 'home'
-          sections.forEach((section) => {
-            const offset = section.offsetTop - 150
-            if (window.scrollY >= offset) {
-              current = section.getAttribute('id') ?? 'home'
-            }
-          })
-          setActiveSection(current)
-          ticking = false
-        })
-        ticking = true
-      }
-    }
-    handleScroll()
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  useEffect(() => {
-    const counters = document.querySelectorAll('[data-count]')
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const target = Number(entry.target.getAttribute('data-count')) || 0
-            const suffix = entry.target.getAttribute('data-suffix') ?? ''
-            let current = 0
-            const increment = Math.max(1, Math.ceil(target / 60))
-            const updateCounter = () => {
-              current += increment
-              if (current >= target) {
-                entry.target.textContent = `${target}${suffix}`
-              } else {
-                entry.target.textContent = `${current}${suffix}`
-                requestAnimationFrame(updateCounter)
-              }
-            }
-            updateCounter()
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.5 },
-    )
-    counters.forEach((counter) => observer.observe(counter))
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    const bars = document.querySelectorAll('.skill-progress')
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const progress = entry.target.getAttribute('data-progress')
-            entry.target.style.width = `${progress}%`
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.4 },
-    )
-    bars.forEach((bar) => {
-      bar.style.width = '0%'
-      observer.observe(bar)
-    })
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    const cards = document.querySelectorAll('.project-card')
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in')
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.2 },
-    )
-    cards.forEach((card) => observer.observe(card))
-    return () => observer.disconnect()
-  }, [projectFilter])
-
-  useEffect(() => {
-    if (chatMessagesRef.current) {
-      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight
-    }
-  }, [chatMessages])
-
-  const filteredProjects = useMemo(() => {
-    if (projectFilter === 'all') return projects
-    const filter = projectFilter.toLowerCase().trim()
-    return projects.filter((project) => {
-      const categories = project.categories?.map((cat) => String(cat).toLowerCase().trim()) ?? []
-      return Array.isArray(categories) && categories.includes(filter)
-    })
-  }, [projectFilter, projects])
-
-  const toggleTheme = () => {
-    const root = document.documentElement
-    if (isDarkMode) {
-      root.classList.remove('dark')
-    } else {
-      root.classList.add('dark')
-    }
-    setIsDarkMode((prev) => !prev)
-  }
-
-  const toggleMenu = () => setIsMenuOpen((prev) => !prev)
-
-  const handleFilterChange = (filter) => setProjectFilter(filter)
-
-  const handleChatSend = () => {
-    if (!chatInput.trim()) return
-    const newMessage = { id: Date.now(), from: 'user', text: chatInput.trim() }
-    setChatMessages((prev) => [...prev, newMessage])
-    setChatInput('')
-    setTimeout(() => {
-      setChatMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now() + 1,
-          from: 'bot',
-          text: "Thanks for reaching out! I'll get back to you shortly 🤝",
-        },
-      ])
-    }, 600)
-  }
-
-  const closeMenu = () => setIsMenuOpen(false)
-  const toggleChatWidget = () => setChatOpen((prev) => !prev)
-  const handleChatInputChange = (event) => setChatInput(event.target.value)
-
+function LandingRoute() {
   return (
     <div className="min-h-screen" style={{ minHeight: '100vh', backgroundColor: '#0a0e17', color: '#f1f5f9' }}>
       <div className="theme-dark-blue-bg" aria-hidden="true" />
       <SkipLink />
-      <div id="main-content" className="block">
-        {!hasEnteredPortfolio && (
-          <Landing onEnter={() => setHasEnteredPortfolio(true)} />
-        )}
-        <div className="theme-dark-blue-hero-bg min-h-screen">
-          <Header
-            navLinks={navLinks}
-            activeSection={activeSection}
-            isHeaderScrolled={isHeaderScrolled}
-            isDarkMode={isDarkMode}
-            onToggleTheme={toggleTheme}
-            isMenuOpen={isMenuOpen}
-            onToggleMenu={toggleMenu}
-            onCloseMenu={closeMenu}
-            scrollProgressRef={scrollProgressRef}
-            heroSocials={heroSocials}
-            fixed={false}
-          />
-          <Hero
-            typedText={typedText}
-            heroSocials={heroSocials}
-            quickStats={quickStats}
-          />
-        </div>
-        <main>
-          <About aboutTab={aboutTab} setAboutTab={setAboutTab} aboutTabs={aboutTabs} aboutCounters={aboutCounters} />
-          <Projects
-            projectStats={projectStats}
-            filters={PROJECT_FILTERS}
-            projectFilter={projectFilter}
-            onFilterChange={handleFilterChange}
-            projects={filteredProjects}
-          />
-          <Beyond beyondStats={beyondStats} goals={goals} />
-          <Experience experienceByOrg={experienceByOrg} />
-          <Education focusAreas={focusAreas} highlightCards={educationHighlights} />
-          <CertificationsSection certifications={certifications} />
-          <Skills skillGroups={skillGroups} />
-          <Contact contactCards={contactCards} heroSocials={heroSocials} altContactLinks={altContactLinks} />
-        </main>
-        <Footer navLinks={navLinks} heroSocials={heroSocials} footerBadges={footerBadges} />
-        <ChatWidget
-          chatOpen={chatOpen}
-          toggleChat={toggleChatWidget}
-          chatMessages={chatMessages}
-          chatInput={chatInput}
-          onChatInputChange={handleChatInputChange}
-          onChatSend={handleChatSend}
-          chatMessagesRef={chatMessagesRef}
-        />
+      <Landing />
+    </div>
+  )
+}
+
+function NotFoundPage() {
+  return (
+    <div className="min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: '#0a0e17', color: '#f1f5f9' }}>
+      <div className="text-center">
+        <h1 className="text-4xl font-bold mb-4">Page not found</h1>
+        <p className="text-[var(--color-text-muted)] mb-6">The page you're looking for doesn't exist.</p>
+        <Link to="/home" className="text-[var(--color-accent)] font-semibold hover:underline">
+          Go to Home
+        </Link>
       </div>
     </div>
   )
 }
 
-export default App
-
+export default function App() {
+  return (
+    <BrowserRouter>
+      <PortfolioProvider>
+        <Routes>
+          <Route path="/" element={<LandingRoute />} />
+          <Route element={<Layout />}>
+            <Route path="home" element={<HomePage />} />
+            <Route path="about" element={<AboutPage />} />
+            <Route path="projects" element={<ProjectsPage />} />
+            <Route path="beyond" element={<BeyondPage />} />
+            <Route path="experience" element={<ExperiencePage />} />
+            <Route path="education" element={<EducationPage />} />
+            <Route path="certifications" element={<CertificationsPage />} />
+            <Route path="skills" element={<SkillsPage />} />
+            <Route path="contact" element={<ContactPage />} />
+          </Route>
+          <Route path="404" element={<NotFoundPage />} />
+          <Route path="*" element={<Navigate to="/404" replace />} />
+        </Routes>
+      </PortfolioProvider>
+    </BrowserRouter>
+  )
+}

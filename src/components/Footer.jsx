@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { MEDIA } from '../constants/media'
 import SpaceBackground from './SpaceBackground'
 
@@ -15,13 +16,13 @@ function Footer({ navLinks, heroSocials, footerBadges }) {
           <h3 className="text-4xl font-bold animate-gradient mb-4 text-[var(--color-text)]">Let&apos;s Build Something Amazing Together</h3>
           <p className="text-[var(--color-text-muted)] text-lg mb-8">Have a project in mind? Let&apos;s connect and make it happen!</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="#contact"
+            <Link
+              to="/contact"
               className="group relative px-8 py-4 bg-[var(--color-orange)] hover:bg-[var(--color-orange-hover)] rounded-xl font-bold text-white shadow-lg hover:shadow-[0_0_30px_rgba(249,115,22,0.4)] transition-all duration-300 hover:scale-105"
             >
               <i className="fas fa-paper-plane mr-2" />
               Get In Touch
-            </a>
+            </Link>
             <a
               href="https://drive.google.com"
               className="px-8 py-4 border-2 border-[var(--color-blue)] text-[var(--color-accent)] rounded-xl font-bold hover:bg-[var(--color-accent)] hover:text-[var(--color-bg)] transition-all duration-300 hover:scale-105"
@@ -48,14 +49,17 @@ function Footer({ navLinks, heroSocials, footerBadges }) {
               Quick Links
             </h4>
             <ul className="space-y-3">
-              {navLinks.map((link) => (
-                <li key={link.id}>
-                  <a href={`#${link.id}`} className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors flex items-center justify-center md:justify-start gap-2 group">
-                    <i className="fas fa-chevron-right text-xs text-[var(--color-accent)] opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {link.label}
-                  </a>
-                </li>
-              ))}
+              {navLinks.map((link) => {
+                const path = link.path ?? `/${link.id}`
+                return (
+                  <li key={link.id}>
+                    <Link to={path} className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors flex items-center justify-center md:justify-start gap-2 group">
+                      <i className="fas fa-chevron-right text-xs text-[var(--color-accent)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                      {link.label}
+                    </Link>
+                  </li>
+                )
+              })}
             </ul>
           </div>
           <div className="text-center md:text-left">
@@ -114,13 +118,13 @@ function Footer({ navLinks, heroSocials, footerBadges }) {
               Made with <i className="fas fa-heart text-red-500 animate-pulse" /> and <i className="fas fa-coffee text-[var(--color-accent)]" />
             </p>
           </div>
-          <a
-            href="#home"
+          <Link
+            to="/home"
             className="group flex items-center gap-2 px-6 py-3 bg-[var(--color-bg-card)] hover:bg-[var(--color-orange)] rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] text-[var(--color-text)]"
           >
             <i className="fas fa-arrow-up group-hover:animate-bounce" />
             <span className="font-semibold">Back to Top</span>
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

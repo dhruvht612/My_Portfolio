@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { MEDIA } from '../constants/media'
 import SpaceBackground from './SpaceBackground'
 
@@ -69,13 +70,13 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                 <i className="fas fa-download mr-2" aria-hidden="true" />
                 Download Resume
               </a>
-              <a
-                href="#contact"
+              <Link
+                to="/contact"
                 className="block w-full bg-transparent border-2 border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-[var(--color-bg)] font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)] text-center"
               >
                 <i className="fas fa-paper-plane mr-2" aria-hidden="true" />
                 Get In Touch
-              </a>
+              </Link>
             </div>
           </div>
           <div className="md:col-span-3 space-y-6">
