@@ -32,20 +32,20 @@ export const heroSocials = [
 ]
 
 export const quickStats = [
-  { value: '6', label: 'Projects', accent: 'text-theme-accent' },
+  { value: '7', label: 'Projects', accent: 'text-theme-accent' },
   { value: '5+', label: 'Technologies', accent: 'text-theme-accent-hover' },
   { value: '2028', label: 'Graduation', accent: 'text-theme-accent' },
 ]
 
 export const aboutCounters = [
-  { target: 6, label: 'Projects', accent: 'text-theme-accent', suffix: '' },
+  { target: 7, label: 'Projects', accent: 'text-theme-accent', suffix: '' },
   { target: 6, label: 'Technologies Mastered', accent: 'text-theme-accent-hover', suffix: '+' },
   { target: 3, label: 'Years of Experience', accent: 'text-theme-accent', suffix: '' },
   { target: 5, label: 'Leadership Roles', accent: 'text-theme-accent-hover', suffix: '+' },
 ]
 
 export const projectStats = [
-  { value: '6', label: 'Projects', gradient: 'from-[var(--color-blue-soft)] to-[var(--color-accent)]/20', accent: 'text-theme-accent' },
+  { value: '7', label: 'Projects', gradient: 'from-[var(--color-blue-soft)] to-[var(--color-accent)]/20', accent: 'text-theme-accent' },
   { value: '10+', label: 'Technologies', gradient: 'from-[var(--color-accent)]/10 to-[var(--color-blue-soft)]', accent: 'text-theme-accent-hover' },
   { value: 'Full-Stack', label: 'Focus', gradient: 'from-[var(--color-blue-soft)] to-[var(--color-orange)]/10', accent: 'text-theme-accent' },
   { value: '2025', label: 'Latest Update', gradient: 'from-[var(--color-orange)]/10 to-[var(--color-accent)]/20', accent: 'text-theme-accent-hover' },

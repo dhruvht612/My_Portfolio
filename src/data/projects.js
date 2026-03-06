@@ -116,4 +116,23 @@ export const projects = [
     categories: ['react', 'javascript', 'css', 'accessibility'],
     links: { live: '#', code: '#' },
   },
+  {
+    id: 'farm-flight',
+    title: 'Farm Flight',
+    description:
+      'AI-powered agricultural drone platform that helps farmers monitor crop health and manage farm data. Dashboard with key metrics and crop health trends, farm and field management, drone mission scheduling, image analysis of drone scans, and AI-generated alerts and recommendations.',
+    iconClass: 'fas fa-helicopter',
+    badge: { label: 'AgTech & AI', icon: 'fas fa-seedling', gradient: 'from-lime-400 to-green-600' },
+    features: [
+      'Dashboard: key metrics, crop health trends, mission activity, recent activity',
+      'My Farms: view farms, add new farms, drill into field details',
+      'Drone Missions: list missions, schedule new ones (field and date)',
+      'Image Analysis: browse and inspect drone scan imagery and AI analysis',
+      'Alerts & Recommendations: AI-generated alerts with suggested actions',
+      'Settings: profile, farm settings, notification preferences; demo login (Admin/User)',
+    ],
+    tech: ['React', 'Vite', 'Tailwind CSS', 'React Router', 'Recharts', 'Axios'],
+    categories: ['react', 'javascript', 'css'],
+    links: { live: '#', code: '#' },
+  },
 ]
