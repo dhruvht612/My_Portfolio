@@ -120,7 +120,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background: var(--color-bg);
+  background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
   min-height: 100vh;
@@ -164,12 +164,22 @@ select {
   outline-offset: 2px;
 }
 
-/* === Page background utility === */
+/* === Page background (solid base + gradient, fixed on scroll) === */
+.theme-dark-blue-page {
+  position: relative;
+  background-color: var(--color-bg);
+  background-image: var(--theme-gradient-page);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Legacy: fixed overlay (e.g. for pages that need it) */
 .theme-dark-blue-bg {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: var(--theme-gradient-page);
+  background-color: var(--color-bg);
+  background-image: var(--theme-gradient-page);
   pointer-events: none;
 }
 
@@ -186,9 +196,9 @@ select {
   pointer-events: none;
 }
 
-/* Nav link active state */
+/* Nav link active state – pill style for clear visibility */
 .nav-link.active-link {
-  background: var(--color-blue-soft);
+  background: rgba(65, 105, 225, 0.2);
   color: var(--color-accent);
 }
 
@@ -249,6 +259,7 @@ select {
 }
 
 .global-nav .nav-link.active-link {
+  background: rgba(65, 105, 225, 0.2);
   color: var(--nav-accent);
 }
 

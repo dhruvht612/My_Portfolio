@@ -4,21 +4,20 @@ import { MEDIA } from '../constants/media'
 /**
  * Reusable global navigation bar.
  * Uses CSS variables from :root for pill glass, accent, and CTA.
- * Scrolls with page by default; set fixed={true} for sticky/fixed behavior.
+ * Active state is driven by React Router (current URL), not pathname parsing.
  */
 function Header({
   navLinks,
   activeSection,
   isHeaderScrolled,
-  isDarkMode,
-  onToggleTheme,
   isMenuOpen,
   onToggleMenu,
   onCloseMenu,
   scrollProgressRef,
-  heroSocials = [],
   fixed = false,
 }) {
+  const location = useLocation()
+  const isOnHome = location.pathname === '/home' || location.pathname === '/'
   const mainNavLinks = navLinks.filter((link) => link.id !== 'contact')
 
   return (
@@ -37,7 +36,7 @@ function Header({
 
       {/* Pill glass nav container – blends with hero when at top */}
       <nav
-        className={`global-nav max-w-6xl mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3 ${isHeaderScrolled ? 'is-scrolled' : ''} ${activeSection === 'home' && !isHeaderScrolled ? 'global-nav-in-hero' : ''}`}
+        className={`global-nav max-w-6xl mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3 ${isHeaderScrolled ? 'is-scrolled' : ''} ${isOnHome && !isHeaderScrolled ? 'global-nav-in-hero' : ''}`}
         role="navigation"
         aria-label="Main navigation"
       >
@@ -66,27 +65,32 @@ function Header({
           className="hidden md:flex items-center gap-1 flex-1 justify-center"
         >
           {mainNavLinks.map((link) => {
-            const isActive = activeSection === link.id
             const path = link.path ?? `/${link.id}`
             return (
               <li key={link.id} role="none">
                 <NavLink
                   to={path}
+                  end={link.id === 'home'}
                   role="menuitem"
-                  className={`nav-link inline-block relative px-4 py-2.5 rounded-[var(--radius)] text-sm font-semibold transition-all duration-300 ${
-                    isActive ? 'active-link' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
-                  }`}
-                  aria-current={isActive ? 'page' : undefined}
+                  className={({ isActive }) =>
+                    `nav-link inline-block relative px-4 py-2.5 rounded-[var(--radius)] text-sm font-semibold transition-all duration-300 ${
+                      isActive ? 'active-link' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
+                    }`
+                  }
                 >
-                  {link.label}
-                  <span className={`active-underline absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300 ${isActive ? 'w-6' : 'w-0'}`} />
+                  {({ isActive }) => (
+                    <>
+                      {link.label}
+                      <span className={`active-underline absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300 ${isActive ? 'w-6' : 'w-0'}`} />
+                    </>
+                  )}
                 </NavLink>
               </li>
             )
           })}
         </ul>
 
-        {/* CTA + socials + theme + hamburger */}
+        {/* CTA + hamburger (mobile) */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <NavLink
             to="/contact"
@@ -96,29 +100,6 @@ function Header({
             <i className="fas fa-arrow-right text-xs" aria-hidden="true" />
             Contact
           </NavLink>
-          <div className="hidden md:flex items-center gap-2 border-l border-white/10 pl-3">
-            {heroSocials.slice(0, 4).map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-[var(--color-text-muted)] hover:text-[var(--nav-accent)] hover:bg-[var(--color-bg-card)]/80 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
-                aria-label={social.label}
-              >
-                <i className={`${social.icon} text-base`} aria-hidden="true" />
-              </a>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={onToggleTheme}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-[var(--color-text-muted)] hover:text-[var(--nav-accent)] hover:bg-[var(--color-bg-card)]/80 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
-            aria-label="Toggle theme"
-            title="Toggle theme"
-          >
-            <i className={isDarkMode ? 'fas fa-moon' : 'fas fa-sun'} aria-hidden="true" />
-          </button>
           <button
             type="button"
             id="menu-btn"
@@ -144,14 +125,16 @@ function Header({
         <ul className="px-4 py-4 space-y-1">
           {mainNavLinks.map((link) => {
             const path = link.path ?? `/${link.id}`
-            const isActive = activeSection === link.id
             return (
               <li key={link.id}>
                 <NavLink
                   to={path}
-                  className={`block px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                    isActive ? 'bg-[var(--color-bg-card)]/80 text-[var(--nav-accent)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
-                  }`}
+                  end={link.id === 'home'}
+                  className={({ isActive }) =>
+                    `block px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                      isActive ? 'bg-[var(--color-bg-card)]/80 text-[var(--nav-accent)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
+                    }`
+                  }
                   onClick={onCloseMenu}
                 >
                   {link.label}

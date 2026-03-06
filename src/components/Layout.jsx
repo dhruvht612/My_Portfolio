@@ -73,23 +73,19 @@ export default function Layout() {
   }, [chatMessages])
 
   return (
-    <div className="min-h-screen" style={{ minHeight: '100vh', backgroundColor: '#0a0e17', color: '#f1f5f9' }}>
-      <div className="theme-dark-blue-bg" aria-hidden="true" />
+    <div className="theme-dark-blue-page min-h-screen text-[var(--color-text)]">
       <SkipLink />
       <Header
         navLinks={portfolio.navLinks}
         activeSection={activeSection}
         isHeaderScrolled={isHeaderScrolled}
-        isDarkMode={isDarkMode}
-        onToggleTheme={toggleTheme}
         isMenuOpen={isMenuOpen}
         onToggleMenu={toggleMenu}
         onCloseMenu={closeMenu}
         scrollProgressRef={scrollProgressRef}
-        heroSocials={portfolio.heroSocials}
-        fixed={false}
+        fixed={true}
       />
-      <main id="main-content">
+      <main id="main-content" className="pt-[72px]">
         <Outlet />
       </main>
       <Footer navLinks={portfolio.navLinks} heroSocials={portfolio.heroSocials} footerBadges={portfolio.footerBadges} />

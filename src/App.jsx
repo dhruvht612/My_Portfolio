@@ -16,8 +16,7 @@ import './index.css'
 
 function LandingRoute() {
   return (
-    <div className="min-h-screen" style={{ minHeight: '100vh', backgroundColor: '#0a0e17', color: '#f1f5f9' }}>
-      <div className="theme-dark-blue-bg" aria-hidden="true" />
+    <div className="theme-dark-blue-page min-h-screen text-[var(--color-text)]">
       <SkipLink />
       <Landing />
     </div>
