@@ -2,25 +2,22 @@ import SpaceBackground from './SpaceBackground'
 
 function Beyond({ beyondStats, goals }) {
   return (
-    <section id="beyond" className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden">
+    <section id="beyond" className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden" aria-labelledby="beyond-heading">
       <SpaceBackground />
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)]" aria-hidden="true" />
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-[var(--color-accent)] rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-[var(--color-blue)] rounded-full blur-3xl" />
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="max-w-6xl mx-auto relative z-10">
-        <header className="glass rounded-2xl p-8 mb-12 text-center border border-[var(--glass-border)]">
+        <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
-            <i className="fas fa-bullseye text-5xl text-[var(--color-accent)] animate-pulse" />
+            <i className="fas fa-bullseye text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
             <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
           </div>
-          <h2 className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">Beyond the Classroom</h2>
-          <p className="text-[var(--color-text-muted)] text-lg max-w-3xl mx-auto leading-relaxed">
+          <h2 id="beyond-heading" className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">Beyond the Classroom</h2>
+          <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
             Outside of academics, I actively participate in student organizations and leadership initiatives that help me grow as a communicator, collaborator, and problem solver.
           </p>
-        </header>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
           {beyondStats.map((stat) => (
             <div

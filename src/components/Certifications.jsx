@@ -28,26 +28,22 @@ function Certifications({ certifications }) {
       aria-labelledby="certifications-heading"
     >
       <SpaceBackground />
-      <div
-        className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)]"
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="max-w-5xl mx-auto relative z-10">
-        <header className="glass sticky top-0 z-20 -mx-6 px-6 pt-2 pb-8 mb-8 border-b border-[var(--glass-border)]">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-3 mb-4">
-              <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
-              <i className="fas fa-certificate text-4xl text-[var(--color-accent)]" />
-              <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
-            </div>
-            <h2 id="certifications-heading" className="text-4xl md:text-5xl font-extrabold mb-3">
-              Licenses &amp; Certifications
-            </h2>
-            <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto">
-              Credentials in Git, GitHub, AI, and full-stack development.
-            </p>
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
+            <i className="fas fa-certificate text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
+            <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
           </div>
-        </header>
+          <h2 id="certifications-heading" className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">
+            Licenses &amp; Certifications
+          </h2>
+          <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
+            Credentials in Git, GitHub, AI, and full-stack development.
+          </p>
+        </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {certifications.map((cert, index) => {

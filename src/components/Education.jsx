@@ -3,22 +3,21 @@ import SpaceBackground from './SpaceBackground'
 
 function Education({ focusAreas, highlightCards }) {
   return (
-    <section id="education" className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden">
+    <section id="education" className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden" aria-labelledby="education-heading">
       <SpaceBackground />
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)]" aria-hidden="true" />
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-10 left-10 w-72 h-72 bg-[var(--color-accent)] rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-[var(--color-blue)] rounded-full blur-3xl" />
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
-            <i className="fas fa-graduation-cap text-5xl text-[var(--color-accent)] animate-pulse" />
+            <i className="fas fa-graduation-cap text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
             <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
           </div>
-          <h2 className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">Education</h2>
-          <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto">Building expertise through academic excellence and hands-on learning.</p>
+          <h2 id="education-heading" className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">Education</h2>
+          <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
+            Building expertise through academic excellence and hands-on learning.
+          </p>
         </div>
         <div className="group relative bg-gradient-to-br from-[var(--color-bg-card)] to-[var(--color-bg)] p-8 md:p-12 rounded-3xl shadow-2xl border border-[var(--color-accent)]/20 hover:border-[var(--color-accent)]/50 hover:shadow-[0_0_40px_rgba(125,211,252,0.25)] transition-all duration-500 hover:scale-[1.01] mb-12">
           <div className="absolute -top-4 left-8">

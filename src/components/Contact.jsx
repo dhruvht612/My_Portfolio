@@ -11,22 +11,19 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
   return (
     <section id="contact" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="contact-heading">
       <SpaceBackground />
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)]" aria-hidden="true" />
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-[var(--color-blue)] rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[var(--color-accent)] rounded-full blur-3xl" />
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
-            <i className="fas fa-envelope text-5xl text-[var(--color-accent)] animate-pulse" />
+            <i className="fas fa-envelope text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
             <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
           </div>
           <h2 id="contact-heading" className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">
             Get In Touch
           </h2>
-          <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto">
+          <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
             Have a project idea or want to collaborate? Drop me a message and let&apos;s create something amazing together!
           </p>
         </div>

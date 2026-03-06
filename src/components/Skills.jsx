@@ -2,29 +2,23 @@ import SpaceBackground from './SpaceBackground'
 
 function Skills({ skillGroups }) {
   return (
-    <section id="skills" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden">
+    <section id="skills" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="skills-heading">
       <SpaceBackground />
-      <div
-        className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/40 to-[var(--color-blue-soft)]/30"
-        aria-hidden="true"
-      />
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-1/4 right-0 w-96 h-96 bg-[var(--color-accent)]/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-[var(--color-blue)]/10 rounded-full blur-3xl" />
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
 
       <div className="max-w-6xl mx-auto relative z-10">
-        <header className="glass sticky top-0 z-20 -mx-6 px-6 pt-2 pb-8 mb-10 border-b border-[var(--glass-border)]">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-3 mb-4">
-              <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
-              <i className="fas fa-code text-4xl text-[var(--color-accent)]" />
-              <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
-            </div>
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-3">Technical Skills</h2>
-            <p className="text-[var(--color-text-muted)] text-lg">Hover over each skill to see more details</p>
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
+            <i className="fas fa-code text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
+            <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
           </div>
-        </header>
+          <h2 id="skills-heading" className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">Technical Skills</h2>
+          <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
+            Hover over each skill to see more details
+          </p>
+        </div>
 
         <div className="space-y-8">
           {skillGroups.map((group) => (

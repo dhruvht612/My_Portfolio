@@ -37,29 +37,23 @@ function Experience({ experienceByOrg }) {
       aria-labelledby="experience-heading"
     >
       <SpaceBackground />
-      <div
-        className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)]"
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
 
       <div className="max-w-5xl mx-auto relative z-10">
-        {/* Sticky section title */}
-        <header
-          className="glass sticky top-0 z-20 -mx-6 px-6 pt-2 pb-6 mb-10 border-b border-[var(--glass-border)]"
-          style={{ marginTop: '-0.5rem' }}
-        >
-          <div className="text-center">
-            <div className="inline-flex items-center gap-3 mb-4">
-              <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
-              <i className="fas fa-briefcase text-4xl text-[var(--color-accent)]" />
-              <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
-            </div>
-            <h2 id="experience-heading" className="text-4xl md:text-5xl font-extrabold mb-3">
-              Experience
-            </h2>
-            <p className="text-[var(--color-text-muted)] text-lg">Leadership, outreach, and community roles</p>
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
+            <i className="fas fa-briefcase text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
+            <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
           </div>
-        </header>
+          <h2 id="experience-heading" className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">
+            Experience
+          </h2>
+          <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
+            Leadership, outreach, and community roles
+          </p>
+        </div>
 
         {/* Timeline: vertical line down the center */}
         <div className="relative">

@@ -12,14 +12,22 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
   return (
     <section id="about" className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden" aria-labelledby="about-heading">
       <SpaceBackground />
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/80 to-[var(--color-bg-elevated)]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="max-w-6xl mx-auto relative z-10">
-        <header className="glass rounded-2xl p-8 mb-12 text-center border border-[var(--glass-border)]">
-          <h2 id="about-heading" className="text-4xl md:text-5xl font-extrabold animate-gradient mb-4">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
+            <i className="fas fa-user text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
+            <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
+          </div>
+          <h2 id="about-heading" className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">
             About Me
           </h2>
-          <p className="text-[var(--color-text-muted)] text-lg">Get to know me better</p>
-        </header>
+          <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
+            Get to know me better
+          </p>
+        </div>
         <div className="grid md:grid-cols-5 gap-10 mb-16">
           <div className="md:col-span-2 flex flex-col items-center">
             <div className="relative mb-8 group">
@@ -157,8 +165,8 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
               key={counter.label}
               className="glass p-6 rounded-xl border border-[var(--color-accent)]/20 text-center hover:scale-105 hover:border-[var(--color-accent)]/40 transition-all"
             >
-              <div className={`text-4xl font-bold mb-2 ${counter.accent}`} data-count={counter.target} data-suffix={counter.suffix}>
-                0
+              <div className={`text-4xl font-bold mb-2 ${counter.accent}`}>
+                {counter.target}{counter.suffix ?? ''}
               </div>
               <div className="text-sm text-[var(--color-text-muted)]">{counter.label}</div>
             </div>
