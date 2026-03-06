@@ -1,5 +1,40 @@
 import SpaceBackground from './SpaceBackground'
 
+const TECH_ICONS = {
+  React: 'fab fa-react',
+  'Node.js': 'fab fa-node-js',
+  JavaScript: 'fab fa-js',
+  CSS: 'fab fa-css3-alt',
+  HTML: 'fab fa-html5',
+  Python: 'fab fa-python',
+  Java: 'fab fa-java',
+  Express: 'fas fa-server',
+  SQLite: 'fas fa-database',
+  Prisma: 'fas fa-database',
+  MongoDB: 'fas fa-database',
+  Vite: 'fas fa-bolt',
+  'Tailwind CSS': 'fas fa-palette',
+  'React Router': 'fas fa-route',
+  Recharts: 'fas fa-chart-line',
+  Axios: 'fas fa-cloud',
+  Inquirer: 'fas fa-question-circle',
+  'qr-image': 'fas fa-qrcode',
+  fs: 'fas fa-folder',
+  Ollama: 'fas fa-robot',
+  Plaid: 'fas fa-university',
+  Figma: 'fab fa-figma',
+  ElevenLabs: 'fas fa-volume-up',
+  Gemini: 'fas fa-wand-magic-sparkles',
+  Snowflake: 'fas fa-snowflake',
+  'Huffman Coding': 'fas fa-compress-alt',
+  'Data Structures': 'fas fa-sitemap',
+  OOP: 'fas fa-cubes',
+}
+
+function getTechIcon(tech) {
+  return TECH_ICONS[tech] || 'fas fa-code'
+}
+
 function Projects({ projectStats, filters, projectFilter, onFilterChange, projects }) {
   return (
     <section id="projects" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="projects-heading">
@@ -56,7 +91,7 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
         {projects.map((project) => (
           <div
             key={project.id}
-            className="project-card animate-in group relative bg-gradient-to-br from-[var(--color-bg)] to-[var(--color-bg-elevated)] border border-[var(--color-blue)]/20 rounded-2xl overflow-hidden shadow-xl transition-all duration-500 hover:border-[var(--color-blue)] hover:shadow-[0_0_30px_rgba(65,105,225,0.3)] hover:scale-[1.03] hover:-translate-y-2"
+            className="project-card animate-in group relative bg-gradient-to-br from-[var(--color-bg)] to-[var(--color-bg-elevated)] border border-[var(--color-blue)]/20 rounded-2xl overflow-hidden shadow-xl hover:border-[var(--color-blue)]"
             data-category={project.categories?.join(' ')}
           >
             {project.badge && (
@@ -68,13 +103,13 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
               </div>
             )}
             <div className="relative h-40 bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-blue)]/20 flex items-center justify-center overflow-hidden">
-              <div className="text-6xl text-[var(--color-accent)] transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6">
-                <i className={project.iconClass} />
+              <div className="project-card-icon text-6xl text-[var(--color-accent)] transition-transform duration-500 ease-out" style={{ transformOrigin: 'center' }}>
+                <i className={project.iconClass} aria-hidden />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)] to-transparent opacity-60" />
             </div>
             <div className="p-6 flex flex-col h-full">
-              <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-blue)] bg-clip-text text-transparent transition-all duration-300">
+              <h3 className="project-card-title text-xl font-bold mb-3 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-blue)] bg-clip-text text-transparent transition-all duration-300">
                 {project.title}
               </h3>
               <p className="text-[var(--color-text)] mb-4 text-sm leading-relaxed">{project.description}</p>
@@ -128,7 +163,12 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
               )}
               <div className="flex flex-wrap gap-2">
                 {project.tech?.map((tech) => (
-                  <span key={tech} className="bg-[var(--color-accent)]/20 text-[var(--color-accent)] px-3 py-1 rounded-full text-xs font-semibold border border-[var(--color-accent)]/30">
+                  <span
+                    key={tech}
+                    className="inline-flex items-center gap-1.5 bg-[var(--color-accent)]/20 text-[var(--color-accent)] px-3 py-1.5 rounded-full text-xs font-semibold border border-[var(--color-accent)]/30 transition-transform duration-200 hover:scale-105"
+                    title={tech}
+                  >
+                    <i className={getTechIcon(tech)} aria-hidden style={{ fontSize: '0.75rem' }} />
                     {tech}
                   </span>
                 ))}

@@ -58,6 +58,11 @@
   --glass-blur-strong: blur(24px);
 }
 
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Reusable glass panels */
 .glass {
   background: var(--glass-bg);
@@ -269,12 +274,30 @@ select {
 .project-card {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.4s ease,
+    border-color 0.4s ease;
 }
 
 .project-card.animate-in {
   opacity: 1;
   transform: translateY(0);
+}
+
+.project-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(65, 105, 225, 0.25), 0 0 0 1px rgba(65, 105, 225, 0.2);
+}
+
+.project-card:hover .project-card-icon {
+  transform: scale(1.15) rotate(6deg);
+}
+
+.project-card:hover .project-card-title {
+  opacity: 1;
+  filter: brightness(1.1);
 }
 
 /* Experience section: timeline + scroll-in */
