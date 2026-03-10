@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { MEDIA } from '../constants/media'
 import SpaceBackground from './SpaceBackground'
+import AnimatedSection from './AnimatedSection'
 
 function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
   const tabOptions = [
@@ -15,7 +16,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-12">
+        <AnimatedSection className="text-center mb-12" delayOrder={0}>
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
             <i className="fas fa-user text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
@@ -27,7 +28,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
             Get to know me better
           </p>
-        </div>
+        </AnimatedSection>
         <div className="grid md:grid-cols-5 gap-10 mb-16">
           <div className="md:col-span-2 flex flex-col items-center">
             <div className="relative mb-8 group">

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { usePortfolio } from '../context/PortfolioContext'
+import { useActiveSection } from '../hooks/useActiveSection'
 import SkipLink from './SkipLink'
 import Header from './Header'
 import Footer from './Footer'
@@ -18,7 +19,8 @@ export default function Layout() {
   const chatMessagesRef = useRef(null)
 
   const pathname = location.pathname
-  const activeSection = pathname.slice(1) || 'home'
+  const pathSection = pathname.slice(1) || 'home'
+  const activeSection = useActiveSection(pathSection)
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
 
   useEffect(() => {

@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react'
 import SpaceBackground from './SpaceBackground'
+import AnimatedSection from './AnimatedSection'
+import SkillProgressBar from './SkillProgressBar'
 
 const GROUP_IDS = ['all', 'programming', 'data', 'web', 'tools']
 
@@ -45,7 +47,7 @@ function Skills({ skillGroups }) {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
 
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-12">
+        <AnimatedSection className="text-center mb-12" delayOrder={0}>
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
             <i className="fas fa-code text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
@@ -57,9 +59,9 @@ function Skills({ skillGroups }) {
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
             Click a skill to see projects that use it.
           </p>
-        </div>
+        </AnimatedSection>
 
-        <div className="flex flex-wrap justify-center gap-2 mb-10" role="tablist" aria-label="Skill categories">
+        <AnimatedSection className="flex flex-wrap justify-center gap-2 mb-10" role="tablist" aria-label="Skill categories" delayOrder={0}>
           {GROUP_IDS.map((id) => (
             <button
               key={id}
@@ -76,14 +78,11 @@ function Skills({ skillGroups }) {
               {id === 'all' ? 'All' : id.charAt(0).toUpperCase() + id.slice(1)}
             </button>
           ))}
-        </div>
+        </AnimatedSection>
 
         <div className="space-y-10">
-          {filteredGroups.map((group) => (
-            <article
-              key={group.title}
-              className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/40 backdrop-blur-sm overflow-hidden hover:border-[var(--color-accent)]/30 transition-colors duration-300"
-            >
+          {filteredGroups.map((group, groupIndex) => (
+            <AnimatedSection key={group.title} delayOrder={groupIndex} className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/40 backdrop-blur-sm overflow-hidden hover:border-[var(--color-accent)]/30 transition-colors duration-300">
               <div className="px-6 py-4 border-b border-[var(--color-border)] bg-[var(--color-bg-elevated)]/50">
                 <h3 className="text-lg font-bold text-[var(--color-text)] flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-accent)]/20 border border-[var(--color-accent)]/30">
@@ -92,24 +91,27 @@ function Skills({ skillGroups }) {
                   {group.title}
                 </h3>
               </div>
-              <div className="p-6">
-                <div className="flex flex-wrap gap-3">
+              <div className="p-6 space-y-6">
+                <div className="grid sm:grid-cols-2 gap-6">
                   {group.items.map((skill) => (
-                    <button
+                    <div
                       key={skill.name}
-                      type="button"
-                      onClick={() => openModal(skill.name)}
-                      className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)]/60 px-4 py-3 text-[var(--color-text)] font-semibold transition-all duration-300 hover:scale-105 hover:border-[var(--color-accent)]/40 hover:shadow-[0_0_20px_rgba(65,105,225,0.15)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]"
+                      className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)]/60 p-4 space-y-3"
                     >
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-blue)]/20 border border-[var(--color-blue)]/30">
-                        <i className={`${skill.icon} text-sm text-[var(--color-accent)]`} aria-hidden />
-                      </span>
-                      {skill.name}
-                    </button>
+                      <SkillProgressBar percent={skill.percent} label={skill.name} />
+                      <button
+                        type="button"
+                        onClick={() => openModal(skill.name)}
+                        className="inline-flex items-center gap-2 rounded-lg border border-[var(--color-accent)]/30 bg-[var(--color-bg-card)]/60 px-3 py-2 text-sm font-semibold text-[var(--color-text)] transition-all duration-300 hover:scale-[1.02] hover:border-[var(--color-accent)]/50 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]"
+                      >
+                        <i className="fas fa-folder-open text-[var(--color-accent)]" aria-hidden />
+                        Projects using {skill.name}
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>
-            </article>
+            </AnimatedSection>
           ))}
         </div>
       </div>

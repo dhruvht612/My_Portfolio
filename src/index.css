@@ -311,20 +311,9 @@ select {
   filter: brightness(1.1);
 }
 
-/* Experience section: timeline + scroll-in */
+/* Experience section: cards visible by default; Framer Motion handles entrance */
 .experience-card {
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    opacity 0.5s ease,
-    transform 0.5s ease,
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.experience-card.animate-in {
-  opacity: 1;
-  transform: translateY(0);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
 }
 
 .experience-card:hover {

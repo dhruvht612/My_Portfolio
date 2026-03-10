@@ -1,12 +1,28 @@
+import { useState, useCallback } from 'react'
 import { useForm, ValidationError } from '@formspree/react'
 import SpaceBackground from './SpaceBackground'
+import AnimatedSection from './AnimatedSection'
+import Toast from './Toast'
 
 const FORMSPREE_FORM_ID = import.meta.env.VITE_FORMSPREE_FORM_ID ?? 'mwpabokg'
 
 function Contact({ contactCards, heroSocials, altContactLinks }) {
   const [state, handleSubmit] = useForm(FORMSPREE_FORM_ID)
+  const [copyToastVisible, setCopyToastVisible] = useState(false)
   const isSubmitting = state.submitting
   const isSuccess = state.succeeded
+
+  const copyEmail = useCallback(async () => {
+    const emailCard = contactCards.find((c) => c.title === 'Email')
+    const email = emailCard?.value ?? 'thakardhruvh@gmail.com'
+    try {
+      await navigator.clipboard.writeText(email)
+      setCopyToastVisible(true)
+    } catch {
+      // fallback: open mailto
+      window.location.href = `mailto:${email}`
+    }
+  }, [contactCards])
 
   return (
     <section id="contact" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="contact-heading">
@@ -14,7 +30,7 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-12">
+        <AnimatedSection className="text-center mb-12" delayOrder={0}>
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
             <i className="fas fa-envelope text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
@@ -26,32 +42,45 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
             Have a project idea or want to collaborate? Drop me a message and let&apos;s create something amazing together!
           </p>
-        </div>
+        </AnimatedSection>
         <div className="grid lg:grid-cols-2 gap-12">
           <div className="space-y-8">
             <div className="space-y-4">
-              {contactCards.map((card) => (
-                <div
-                  key={card.title}
-                  className="group bg-gradient-to-br from-[var(--color-bg-card)] to-[var(--color-bg)] p-6 rounded-2xl border border-[var(--color-accent)]/20 hover:border-[var(--color-accent)]/50 hover:shadow-[0_0_30px_rgba(125,211,252,0.2)] transition-all duration-300 hover:scale-[1.02]"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`w-14 h-14 bg-gradient-to-br ${card.accent} rounded-xl flex items-center justify-center border border-[var(--color-border)] group-hover:scale-110 transition-transform duration-300`}>
-                      <i className={`${card.icon} text-2xl text-[var(--color-accent)]`} />
+              {contactCards.map((card, i) => {
+                const isEmail = card.title === 'Email'
+                return (
+                  <AnimatedSection key={card.title} delayOrder={i} className="space-y-4">
+                    <div
+                      role={isEmail ? 'button' : undefined}
+                      tabIndex={isEmail ? 0 : undefined}
+                      onClick={isEmail ? copyEmail : undefined}
+                      onKeyDown={isEmail ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyEmail() } } : undefined}
+                      className={`group bg-gradient-to-br from-[var(--color-bg-card)] to-[var(--color-bg)] p-6 rounded-2xl border border-[var(--color-accent)]/20 hover:border-[var(--color-accent)]/50 hover:shadow-[0_0_30px_rgba(125,211,252,0.2)] transition-all duration-300 hover:scale-[1.02] ${isEmail ? 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]' : ''}`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-14 h-14 bg-gradient-to-br ${card.accent} rounded-xl flex items-center justify-center border border-[var(--color-border)] group-hover:scale-110 transition-transform duration-300`}>
+                          <i className={`${card.icon} text-2xl text-[var(--color-accent)]`} />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-[var(--color-text)] mb-1 flex items-center gap-2">
+                            {card.title}
+                            {isEmail && <i className="fas fa-copy text-sm text-[var(--color-text-muted)] opacity-70 group-hover:opacity-100" aria-hidden />}
+                          </h3>
+                          {isEmail ? (
+                            <span className="text-[var(--color-text-muted)] text-sm">{card.value}</span>
+                          ) : card.href ? (
+                            <a href={card.href} className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors text-sm">
+                              {card.value}
+                            </a>
+                          ) : (
+                            <p className="text-[var(--color-text-muted)] text-sm">{card.value}</p>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-[var(--color-text)] mb-1">{card.title}</h3>
-                      {card.href ? (
-                        <a href={card.href} className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors text-sm">
-                          {card.value}
-                        </a>
-                      ) : (
-                        <p className="text-[var(--color-text-muted)] text-sm">{card.value}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  </AnimatedSection>
+                )
+              })}
             </div>
             <div className="bg-gradient-to-br from-[var(--color-bg-card)] to-[var(--color-bg)] p-8 rounded-2xl border border-[var(--color-border)]">
               <h3 className="text-xl font-bold text-[var(--color-text)] mb-6 flex items-center gap-2">
@@ -203,6 +232,7 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
           </div>
         </div>
       </div>
+      <Toast message="Email copied to clipboard!" visible={copyToastVisible} onDismiss={() => setCopyToastVisible(false)} duration={3000} />
     </section>
   )
 }

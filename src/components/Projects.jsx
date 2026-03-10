@@ -1,4 +1,7 @@
+import { motion } from 'framer-motion'
+import Tilt from 'react-parallax-tilt'
 import SpaceBackground from './SpaceBackground'
+import AnimatedSection from './AnimatedSection'
 
 const TECH_ICONS = {
   React: 'fab fa-react',
@@ -42,7 +45,7 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-12">
+        <AnimatedSection className="text-center mb-12" delayOrder={0}>
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
             <i className="fas fa-project-diagram text-4xl text-[var(--color-accent)] animate-pulse" />
@@ -54,8 +57,8 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
             Indoor accessibility and sensory-aware navigation—helping people move through spaces safely and comfortably.
           </p>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl mx-auto">
+        </AnimatedSection>
+        <AnimatedSection className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl mx-auto" delayOrder={1}>
           {projectStats.map((stat) => (
             <div
               key={stat.label}
@@ -65,10 +68,10 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
               <div className="text-xs text-[var(--color-text-muted)] uppercase tracking-wide">{stat.label}</div>
             </div>
           ))}
-        </div>
+        </AnimatedSection>
       </div>
       <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="flex flex-wrap justify-center gap-3 mb-12" role="group" aria-label="Project filter options">
+        <AnimatedSection className="flex flex-wrap justify-center gap-3 mb-12" role="group" aria-label="Project filter options" delayOrder={0}>
           {filters.map((filter) => (
             <button
               key={filter.id}
@@ -86,12 +89,29 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
               {filter.label}
             </button>
           ))}
-        </div>
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        </AnimatedSection>
+        <motion.div
+          className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.05 } } }}
+        >
         {projects.map((project) => (
+          <motion.div key={project.id} variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }}>
+          <Tilt
+            tiltMaxAngleX={8}
+            tiltMaxAngleY={8}
+            perspective={800}
+            glareEnable
+            glareMaxOpacity={0.12}
+            glareColor="rgba(125, 211, 252, 0.15)"
+            glarePosition="all"
+            glareBorderRadius="1rem"
+            className="h-full"
+          >
           <div
-            key={project.id}
-            className="project-card animate-in group relative bg-gradient-to-br from-[var(--color-bg)] to-[var(--color-bg-elevated)] border border-[var(--color-blue)]/20 rounded-2xl overflow-hidden shadow-xl hover:border-[var(--color-blue)]"
+            className="project-card animate-in group relative bg-gradient-to-br from-[var(--color-bg)] to-[var(--color-bg-elevated)] border border-[var(--color-blue)]/20 rounded-2xl overflow-hidden shadow-xl hover:border-[var(--color-blue)] h-full"
             data-category={project.categories?.join(' ')}
           >
             {project.badge && (
@@ -175,8 +195,10 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
               </div>
             </div>
           </div>
+          </Tilt>
+          </motion.div>
         ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

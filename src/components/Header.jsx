@@ -72,18 +72,24 @@ function Header({
                   to={path}
                   end={link.id === 'home'}
                   role="menuitem"
-                  className={({ isActive }) =>
-                    `nav-link inline-block relative px-4 py-2.5 rounded-[var(--radius)] text-sm font-semibold transition-all duration-300 ${
-                      isActive ? 'active-link' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
+                  className={({ isActive }) => {
+                    const isSectionActive = activeSection === link.id
+                    const active = isActive || isSectionActive
+                    return `nav-link inline-block relative px-4 py-2.5 rounded-[var(--radius)] text-sm font-semibold transition-all duration-300 ${
+                      active ? 'active-link' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
                     }`
-                  }
+                  }}
                 >
-                  {({ isActive }) => (
-                    <>
-                      {link.label}
-                      <span className={`active-underline absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300 ${isActive ? 'w-6' : 'w-0'}`} />
-                    </>
-                  )}
+                  {({ isActive }) => {
+                    const isSectionActive = activeSection === link.id
+                    const active = isActive || isSectionActive
+                    return (
+                      <>
+                        {link.label}
+                        <span className={`active-underline absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300 ${active ? 'w-6' : 'w-0'}`} />
+                      </>
+                    )
+                  }}
                 </NavLink>
               </li>
             )
@@ -130,11 +136,13 @@ function Header({
                 <NavLink
                   to={path}
                   end={link.id === 'home'}
-                  className={({ isActive }) =>
-                    `block px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                      isActive ? 'bg-[var(--color-bg-card)]/80 text-[var(--nav-accent)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
+                  className={({ isActive }) => {
+                    const isSectionActive = activeSection === link.id
+                    const active = isActive || isSectionActive
+                    return `block px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                      active ? 'bg-[var(--color-bg-card)]/80 text-[var(--nav-accent)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
                     }`
-                  }
+                  }}
                   onClick={onCloseMenu}
                 >
                   {link.label}
