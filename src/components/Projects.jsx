@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import Tilt from 'react-parallax-tilt'
 import SpaceBackground from './SpaceBackground'
 import AnimatedSection from './AnimatedSection'
+import HolographicCard from './ui/holographic-card'
 
 const TECH_ICONS = {
   React: 'fab fa-react',
@@ -38,7 +39,17 @@ function getTechIcon(tech) {
   return TECH_ICONS[tech] || 'fas fa-code'
 }
 
-function Projects({ projectStats, filters, projectFilter, onFilterChange, projects }) {
+function Projects({
+  projectStats,
+  filters,
+  projectFilter,
+  onFilterChange,
+  searchQuery,
+  onSearchChange,
+  onResetFilters,
+  projects,
+  totalProjects,
+}) {
   return (
     <section id="projects" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="projects-heading">
       <SpaceBackground />
@@ -71,6 +82,20 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
         </AnimatedSection>
       </div>
       <div className="relative z-10 max-w-7xl mx-auto">
+        <AnimatedSection className="mb-6 max-w-xl mx-auto" delayOrder={0}>
+          <label htmlFor="project-search" className="sr-only">Search projects</label>
+          <div className="relative">
+            <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true" />
+            <input
+              id="project-search"
+              type="text"
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Search by title, tech, or feature..."
+              className="w-full pl-11 pr-4 py-3 rounded-xl bg-[var(--color-bg-card)]/70 border border-[var(--color-border)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-all"
+            />
+          </div>
+        </AnimatedSection>
         <AnimatedSection className="flex flex-wrap justify-center gap-3 mb-12" role="group" aria-label="Project filter options" delayOrder={0}>
           {filters.map((filter) => (
             <button
@@ -90,6 +115,35 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
             </button>
           ))}
         </AnimatedSection>
+        <AnimatedSection className="flex items-center justify-between gap-4 mb-6 text-sm" delayOrder={0}>
+          <p className="text-[var(--color-text-muted)]">
+            Showing <span className="font-semibold text-[var(--color-text)]">{projects.length}</span> of{' '}
+            <span className="font-semibold text-[var(--color-text)]">{totalProjects}</span> projects
+          </p>
+          {(projectFilter !== 'all' || searchQuery.trim()) && (
+            <button
+              type="button"
+              onClick={onResetFilters}
+              className="px-3 py-2 rounded-lg border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-accent)] transition-colors"
+            >
+              Clear filters
+            </button>
+          )}
+        </AnimatedSection>
+        {projects.length === 0 && (
+          <AnimatedSection className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/40 p-10 text-center mb-6" delayOrder={0}>
+            <i className="fas fa-folder-open text-3xl text-[var(--color-accent)] mb-3" aria-hidden="true" />
+            <h3 className="text-xl font-bold mb-2">No projects match your search</h3>
+            <p className="text-[var(--color-text-muted)] mb-4">Try a different keyword or reset the active filters.</p>
+            <button
+              type="button"
+              onClick={onResetFilters}
+              className="px-4 py-2 rounded-lg bg-[var(--color-orange)] text-white font-semibold hover:bg-[var(--color-orange-hover)] transition-colors"
+            >
+              Reset filters
+            </button>
+          </AnimatedSection>
+        )}
         <motion.div
           className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
           initial="hidden"
@@ -110,7 +164,7 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
             glareBorderRadius="1rem"
             className="h-full"
           >
-          <div
+          <HolographicCard
             className="project-card animate-in group relative bg-gradient-to-br from-[var(--color-bg)] to-[var(--color-bg-elevated)] border border-[var(--color-blue)]/20 rounded-2xl overflow-hidden shadow-xl hover:border-[var(--color-blue)] h-full"
             data-category={project.categories?.join(' ')}
           >
@@ -194,7 +248,7 @@ function Projects({ projectStats, filters, projectFilter, onFilterChange, projec
                 ))}
               </div>
             </div>
-          </div>
+          </HolographicCard>
           </Tilt>
           </motion.div>
         ))}
