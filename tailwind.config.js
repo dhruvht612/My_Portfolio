@@ -10,6 +10,11 @@ export default {
       colors: {
         'royal-blue': '#4169E1',
         'royal-blue-light': '#5b7cf5',
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        skeleton: 'var(--skeleton)',
+        border: 'var(--btn-border)',
+        input: 'var(--input)',
         'theme-bg': 'var(--color-bg)',
         'theme-bg-elevated': 'var(--color-bg-elevated)',
         'theme-bg-card': 'var(--color-bg-card)',
@@ -29,6 +34,15 @@ export default {
         twinkle: 'twinkle 3s ease-in-out infinite',
         'shooting-star': 'shooting-star 2s ease-out forwards',
         'hero-reveal': 'hero-reveal 0.5s ease-out forwards',
+        ripple: 'ripple 2s ease calc(var(--i, 0) * 0.2s) infinite',
+        orbit: 'orbit calc(var(--duration) * 1s) linear infinite',
+      },
+      boxShadow: {
+        input: [
+          '0px 2px 3px -1px rgba(0, 0, 0, 0.1)',
+          '0px 1px 0px 0px rgba(25, 28, 33, 0.02)',
+          '0px 0px 0px 1px rgba(25, 28, 33, 0.08)',
+        ].join(', '),
       },
       keyframes: {
         'hero-reveal': {
@@ -54,6 +68,14 @@ export default {
           '5%': { opacity: '1' },
           '90%': { opacity: '0.9' },
           '100%': { transform: 'translate(120vw, 120vh) rotate(-45deg) scale(1); opacity: 0' },
+        },
+        ripple: {
+          '0%, 100%': { transform: 'translate(-50%, -50%) scale(1)' },
+          '50%': { transform: 'translate(-50%, -50%) scale(0.9)' },
+        },
+        orbit: {
+          '0%': { transform: 'rotate(0deg) translateY(calc(var(--radius) * 1px)) rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg) translateY(calc(var(--radius) * 1px)) rotate(-360deg)' },
         },
       },
     },

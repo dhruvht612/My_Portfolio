@@ -1,5 +1,7 @@
-import { motion } from 'framer-motion'
+import { useMemo, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import Tilt from 'react-parallax-tilt'
+import { Code2, ExternalLink, Search, Sparkles, Star, X } from 'lucide-react'
 import SpaceBackground from './SpaceBackground'
 import AnimatedSection from './AnimatedSection'
 import HolographicCard from './ui/holographic-card'
@@ -39,6 +41,33 @@ function getTechIcon(tech) {
   return TECH_ICONS[tech] || 'fas fa-code'
 }
 
+function highlightText(text, query) {
+  if (!query?.trim()) return text
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const regex = new RegExp(`(${escaped})`, 'ig')
+  const parts = String(text).split(regex)
+  return parts.map((part, idx) =>
+    idx % 2 === 1 ? (
+      <mark key={`${part}-${idx}`} className="rounded bg-[var(--color-accent)]/30 px-0.5 text-[var(--color-text)]">
+        {part}
+      </mark>
+    ) : (
+      <span key={`${part}-${idx}`}>{part}</span>
+    )
+  )
+}
+
+function getImpactTags(project) {
+  const tags = new Set()
+  if (project.categories?.includes('accessibility')) tags.add('Accessibility')
+  if (project.categories?.includes('react') && project.categories?.includes('node')) tags.add('Full-Stack')
+  if (project.tech?.some((t) => ['Gemini', 'Ollama', 'ElevenLabs'].includes(t))) tags.add('AI')
+  if (project.tech?.some((t) => ['MongoDB', 'SQLite', 'Prisma'].includes(t))) tags.add('Data-Driven')
+  if (project.tech?.some((t) => ['Plaid', 'Snowflake'].includes(t))) tags.add('Real-World Integrations')
+  if (tags.size === 0) tags.add('Product Build')
+  return Array.from(tags).slice(0, 3)
+}
+
 function Projects({
   projectStats,
   filters,
@@ -50,11 +79,30 @@ function Projects({
   projects,
   totalProjects,
 }) {
+  const [selectedProject, setSelectedProject] = useState(null)
+  const [modalImageIndex, setModalImageIndex] = useState(0)
+  const featuredProject = projects[0]
+  const gridProjects = projects.slice(1)
+  const featuredImages = useMemo(
+    () => [featuredProject?.iconClass, 'fas fa-layer-group', 'fas fa-lightbulb'].filter(Boolean),
+    [featuredProject]
+  )
+
+  const openProjectModal = (project) => {
+    setSelectedProject(project)
+    setModalImageIndex(0)
+  }
+
   return (
-    <section id="projects" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="projects-heading">
+    <section id="projects" className="py-24 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="projects-heading">
       <SpaceBackground />
+      <div className="beyond-grid-bg pointer-events-none absolute inset-0 opacity-[0.22]" aria-hidden="true" />
+      <div className="beyond-noise pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden="true" />
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
+      <div className="absolute -top-16 -left-16 w-80 h-80 rounded-full bg-blue-500/20 blur-[110px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-fuchsia-500/15 blur-[130px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute bottom-0 left-1/3 w-72 h-72 rounded-full bg-orange-500/15 blur-[110px] pointer-events-none" aria-hidden="true" />
       <div className="max-w-7xl mx-auto relative z-10">
         <AnimatedSection className="text-center mb-12" delayOrder={0}>
           <div className="inline-flex items-center gap-3 mb-4">
@@ -66,7 +114,7 @@ function Projects({
             Featured Projects
           </h2>
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
-            Indoor accessibility and sensory-aware navigation—helping people move through spaces safely and comfortably.
+            Product-focused builds with real constraints, measurable impact, and polished engineering.
           </p>
         </AnimatedSection>
         <AnimatedSection className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl mx-auto" delayOrder={1}>
@@ -85,7 +133,7 @@ function Projects({
         <AnimatedSection className="mb-6 max-w-xl mx-auto" delayOrder={0}>
           <label htmlFor="project-search" className="sr-only">Search projects</label>
           <div className="relative">
-            <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" aria-hidden="true" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] h-4 w-4" aria-hidden="true" />
             <input
               id="project-search"
               type="text"
@@ -96,23 +144,25 @@ function Projects({
             />
           </div>
         </AnimatedSection>
-        <AnimatedSection className="flex flex-wrap justify-center gap-3 mb-12" role="group" aria-label="Project filter options" delayOrder={0}>
+        <AnimatedSection className="flex flex-wrap justify-center gap-3 mb-12 relative" role="group" aria-label="Project filter options" delayOrder={0}>
           {filters.map((filter) => (
-            <button
+            <motion.button
+              layout
               key={filter.id}
               type="button"
               className={`filter-btn px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--color-bg)] cursor-pointer ${
                 projectFilter === filter.id
-                  ? 'text-white bg-[var(--color-orange)] shadow-lg focus:ring-[var(--color-orange)]'
+                  ? 'theme-btn theme-btn-primary text-white focus:ring-[var(--color-orange)] shadow-[0_0_24px_rgba(249,115,22,0.25)]'
                   : 'text-[var(--color-text)] bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]'
               }`}
               data-filter={filter.id}
               aria-pressed={projectFilter === filter.id}
               onClick={() => onFilterChange(filter.id)}
+              whileTap={{ scale: 0.96 }}
             >
               <i className={`${filter.icon} mr-2`} aria-hidden="true" />
               {filter.label}
-            </button>
+            </motion.button>
           ))}
         </AnimatedSection>
         <AnimatedSection className="flex items-center justify-between gap-4 mb-6 text-sm" delayOrder={0}>
@@ -124,7 +174,7 @@ function Projects({
             <button
               type="button"
               onClick={onResetFilters}
-              className="px-3 py-2 rounded-lg border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-accent)] transition-colors"
+              className="theme-btn theme-btn-secondary px-3 py-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
             >
               Clear filters
             </button>
@@ -138,21 +188,73 @@ function Projects({
             <button
               type="button"
               onClick={onResetFilters}
-              className="px-4 py-2 rounded-lg bg-[var(--color-orange)] text-white font-semibold hover:bg-[var(--color-orange-hover)] transition-colors"
+              className="theme-btn theme-btn-primary px-4 py-2"
             >
               Reset filters
             </button>
           </AnimatedSection>
         )}
+        {featuredProject && (
+          <motion.article
+            layout
+            initial={{ opacity: 0, y: 26, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.45 }}
+            className="mb-8 rounded-2xl border border-[var(--color-blue)]/25 bg-[var(--color-bg-card)]/45 backdrop-blur-xl overflow-hidden shadow-2xl"
+          >
+            <div className="grid lg:grid-cols-2">
+              <div className="relative min-h-[280px] p-8 bg-gradient-to-br from-[var(--color-blue)]/20 via-[var(--color-accent)]/10 to-[var(--color-orange)]/10">
+                <span className="inline-flex items-center gap-2 text-xs uppercase tracking-wider rounded-full px-3 py-1 border border-[var(--color-accent)]/30 bg-[var(--color-bg)]/50 text-[var(--color-accent)] mb-4">
+                  <Star className="h-3.5 w-3.5" /> Featured build
+                </span>
+                <h3 className="text-3xl font-bold mb-3 text-[var(--color-text)]">{highlightText(featuredProject.title, searchQuery)}</h3>
+                <p className="text-[var(--color-text-muted)] leading-relaxed mb-5">{highlightText(featuredProject.description, searchQuery)}</p>
+                <div className="flex flex-wrap gap-2 mb-5">
+                  {getImpactTags(featuredProject).map((tag) => (
+                    <span key={tag} className="px-2.5 py-1 rounded-md border border-fuchsia-400/30 bg-fuchsia-500/10 text-fuchsia-200 text-xs font-semibold">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => openProjectModal(featuredProject)}
+                  className="theme-btn theme-btn-primary px-4 py-2.5 text-sm"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Explore Case Study
+                </button>
+              </div>
+              <div className="relative min-h-[280px] flex items-center justify-center bg-[var(--color-bg)]/60">
+                <motion.div className="grid grid-cols-3 gap-4 p-8" whileHover={{ scale: 1.03 }}>
+                  {featuredImages.map((iconClass, idx) => (
+                    <motion.div
+                      key={`${iconClass}-${idx}`}
+                      className="h-20 w-20 rounded-2xl border border-white/10 bg-white/[0.05] flex items-center justify-center text-[var(--color-accent)]"
+                      animate={{ y: [0, -6, 0] }}
+                      transition={{ duration: 3 + idx, repeat: Infinity, ease: 'easeInOut' }}
+                    >
+                      <i className={`${iconClass} text-2xl`} aria-hidden />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+            </div>
+          </motion.article>
+        )}
+
         <motion.div
+          layout
           className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.05 } } }}
+          viewport={{ once: true, amount: 0.08 }}
+          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.04 } } }}
         >
-        {projects.map((project) => (
-          <motion.div key={project.id} variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }}>
+        <AnimatePresence mode="popLayout">
+        {gridProjects.map((project) => (
+          <motion.div key={project.id} layout variants={{ hidden: { opacity: 0, y: 24, scale: 0.98 }, visible: { opacity: 1, y: 0, scale: 1 }, exit: { opacity: 0, y: 12 } }}>
           <Tilt
             tiltMaxAngleX={8}
             tiltMaxAngleY={8}
@@ -165,8 +267,9 @@ function Projects({
             className="h-full"
           >
           <HolographicCard
-            className="project-card animate-in group relative bg-gradient-to-br from-[var(--color-bg)] to-[var(--color-bg-elevated)] border border-[var(--color-blue)]/20 rounded-2xl overflow-hidden shadow-xl hover:border-[var(--color-blue)] h-full"
+            className="project-card animate-in group relative bg-gradient-to-br from-[var(--color-bg)] to-[var(--color-bg-elevated)] border border-[var(--color-blue)]/20 rounded-2xl overflow-hidden shadow-xl hover:border-[var(--color-blue)] h-full cursor-pointer"
             data-category={project.categories?.join(' ')}
+            onClick={() => openProjectModal(project)}
           >
             {project.badge && (
               <div className="absolute top-3 right-3 z-10">
@@ -177,16 +280,36 @@ function Projects({
               </div>
             )}
             <div className="relative h-40 bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-blue)]/20 flex items-center justify-center overflow-hidden">
-              <div className="project-card-icon text-6xl text-[var(--color-accent)] transition-transform duration-500 ease-out" style={{ transformOrigin: 'center' }}>
+              <div className="project-card-icon text-6xl text-[var(--color-accent)] transition-transform duration-500 ease-out group-hover:scale-110" style={{ transformOrigin: 'center' }}>
                 <i className={project.iconClass} aria-hidden />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)] to-transparent opacity-60" />
             </div>
             <div className="p-6 flex flex-col h-full">
               <h3 className="project-card-title text-xl font-bold mb-3 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-blue)] bg-clip-text text-transparent transition-all duration-300">
-                {project.title}
+                {highlightText(project.title, searchQuery)}
               </h3>
-              <p className="text-[var(--color-text)] mb-4 text-sm leading-relaxed">{project.description}</p>
+              <p className="text-[var(--color-text)] mb-4 text-sm leading-relaxed">{highlightText(project.description, searchQuery)}</p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {getImpactTags(project).slice(0, 2).map((tag) => (
+                  <span key={tag} className="px-2 py-1 rounded-md border border-[var(--color-accent)]/25 bg-[var(--color-accent)]/10 text-[var(--color-accent)] text-[10px] font-semibold uppercase tracking-wide">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              {project.features?.length > 0 && (
+                <div className="mb-4 rounded-xl border border-white/10 bg-white/[0.02] p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)] mb-2">Highlights</p>
+                  <ul className="space-y-1 text-xs text-[var(--color-text-muted)]">
+                    {project.features.slice(0, 2).map((feature) => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <Sparkles className="h-3.5 w-3.5 text-[var(--color-accent)] mt-0.5" />
+                        <span>{highlightText(feature, searchQuery)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div className="flex gap-2 flex-wrap mb-4 pt-4 border-t border-[var(--color-border)]">
                 {project.disabled ? (
                   <>
@@ -205,18 +328,20 @@ function Projects({
                       href={project.links?.live || '#'}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex-1 min-w-[140px] bg-[var(--color-orange)] hover:bg-[var(--color-orange-hover)] text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-300 text-center shadow-lg hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] transform hover:scale-105"
+                      className="theme-btn theme-btn-primary flex-1 min-w-[140px] px-4 py-2.5 text-xs text-center"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <i className="fas fa-external-link-alt mr-2" />
+                      <ExternalLink className="h-3.5 w-3.5" />
                       Live Demo
                     </a>
                     <a
                       href={project.links?.code || '#'}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex-1 min-w-[140px] bg-[var(--color-bg-card)]/50 hover:bg-[var(--color-accent)]/20 text-[var(--color-text)] px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-300 text-center border border-[var(--color-accent)]/30 hover:border-[var(--color-accent)]"
+                      className="theme-btn theme-btn-secondary flex-1 min-w-[140px] px-4 py-2.5 text-xs text-center border-[var(--color-accent)]/30 hover:border-[var(--color-accent)]"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <i className="fab fa-github mr-2" />
+                      <Code2 className="h-3.5 w-3.5" />
                       GitHub
                     </a>
                   </>
@@ -252,8 +377,81 @@ function Projects({
           </Tilt>
           </motion.div>
         ))}
+        </AnimatePresence>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm p-4 md:p-6 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedProject(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              className="w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${selectedProject.title} details`}
+            >
+              <div className="flex items-center justify-between p-5 border-b border-[var(--color-border)]">
+                <h3 className="text-xl md:text-2xl font-bold text-[var(--color-text)]">{selectedProject.title}</h3>
+                <button type="button" onClick={() => setSelectedProject(null)} className="theme-btn theme-btn-secondary h-10 w-10 p-0">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="overflow-y-auto max-h-[calc(90vh-72px)] p-5 md:p-6 grid lg:grid-cols-2 gap-6">
+                <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg)]/60 p-6 flex items-center justify-center min-h-[220px]">
+                  <motion.div className="w-full h-full grid place-items-center text-[var(--color-accent)]" whileHover={{ scale: 1.02 }}>
+                    <i className={`${selectedProject.iconClass} text-7xl`} aria-hidden />
+                  </motion.div>
+                </div>
+                <div>
+                  <p className="text-[var(--color-text-muted)] leading-relaxed mb-4">{selectedProject.description}</p>
+                  <h4 className="font-semibold text-[var(--color-text)] mb-2">Key Features</h4>
+                  <ul className="space-y-2 mb-5">
+                    {(selectedProject.features || []).slice(0, 6).map((feature) => (
+                      <li key={feature} className="text-sm text-[var(--color-text-muted)] flex items-start gap-2">
+                        <Sparkles className="h-3.5 w-3.5 text-[var(--color-accent)] mt-0.5" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex flex-wrap gap-2 mb-5">
+                    {selectedProject.tech?.map((tech) => (
+                      <span key={tech} className="inline-flex items-center gap-1.5 bg-[var(--color-accent)]/20 text-[var(--color-accent)] px-3 py-1.5 rounded-full text-xs font-semibold border border-[var(--color-accent)]/30">
+                        <i className={getTechIcon(tech)} aria-hidden style={{ fontSize: '0.75rem' }} />
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProject.links?.live && selectedProject.links.live !== '#' && (
+                      <a href={selectedProject.links.live} target="_blank" rel="noreferrer" className="theme-btn theme-btn-primary px-4 py-2.5 text-sm">
+                        <ExternalLink className="h-4 w-4" />
+                        Live Demo
+                      </a>
+                    )}
+                    {selectedProject.links?.code && selectedProject.links.code !== '#' && (
+                      <a href={selectedProject.links.code} target="_blank" rel="noreferrer" className="theme-btn theme-btn-secondary px-4 py-2.5 text-sm">
+                        <Code2 className="h-4 w-4" />
+                        GitHub
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }

@@ -1,8 +1,11 @@
 import { useState, useCallback } from 'react'
 import { useForm, ValidationError } from '@formspree/react'
+import { motion } from 'framer-motion'
+import { ArrowUpRight, Copy, Globe, Mail, MapPin, Rocket, Send, Sparkles, Users } from 'lucide-react'
 import SpaceBackground from './SpaceBackground'
 import AnimatedSection from './AnimatedSection'
 import Toast from './Toast'
+import AnimatedForm, { ContactTechOrbit } from './ui/modern-animated-sign-in'
 
 const FORMSPREE_FORM_ID = import.meta.env.VITE_FORMSPREE_FORM_ID ?? 'mwpabokg'
 
@@ -11,6 +14,11 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
   const [copyToastVisible, setCopyToastVisible] = useState(false)
   const isSubmitting = state.submitting
   const isSuccess = state.succeeded
+  const socialIconMap = {
+    GitHub: Globe,
+    LinkedIn: Users,
+    Email: Mail,
+  }
 
   const copyEmail = useCallback(async () => {
     const emailCard = contactCards.find((c) => c.title === 'Email')
@@ -25,46 +33,46 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
   }, [contactCards])
 
   return (
-    <section id="contact" className="py-20 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="contact-heading">
+    <section id="contact" className="py-24 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="contact-heading">
       <SpaceBackground />
+      <div className="beyond-grid-bg pointer-events-none absolute inset-0 opacity-[0.2]" aria-hidden="true" />
+      <div className="beyond-noise pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden="true" />
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-[-12rem] left-1/2 -translate-x-1/2 w-[42rem] h-[42rem] rounded-full bg-[var(--color-blue)]/10 blur-[120px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute right-[-10%] top-[35%] w-[34rem] h-[34rem] rounded-full bg-purple-500/12 blur-[130px] pointer-events-none" aria-hidden="true" />
       <div className="max-w-6xl mx-auto relative z-10">
         <AnimatedSection className="text-center mb-12" delayOrder={0}>
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="h-1 w-12 bg-gradient-to-r from-transparent to-[var(--color-accent)] rounded-full" />
-            <i className="fas fa-envelope text-4xl text-[var(--color-accent)] animate-pulse" aria-hidden="true" />
-            <div className="h-1 w-12 bg-gradient-to-l from-transparent to-[var(--color-blue)] rounded-full" />
-          </div>
           <h2 id="contact-heading" className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">
-            Get In Touch
+            Let&apos;s Build Something Meaningful
           </h2>
           <p className="text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
-            Have a project idea or want to collaborate? Drop me a message and let&apos;s create something amazing together!
+            Have an idea, internship opportunity, or ambitious product concept? I&apos;d love to collaborate and bring it to life.
           </p>
         </AnimatedSection>
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-10 xl:gap-14">
           <div className="space-y-8">
             <div className="space-y-4">
               {contactCards.map((card, i) => {
                 const isEmail = card.title === 'Email'
                 return (
                   <AnimatedSection key={card.title} delayOrder={i} className="space-y-4">
-                    <div
+                    <motion.div
                       role={isEmail ? 'button' : undefined}
                       tabIndex={isEmail ? 0 : undefined}
                       onClick={isEmail ? copyEmail : undefined}
                       onKeyDown={isEmail ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyEmail() } } : undefined}
-                      className={`group bg-gradient-to-br from-[var(--color-bg-card)] to-[var(--color-bg)] p-6 rounded-2xl border border-[var(--color-accent)]/20 hover:border-[var(--color-accent)]/50 hover:shadow-[0_0_30px_rgba(125,211,252,0.2)] transition-all duration-300 hover:scale-[1.02] ${isEmail ? 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]' : ''}`}
+                      whileHover={{ y: -3 }}
+                      className={`group bg-gradient-to-br from-[var(--color-bg-card)]/90 to-[var(--color-bg)]/90 backdrop-blur-md p-6 rounded-2xl border border-[var(--color-accent)]/20 hover:border-[var(--color-accent)]/50 hover:shadow-[0_0_30px_rgba(125,211,252,0.2)] transition-all duration-300 hover:scale-[1.02] ${isEmail ? 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]' : ''}`}
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`w-14 h-14 bg-gradient-to-br ${card.accent} rounded-xl flex items-center justify-center border border-[var(--color-border)] group-hover:scale-110 transition-transform duration-300`}>
+                        <motion.div whileHover={{ rotate: [0, -6, 6, 0] }} transition={{ duration: 0.45 }} className={`w-14 h-14 bg-gradient-to-br ${card.accent} rounded-xl flex items-center justify-center border border-[var(--color-border)] group-hover:scale-110 transition-transform duration-300`}>
                           <i className={`${card.icon} text-2xl text-[var(--color-accent)]`} />
-                        </div>
+                        </motion.div>
                         <div className="flex-1">
                           <h3 className="text-lg font-bold text-[var(--color-text)] mb-1 flex items-center gap-2">
                             {card.title}
-                            {isEmail && <i className="fas fa-copy text-sm text-[var(--color-text-muted)] opacity-70 group-hover:opacity-100" aria-hidden />}
+                            {isEmail && <Copy className="h-3.5 w-3.5 text-[var(--color-text-muted)] opacity-70 group-hover:opacity-100" aria-hidden />}
                           </h3>
                           {isEmail ? (
                             <span className="text-[var(--color-text-muted)] text-sm">{card.value}</span>
@@ -77,32 +85,36 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
                           )}
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   </AnimatedSection>
                 )
               })}
             </div>
-            <div className="bg-gradient-to-br from-[var(--color-bg-card)] to-[var(--color-bg)] p-8 rounded-2xl border border-[var(--color-border)]">
+            <div className="bg-gradient-to-br from-[var(--color-bg-card)]/90 to-[var(--color-bg)]/90 backdrop-blur-md p-8 rounded-2xl border border-[var(--color-border)]/80">
               <h3 className="text-xl font-bold text-[var(--color-text)] mb-6 flex items-center gap-2">
-                <i className="fas fa-share-alt text-[var(--color-accent)]" />
+                <Sparkles className="h-5 w-5 text-[var(--color-accent)]" />
                 Connect on Social Media
               </h3>
               <div className="grid grid-cols-3 gap-4">
                 {heroSocials.slice(0, 3).map((social) => (
-                  <a
+                  <motion.a
                     key={social.label}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex flex-col items-center gap-3 p-4 bg-[var(--color-bg-card)]/50 rounded-xl hover:bg-[var(--color-blue)] transition-all duration-300 hover:scale-110"
+                    className="group flex flex-col items-center gap-3 p-4 bg-[var(--color-bg-card)]/40 border border-[var(--color-border)] rounded-xl hover:bg-[var(--color-blue)]/35 hover:border-[var(--color-accent)]/50 transition-all duration-300 hover:scale-110"
+                    whileHover={{ y: -3, scale: 1.06 }}
                   >
-                    <i className={`${social.icon} text-3xl text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors`} />
+                    {(() => {
+                      const Icon = socialIconMap[social.tooltip] ?? Sparkles
+                      return <Icon className="h-7 w-7 text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors" />
+                    })()}
                     <span className="text-xs text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] font-semibold">{social.tooltip}</span>
-                  </a>
+                  </motion.a>
                 ))}
               </div>
             </div>
-            <div className="bg-gradient-to-r from-[var(--color-accent)]/10 to-[var(--color-blue)]/10 backdrop-blur-sm p-6 rounded-2xl border border-[var(--color-accent)]/30">
+            <div className="bg-gradient-to-r from-[var(--color-accent)]/10 to-[var(--color-blue)]/10 backdrop-blur-sm p-6 rounded-2xl border border-[var(--color-accent)]/30 shadow-[0_0_30px_rgba(65,105,225,0.12)]">
               <p className="text-[var(--color-text)] text-center italic">
                 <i className="fas fa-quote-left text-[var(--color-accent)] mr-2" />
                 I typically respond within 24-48 hours
@@ -111,90 +123,47 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
             </div>
           </div>
           <div>
-            <div className="bg-gradient-to-br from-[var(--color-bg-card)] to-[var(--color-bg)] p-8 md:p-10 rounded-2xl border border-[var(--color-border)] shadow-2xl">
-              <h3 className="text-2xl font-bold text-[var(--color-text)] mb-6 flex items-center gap-2">
-                <i className="fas fa-paper-plane text-[var(--color-accent)]" />
-                Send Me a Message
-              </h3>
-              <form id="contact-form" method="POST" className="space-y-6" aria-label="Contact form" onSubmit={handleSubmit}>
-                <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-[var(--color-text)] mb-2">
-                    <i className="fas fa-user text-[var(--color-accent)] mr-2" />
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    required
-                    className="w-full px-4 py-3 text-[var(--color-text)] bg-[var(--color-bg-card)]/50 border-2 border-[var(--color-border)] rounded-xl focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent)]/50 transition-all outline-none"
-                    placeholder="John Doe"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-[var(--color-text)] mb-2">
-                    <i className="fas fa-envelope text-[var(--color-blue)] mr-2" />
-                    Your Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    required
-                    className="w-full px-4 py-3 text-[var(--color-text)] bg-[var(--color-bg-card)]/50 border-2 border-[var(--color-border)] rounded-xl focus:border-[var(--color-orange)] focus:ring-2 focus:ring-[var(--color-orange)]/50 transition-all outline-none"
-                    placeholder="john@example.com"
-                  />
-                </div>
-                <ValidationError
-                  prefix="Email"
-                  field="email"
-                  errors={state.errors}
-                  className="text-sm text-rose-400"
-                />
-                <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-[var(--color-text)] mb-2">
-                    <i className="fas fa-comment-dots text-[var(--color-accent)] mr-2" />
-                    Your Message
-                  </label>
-                  <textarea
-                    name="message"
-                    id="message"
-                    rows="6"
-                    required
-                    className="w-full px-4 py-3 text-[var(--color-text)] bg-[var(--color-bg-card)]/50 border-2 border-[var(--color-border)] rounded-xl focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent)]/50 transition-all outline-none resize-none"
-                    placeholder="Tell me about your project or idea..."
-                  />
-                </div>
-                <ValidationError
-                  prefix="Message"
-                  field="message"
-                  errors={state.errors}
-                  className="text-sm text-rose-400"
-                />
-                <input type="text" name="_gotcha" className="hidden" aria-hidden="true" />
-                <button
-                  type="submit"
-                  disabled={isSubmitting || isSuccess}
-                  className="w-full py-4 bg-[var(--color-orange)] hover:bg-[var(--color-orange-hover)] text-white font-bold rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)] focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)] disabled:opacity-60 disabled:cursor-not-allowed"
+            <div className="relative bg-gradient-to-br from-[var(--color-bg-card)]/95 to-[var(--color-bg)]/95 p-8 md:p-10 rounded-2xl border border-[var(--color-border)] shadow-2xl backdrop-blur-md overflow-hidden">
+              <div className="absolute -top-24 -right-16 w-56 h-56 rounded-full bg-[var(--color-accent)]/10 blur-3xl pointer-events-none" aria-hidden="true" />
+              <div className="hidden lg:block h-52 mb-6">
+                <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                  <div className="relative overflow-hidden rounded-2xl border border-[var(--color-accent)]/20 bg-gradient-to-br from-[var(--color-bg)]/70 to-[var(--color-bg-card)]/80 p-6">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-orange-500/10 pointer-events-none" />
+                    <p className="relative text-lg font-bold text-[var(--color-text)] mb-2">Open to internships, collaborations, and ambitious product ideas.</p>
+                    <p className="relative text-sm text-[var(--color-text-muted)] mb-4">If you&apos;re building something meaningful, let&apos;s ship it together.</p>
+                    <a href="mailto:thakardhruvh@gmail.com" className="relative theme-btn theme-btn-primary px-4 py-2.5 text-sm inline-flex">
+                      <Rocket className="h-4 w-4" />
+                      Start a conversation
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                  </div>
+                </motion.div>
+              </div>
+              <AnimatedForm
+                header="Send Me a Message"
+                subHeader="Share your idea, project details, or collaboration request."
+                fields={[
+                  { name: 'name', label: 'Your Name', required: true, type: 'text', placeholder: 'John Doe' },
+                  { name: 'email', label: 'Your Email', required: true, type: 'email', placeholder: 'john@example.com' },
+                  { name: 'message', label: 'Your Message', required: true, type: 'textarea', placeholder: 'Tell me about your project or idea...' },
+                ]}
+                submitButton="Send Message"
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+                isSuccess={isSuccess}
+                serverError={<ValidationError prefix="Form" field="FORM" errors={state.errors} className="text-sm font-medium text-rose-400" />}
+                successMessage="Thanks for reaching out! I will respond soon."
+              />
+              {isSuccess && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="mt-4 rounded-xl border border-emerald-400/30 bg-emerald-500/10 p-3 text-emerald-300 text-sm font-medium flex items-center gap-2"
                 >
-                  <span className="flex items-center justify-center gap-2">
-                    <i className="fas fa-paper-plane" />
-                    {isSubmitting ? 'Sending...' : isSuccess ? 'Message Sent' : 'Send Message'}
-                  </span>
-                </button>
-                <div className="min-h-[1.5rem]" aria-live="polite">
-                  {isSuccess ? (
-                    <p className="text-sm font-medium text-emerald-400">Thanks for reaching out! I will respond soon.</p>
-                  ) : (
-                    <ValidationError
-                      prefix="Form"
-                      field="FORM"
-                      errors={state.errors}
-                      className="text-sm font-medium text-rose-400"
-                    />
-                  )}
-                </div>
-              </form>
+                  <Send className="h-4 w-4" />
+                  Message sent successfully — I&apos;ll get back to you shortly.
+                </motion.div>
+              )}
               <div className="mt-6 pt-6 border-t border-[var(--color-border)]">
                 <div className="flex flex-wrap justify-center gap-4 text-xs text-[var(--color-text-muted)]">
                   <span className="flex items-center gap-1">
@@ -223,9 +192,9 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`px-6 py-3 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${link.hover}`}
+                className={`px-6 py-3 bg-[var(--color-bg-card)]/60 backdrop-blur-sm border border-[var(--color-border)] rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_24px_rgba(125,211,252,0.15)] flex items-center gap-2 ${link.hover}`}
               >
-                <i className={link.icon} />
+                <Sparkles className="h-4 w-4" />
                 {link.label}
               </a>
             ))}

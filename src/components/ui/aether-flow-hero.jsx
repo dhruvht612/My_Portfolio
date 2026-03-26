@@ -216,7 +216,7 @@ const AetherFlowHero = () => {
         <motion.div custom={3} variants={fadeUpVariants} initial="hidden" animate="visible">
           <Link
             to="/projects"
-            className="px-8 py-4 bg-[var(--color-orange)] text-white font-semibold rounded-lg shadow-lg hover:bg-[var(--color-orange-hover)] transition-colors duration-300 inline-flex items-center gap-2 mx-auto"
+            className="theme-btn theme-btn-primary px-8 py-4 mx-auto"
           >
             View My Projects
             <ArrowRight className="h-5 w-5" />

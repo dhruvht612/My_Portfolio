@@ -4,7 +4,7 @@ function ChatWidget({ chatOpen, toggleChat, chatMessages, chatInput, onChatInput
       <button
         type="button"
         onClick={toggleChat}
-        className="bg-[var(--color-orange)] text-white p-3 rounded-full shadow-lg text-xl focus:outline-none focus:ring-4 focus:ring-[var(--color-orange)]/50"
+        className="theme-btn theme-btn-primary p-3 rounded-full text-xl focus:outline-none focus:ring-4 focus:ring-[var(--color-orange)]/50"
         aria-expanded={chatOpen}
         aria-controls="chat-box"
       >
@@ -39,7 +39,7 @@ function ChatWidget({ chatOpen, toggleChat, chatMessages, chatInput, onChatInput
                 }
               }}
             />
-            <button type="button" onClick={onChatSend} className="bg-[var(--color-orange)] px-4 text-white">
+            <button type="button" onClick={onChatSend} className="theme-btn theme-btn-primary px-4 rounded-none">
               ➤
             </button>
           </div>
