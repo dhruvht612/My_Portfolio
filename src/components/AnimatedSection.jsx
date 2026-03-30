@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 
+const MotionDiv = motion.div
+
 const defaultVariants = {
   hidden: { opacity: 0, y: 24 },
   visible: (i = 0) => ({
@@ -22,7 +24,7 @@ export function AnimatedSection({
   ...props
 }) {
   return (
-    <motion.div
+    <MotionDiv
       className={className}
       initial="hidden"
       whileInView="visible"
@@ -32,24 +34,8 @@ export function AnimatedSection({
       {...props}
     >
       {children}
-    </motion.div>
+    </MotionDiv>
   )
-}
-
-/**
- * Container for staggered children. Use with AnimatedSection on each child for stagger.
- */
-export const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.05 },
-  },
-}
-
-export const staggerItem = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
 }
 
 export default AnimatedSection

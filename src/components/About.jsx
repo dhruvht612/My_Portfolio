@@ -7,6 +7,8 @@ import { MEDIA } from '../constants/media'
 import SpaceBackground from './SpaceBackground'
 import AnimatedSection from './AnimatedSection'
 
+const MotionDiv = motion.div
+
 function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
   const tabOptions = [
     { id: 'story', label: 'My Story' },
@@ -211,7 +213,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
             <div className="glass-strong rounded-xl p-6 border border-[var(--glass-border)] min-h-[360px]">
               <AnimatePresence mode="wait">
               {aboutTab === 'story' && (
-                <motion.div
+                <MotionDiv
                   key="story"
                   id="about-panel-story"
                   role="tabpanel"
@@ -229,10 +231,10 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                     <p><span className="text-[var(--color-text)] font-semibold">What I build:</span> Full-stack, AI-enhanced products that blend strong engineering with clean UX.</p>
                     <p><span className="text-[var(--color-text)] font-semibold">What I’m aiming for:</span> To lead teams shipping impactful software at the intersection of product, AI, and accessibility.</p>
                   </div>
-                </motion.div>
+                </MotionDiv>
               )}
               {aboutTab === 'interests' && (
-                <motion.div
+                <MotionDiv
                   key="interests"
                   id="about-panel-interests"
                   role="tabpanel"
@@ -243,7 +245,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                   exit={{ opacity: 0, y: -8 }}
                 >
                   {signatureInterests.map((interest) => (
-                    <motion.div key={interest.title} className="glass p-5 rounded-xl hover:border-[var(--color-accent)]/50 transition-all hover:scale-[1.02]" whileHover={{ y: -3 }}>
+                    <MotionDiv key={interest.title} className="glass p-5 rounded-xl hover:border-[var(--color-accent)]/50 transition-all hover:scale-[1.02]" whileHover={{ y: -3 }}>
                       <div className="flex items-start gap-3">
                         <interest.icon className="h-7 w-7 text-[var(--color-accent)] mt-0.5" />
                         <div>
@@ -251,12 +253,12 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                           <p className="text-sm text-[var(--color-text-muted)]">{interest.copy}</p>
                         </div>
                       </div>
-                    </motion.div>
+                    </MotionDiv>
                   ))}
-                </motion.div>
+                </MotionDiv>
               )}
               {aboutTab === 'facts' && (
-                <motion.div
+                <MotionDiv
                   key="facts"
                   id="about-panel-facts"
                   role="tabpanel"
@@ -275,7 +277,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                       </div>
                     </div>
                   ))}
-                </motion.div>
+                </MotionDiv>
               )}
               </AnimatePresence>
             </div>
