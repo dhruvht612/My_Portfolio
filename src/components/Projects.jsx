@@ -35,6 +35,13 @@ const TECH_ICONS = {
   'Huffman Coding': 'fas fa-compress-alt',
   'Data Structures': 'fas fa-sitemap',
   OOP: 'fas fa-cubes',
+  'Framer Motion': 'fas fa-film',
+  'TanStack Query': 'fas fa-circle-nodes',
+  Zustand: 'fas fa-cubes-stacked',
+  Clerk: 'fas fa-user-shield',
+  Sonner: 'fas fa-bell',
+  'Socket.io': 'fas fa-plug',
+  'Howler.js': 'fas fa-volume-high',
 }
 
 function getTechIcon(tech) {
