@@ -121,7 +121,13 @@ export const contactCards = [
 export const altContactLinks = [
   { label: 'GitHub Profile', href: 'https://github.com/dhruvht612', icon: 'fab fa-github', hover: 'hover:bg-theme-blue hover:border-theme-blue' },
   { label: 'LinkedIn', href: 'https://linkedin.com/in/dhruv-thakar', icon: 'fab fa-linkedin', hover: 'hover:bg-[#0077b5] hover:border-[#0077b5]' },
-  { label: 'Download Resume', href: 'https://drive.google.com/uc?export=download&id=1', icon: 'fas fa-download', hover: 'hover:bg-theme-blue hover:border-theme-blue' },
+  {
+    label: 'Download Resume',
+    href: '/DhruvThakar_2026.pdf',
+    download: 'DhruvThakar_2026.pdf',
+    icon: 'fas fa-download',
+    hover: 'hover:bg-theme-blue hover:border-theme-blue',
+  },
 ]
 
 export const footerBadges = [

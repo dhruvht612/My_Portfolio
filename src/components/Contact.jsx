@@ -190,8 +190,8 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
               <a
                 key={link.label}
                 href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                {...(link.download ? { download: link.download } : {})}
+                {...(link.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 className={`px-6 py-3 bg-[var(--color-bg-card)]/60 backdrop-blur-sm border border-[var(--color-border)] rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_24px_rgba(125,211,252,0.15)] flex items-center gap-2 ${link.hover}`}
               >
                 <Sparkles className="h-4 w-4" />

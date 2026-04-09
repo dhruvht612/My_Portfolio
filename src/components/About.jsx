@@ -160,9 +160,8 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
             <div className="w-full h-px bg-gradient-to-r from-transparent via-[var(--color-border)] to-transparent mb-6" />
             <div className="w-full space-y-3">
               <a
-                href="https://drive.google.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/DhruvThakar_2026.pdf"
+                download="DhruvThakar_2026.pdf"
                 className="theme-btn theme-btn-primary block w-full py-3 px-6 text-center focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)]"
               >
                 <Download className="h-4 w-4" aria-hidden="true" />
