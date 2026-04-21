@@ -38,7 +38,8 @@ export default function ProjectsPage() {
   }
 
   return (
-    <Projects
+    <main className="relative z-10 min-h-screen bg-transparent">
+      <Projects
       projectStats={projectStats}
       filters={PROJECT_FILTERS}
       projectFilter={projectFilter}
@@ -48,6 +49,8 @@ export default function ProjectsPage() {
       onResetFilters={resetFilters}
       projects={filteredProjects}
       totalProjects={projects.length}
-    />
+      />
+    </main>
   )
 }
+

@@ -3,5 +3,11 @@ import CertificationsSection from '../components/Certifications'
 
 export default function CertificationsPage() {
   const { certifications } = usePortfolio()
-  return <CertificationsSection certifications={certifications} />
+  return (
+    <main className="relative z-10 min-h-screen bg-transparent">
+      <CertificationsSection certifications={certifications} />
+    </main>
+  )
 }
+
+

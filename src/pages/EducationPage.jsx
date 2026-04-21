@@ -3,5 +3,11 @@ import Education from '../components/Education'
 
 export default function EducationPage() {
   const { focusAreas, educationHighlights } = usePortfolio()
-  return <Education focusAreas={focusAreas} highlightCards={educationHighlights} />
+  return (
+    <main className="relative z-10 min-h-screen bg-transparent">
+      <Education focusAreas={focusAreas} highlightCards={educationHighlights} />
+    </main>
+  )
 }
+
+

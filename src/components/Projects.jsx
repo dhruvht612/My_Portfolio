@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Tilt from 'react-parallax-tilt'
 import { Code2, ExternalLink, Search, Sparkles, Star, X } from 'lucide-react'
-import SpaceBackground from './SpaceBackground'
 import AnimatedSection from './AnimatedSection'
 import HolographicCard from './ui/holographic-card'
 
@@ -101,15 +100,7 @@ function Projects({
   }
 
   return (
-    <section id="projects" className="py-24 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="projects-heading">
-      <SpaceBackground />
-      <div className="beyond-grid-bg pointer-events-none absolute inset-0 opacity-[0.22]" aria-hidden="true" />
-      <div className="beyond-noise pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
-      <div className="absolute -top-16 -left-16 w-80 h-80 rounded-full bg-blue-500/20 blur-[110px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-fuchsia-500/15 blur-[130px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-0 left-1/3 w-72 h-72 rounded-full bg-orange-500/15 blur-[110px] pointer-events-none" aria-hidden="true" />
+    <section id="projects" className="section-fade-in relative z-10 min-h-screen overflow-hidden px-6 py-24" aria-labelledby="projects-heading">
       <div className="max-w-7xl mx-auto relative z-10">
         <AnimatedSection className="text-center mb-12" delayOrder={0}>
           <div className="inline-flex items-center gap-3 mb-4">
@@ -128,7 +119,7 @@ function Projects({
           {projectStats.map((stat) => (
             <div
               key={stat.label}
-              className={`bg-gradient-to-br ${stat.gradient} backdrop-blur-sm p-4 rounded-xl border border-white/10 text-center hover:scale-105 transition-transform duration-300`}
+              className={`glass-card p-4 text-center hover:scale-105 transition-transform duration-300`}
             >
               <div className={`text-3xl font-bold mb-1 ${stat.accent}`}>{stat.value}</div>
               <div className="text-xs text-[var(--color-text-muted)] uppercase tracking-wide">{stat.label}</div>

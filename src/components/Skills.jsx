@@ -13,7 +13,6 @@ import {
   Wrench,
   X,
 } from 'lucide-react'
-import SpaceBackground from './SpaceBackground'
 
 const GROUP_IDS = ['all', 'programming', 'data', 'web', 'tools']
 const GROUP_LABELS = {
@@ -120,17 +119,7 @@ function Skills({ skillGroups, projects = [] }) {
   const closeModal = useCallback(() => setSelectedSkill(null), [])
 
   return (
-    <section id="skills" className="relative overflow-hidden bg-[var(--color-bg)] py-24 md:py-28" aria-labelledby="skills-heading">
-      <SpaceBackground />
-      <div className="beyond-grid-bg pointer-events-none absolute inset-0 opacity-[0.22]" aria-hidden />
-      <div className="beyond-noise pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden />
-      <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <div className="absolute left-[-12%] top-[10%] h-[28rem] w-[28rem] rounded-full bg-blue-500/18 blur-[120px]" />
-        <div className="absolute right-[-8%] top-[32%] h-[24rem] w-[24rem] rounded-full bg-fuchsia-500/16 blur-[110px]" />
-        <div className="absolute left-[30%] bottom-[-8%] h-[20rem] w-[20rem] rounded-full bg-purple-500/14 blur-[95px]" />
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-bg)] via-transparent to-[var(--color-bg)] pointer-events-none" aria-hidden />
-
+    <section id="skills" className="section-fade-in relative z-10 min-h-screen overflow-hidden py-24 md:py-28" aria-labelledby="skills-heading">
       <motion.div
         initial="hidden"
         whileInView="visible"

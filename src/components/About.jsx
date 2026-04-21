@@ -4,7 +4,6 @@ import Tilt from 'react-parallax-tilt'
 import { Link } from 'react-router-dom'
 import { BrainCircuit, Code2, Compass, Download, Mail, MapPin, Rocket, Sparkles, UserRound } from 'lucide-react'
 import { MEDIA } from '../constants/media'
-import SpaceBackground from './SpaceBackground'
 import AnimatedSection from './AnimatedSection'
 
 const MotionDiv = motion.div
@@ -83,14 +82,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
   ]
 
   return (
-    <section id="about" className="py-24 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden" aria-labelledby="about-heading">
-      <SpaceBackground />
-      <div className="beyond-grid-bg pointer-events-none absolute inset-0 opacity-[0.2]" aria-hidden="true" />
-      <div className="beyond-noise pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden="true" />
-      <div className="absolute -left-20 top-20 h-80 w-80 rounded-full bg-blue-500/20 blur-[120px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute right-[-8%] top-1/3 h-96 w-96 rounded-full bg-purple-500/16 blur-[130px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
+    <section id="about" className="section-fade-in relative z-10 min-h-screen overflow-hidden px-6 py-24 text-[var(--color-text)]" aria-labelledby="about-heading">
       <div className="max-w-6xl mx-auto relative z-10">
         <AnimatedSection className="text-center mb-12" delayOrder={0}>
           <div className="inline-flex items-center gap-3 mb-4">

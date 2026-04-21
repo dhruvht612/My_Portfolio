@@ -12,7 +12,6 @@ import {
   TrendingUp,
   Users,
 } from 'lucide-react'
-import SpaceBackground from './SpaceBackground'
 const QUICK_HIGHLIGHTS = [
   { label: 'Leadership Roles', value: '3+', icon: BriefcaseBusiness },
   { label: 'Events Organized', value: '10+', icon: CalendarDays },
@@ -90,11 +89,9 @@ function Experience({ experienceByOrg = [] }) {
     return (
       <section
         id="experience"
-        className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden"
+        className="section-fade-in relative z-10 min-h-screen overflow-hidden px-6 py-20 text-[var(--color-text)]"
         aria-labelledby="experience-heading"
       >
-        <SpaceBackground />
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
         <div className="max-w-5xl mx-auto relative z-10 text-center py-16">
           <h2 id="experience-heading" className="text-5xl md:text-6xl font-extrabold mb-4">Leadership &amp; Impact</h2>
           <p className="text-[var(--color-text-muted)]">No experience entries to show yet.</p>
@@ -106,16 +103,9 @@ function Experience({ experienceByOrg = [] }) {
   return (
     <section
       id="experience"
-      className="py-24 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden"
+      className="section-fade-in relative z-10 min-h-screen overflow-hidden px-6 py-24 text-[var(--color-text)]"
       aria-labelledby="experience-heading"
     >
-      <SpaceBackground />
-      <div className="beyond-grid-bg pointer-events-none absolute inset-0 opacity-[0.2]" aria-hidden="true" />
-      <div className="beyond-noise pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden="true" />
-      <div className="absolute -left-20 top-20 w-80 h-80 rounded-full bg-blue-500/20 blur-[120px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute right-[-8%] top-1/3 w-96 h-96 rounded-full bg-purple-500/16 blur-[130px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <motion.div
         className="max-w-6xl mx-auto relative z-10"
         initial="hidden"

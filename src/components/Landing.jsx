@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import SpaceBackground from './SpaceBackground'
 
 function Landing() {
   const navigate = useNavigate()
@@ -21,22 +20,12 @@ function Landing() {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '2rem 1.5rem',
-        backgroundColor: '#0a0e17',
+        background: 'transparent',
         color: '#f1f5f9',
         textAlign: 'center',
       }}
     >
-      <SpaceBackground />
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(180deg, rgba(10,14,23,0.75) 0%, rgba(10,14,23,0.2) 40%, rgba(10,14,23,0.2) 60%, rgba(10,14,23,0.7) 100%)',
-          pointerEvents: 'none',
-        }}
-        aria-hidden="true"
-      />
-      <div style={{ position: 'relative', zIndex: 10, maxWidth: '40rem', margin: '0 auto' }}>
+      <div style={{ position: 'relative', zIndex: 10, maxWidth: '40rem', margin: '0 auto', padding: '2rem 1.5rem' }}>
         {/* Decorative header */}
         <div
           className="animate-fade-in-up"

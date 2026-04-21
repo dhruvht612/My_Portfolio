@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react'
 import { useForm, ValidationError } from '@formspree/react'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, Copy, Globe, Mail, MapPin, Rocket, Send, Sparkles, Users } from 'lucide-react'
-import SpaceBackground from './SpaceBackground'
 import AnimatedSection from './AnimatedSection'
 import Toast from './Toast'
 import AnimatedForm, { ContactTechOrbit } from './ui/modern-animated-sign-in'
@@ -33,14 +32,7 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
   }, [contactCards])
 
   return (
-    <section id="contact" className="py-24 px-6 bg-[var(--color-bg)] relative overflow-hidden" aria-labelledby="contact-heading">
-      <SpaceBackground />
-      <div className="beyond-grid-bg pointer-events-none absolute inset-0 opacity-[0.2]" aria-hidden="true" />
-      <div className="beyond-noise pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-[-12rem] left-1/2 -translate-x-1/2 w-[42rem] h-[42rem] rounded-full bg-[var(--color-blue)]/10 blur-[120px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute right-[-10%] top-[35%] w-[34rem] h-[34rem] rounded-full bg-purple-500/12 blur-[130px] pointer-events-none" aria-hidden="true" />
+    <section id="contact" className="section-fade-in relative z-10 min-h-screen overflow-hidden px-6 py-24" aria-labelledby="contact-heading">
       <div className="max-w-6xl mx-auto relative z-10">
         <AnimatedSection className="text-center mb-12" delayOrder={0}>
           <h2 id="contact-heading" className="text-5xl md:text-6xl font-extrabold mb-4 animate-gradient">
@@ -63,7 +55,7 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
                       onClick={isEmail ? copyEmail : undefined}
                       onKeyDown={isEmail ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyEmail() } } : undefined}
                       whileHover={{ y: -3 }}
-                      className={`group bg-gradient-to-br from-[var(--color-bg-card)]/90 to-[var(--color-bg)]/90 backdrop-blur-md p-6 rounded-2xl border border-[var(--color-accent)]/20 hover:border-[var(--color-accent)]/50 hover:shadow-[0_0_30px_rgba(125,211,252,0.2)] transition-all duration-300 hover:scale-[1.02] ${isEmail ? 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]' : ''}`}
+                      className={`glass-card group p-6 rounded-2xl hover:border-[var(--color-accent)]/50 hover:shadow-[0_0_30px_rgba(125,211,252,0.2)] transition-all duration-300 hover:scale-[1.02] ${isEmail ? 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]' : ''}`}
                     >
                       <div className="flex items-center gap-4">
                         <motion.div whileHover={{ rotate: [0, -6, 6, 0] }} transition={{ duration: 0.45 }} className={`w-14 h-14 bg-gradient-to-br ${card.accent} rounded-xl flex items-center justify-center border border-[var(--color-border)] group-hover:scale-110 transition-transform duration-300`}>
@@ -90,7 +82,7 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
                 )
               })}
             </div>
-            <div className="bg-gradient-to-br from-[var(--color-bg-card)]/90 to-[var(--color-bg)]/90 backdrop-blur-md p-8 rounded-2xl border border-[var(--color-border)]/80">
+            <div className="glass-card p-8 rounded-2xl">
               <h3 className="text-xl font-bold text-[var(--color-text)] mb-6 flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-[var(--color-accent)]" />
                 Connect on Social Media
@@ -114,7 +106,7 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
                 ))}
               </div>
             </div>
-            <div className="bg-gradient-to-r from-[var(--color-accent)]/10 to-[var(--color-blue)]/10 backdrop-blur-sm p-6 rounded-2xl border border-[var(--color-accent)]/30 shadow-[0_0_30px_rgba(65,105,225,0.12)]">
+            <div className="glass-card-strong p-6 rounded-2xl shadow-[0_0_30px_rgba(65,105,225,0.12)]">
               <p className="text-[var(--color-text)] text-center italic">
                 <i className="fas fa-quote-left text-[var(--color-accent)] mr-2" />
                 I typically respond within 24-48 hours

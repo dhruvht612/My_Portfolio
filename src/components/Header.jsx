@@ -37,6 +37,12 @@ function Header({
       {/* Pill glass nav container – blends with hero when at top */}
       <nav
         className={`global-nav max-w-6xl mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3 ${isHeaderScrolled ? 'is-scrolled' : ''} ${isOnHome && !isHeaderScrolled ? 'global-nav-in-hero' : ''}`}
+        style={{
+          backgroundColor: 'rgba(10, 15, 30, 0.55)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderBottom: '1px solid rgba(100, 200, 255, 0.08)',
+        }}
         role="navigation"
         aria-label="Main navigation"
       >
@@ -85,7 +91,15 @@ function Header({
                     const active = isActive || isSectionActive
                     return (
                       <>
-                        {link.label}
+                        <span
+                          style={
+                            active
+                              ? { color: '#38bdf8', textShadow: '0 0 10px rgba(56, 189, 248, 0.35)' }
+                              : undefined
+                          }
+                        >
+                          {link.label}
+                        </span>
                         <span className={`active-underline absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300 ${active ? 'w-6' : 'w-0'}`} />
                       </>
                     )

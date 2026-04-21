@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import Tilt from 'react-parallax-tilt'
 import { Briefcase, Building2, CheckCircle2, Compass, GraduationCap, MapPin, Sparkles } from 'lucide-react'
 import { MEDIA } from '../constants/media'
-import SpaceBackground from './SpaceBackground'
 
 const PROGRESS = 50
 const MILESTONES = ['Year 1', 'Year 2', 'Year 3', 'Year 4']
@@ -12,15 +11,7 @@ function Education({ focusAreas, highlightCards }) {
   const [activeFocus, setActiveFocus] = useState(null)
 
   return (
-    <section id="education" className="py-24 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden" aria-labelledby="education-heading">
-      <SpaceBackground />
-      <div className="beyond-grid-bg pointer-events-none absolute inset-0 opacity-[0.2]" aria-hidden="true" />
-      <div className="beyond-noise pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden="true" />
-      <div className="absolute -left-20 top-16 w-80 h-80 rounded-full bg-blue-500/20 blur-[120px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute -right-20 top-1/3 w-96 h-96 rounded-full bg-purple-500/16 blur-[130px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute left-1/3 bottom-0 w-72 h-72 rounded-full bg-teal-500/14 blur-[115px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
+    <section id="education" className="section-fade-in relative z-10 min-h-screen overflow-hidden px-6 py-24 text-[var(--color-text)]" aria-labelledby="education-heading">
       <motion.div
         className="max-w-6xl mx-auto relative z-10"
         initial="hidden"
@@ -42,7 +33,7 @@ function Education({ focusAreas, highlightCards }) {
 
         <motion.div variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }} className="mb-12">
           <Tilt tiltMaxAngleX={6} tiltMaxAngleY={6} perspective={900} scale={1.01} transitionSpeed={350}>
-            <article className="group relative bg-gradient-to-br from-[var(--color-bg-card)]/70 to-[var(--color-bg)]/70 p-8 md:p-12 rounded-2xl shadow-2xl border border-[var(--color-accent)]/20 hover:border-[var(--color-accent)]/45 hover:shadow-[0_0_45px_rgba(125,211,252,0.22)] transition-all duration-500">
+            <article className="glass-card group relative p-8 md:p-12 rounded-2xl shadow-2xl hover:border-[var(--color-accent)]/45 hover:shadow-[0_0_45px_rgba(125,211,252,0.22)] transition-all duration-500">
               <div className="absolute -top-4 left-8">
                 <span className="bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-blue)] text-[var(--color-bg)] px-5 py-2 rounded-full text-sm font-bold shadow-lg flex items-center gap-2 border border-white/30">
                   <span className="relative flex h-2.5 w-2.5">

@@ -11,7 +11,6 @@ import {
   Telescope,
   UsersRound,
 } from 'lucide-react'
-import SpaceBackground from './SpaceBackground'
 
 const STAT_ICONS = {
   Crown,
@@ -215,13 +214,9 @@ function Beyond({ beyondStats, goals }) {
     <section
       ref={sectionRef}
       id="beyond"
-      className="relative overflow-hidden bg-[var(--color-bg)] py-24 text-[var(--color-text)] md:py-28"
+      className="section-fade-in relative z-10 min-h-screen overflow-hidden py-24 text-[var(--color-text)] md:py-28"
       aria-labelledby="beyond-heading"
     >
-      <SpaceBackground />
-      <div className="beyond-grid-bg pointer-events-none absolute inset-0 opacity-[0.35]" aria-hidden />
-      <div className="beyond-noise pointer-events-none absolute inset-0 opacity-[0.04]" aria-hidden />
-
       <motion.div style={{ y: blobY }} className="pointer-events-none absolute inset-0" aria-hidden>
         <div className="absolute -left-20 top-1/4 h-[min(28rem,70vw)] w-[min(28rem,70vw)] rounded-full bg-[#4169e1]/25 blur-[100px]" />
         <div className="absolute right-[-10%] top-[15%] h-[min(22rem,55vw)] w-[min(22rem,55vw)] rounded-full bg-fuchsia-500/20 blur-[90px]" />
@@ -237,8 +232,6 @@ function Beyond({ beyondStats, goals }) {
           transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
         />
       </motion.div>
-
-      <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-bg)] via-transparent to-[var(--color-bg)] pointer-events-none" aria-hidden />
 
       <motion.div
         className="relative z-10 mx-auto max-w-6xl px-5 md:px-6"

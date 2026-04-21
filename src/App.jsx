@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom'
 import { PortfolioProvider } from './context/PortfolioContext'
+import ParticlesBackground from './components/ui/particles-bg'
 import SkipLink from './components/SkipLink'
 import Landing from './components/Landing'
 import Layout from './components/Layout'
@@ -16,7 +17,7 @@ import './index.css'
 
 function LandingRoute() {
   return (
-    <div className="theme-dark-blue-page min-h-screen text-[var(--color-text)]">
+    <div className="min-h-screen text-[var(--color-text)] relative z-10" style={{ background: 'transparent' }}>
       <SkipLink />
       <Landing />
     </div>
@@ -39,25 +40,30 @@ function NotFoundPage() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <PortfolioProvider>
-        <Routes>
-          <Route path="/" element={<LandingRoute />} />
-          <Route element={<Layout />}>
-            <Route path="home" element={<HomePage />} />
-            <Route path="about" element={<AboutPage />} />
-            <Route path="projects" element={<ProjectsPage />} />
-            <Route path="beyond" element={<BeyondPage />} />
-            <Route path="experience" element={<ExperiencePage />} />
-            <Route path="education" element={<EducationPage />} />
-            <Route path="certifications" element={<CertificationsPage />} />
-            <Route path="skills" element={<SkillsPage />} />
-            <Route path="contact" element={<ContactPage />} />
-          </Route>
-          <Route path="404" element={<NotFoundPage />} />
-          <Route path="*" element={<Navigate to="/404" replace />} />
-        </Routes>
-      </PortfolioProvider>
-    </BrowserRouter>
+    <div className="min-h-screen text-[var(--color-text)]" style={{ position: 'relative', background: 'transparent' }}>
+      <ParticlesBackground />
+      <div style={{ position: 'relative', zIndex: 1, background: 'transparent' }}>
+        <BrowserRouter>
+          <PortfolioProvider>
+            <Routes>
+              <Route path="/" element={<LandingRoute />} />
+              <Route element={<Layout />}>
+                <Route path="home" element={<HomePage />} />
+                <Route path="about" element={<AboutPage />} />
+                <Route path="projects" element={<ProjectsPage />} />
+                <Route path="beyond" element={<BeyondPage />} />
+                <Route path="experience" element={<ExperiencePage />} />
+                <Route path="education" element={<EducationPage />} />
+                <Route path="certifications" element={<CertificationsPage />} />
+                <Route path="skills" element={<SkillsPage />} />
+                <Route path="contact" element={<ContactPage />} />
+              </Route>
+              <Route path="404" element={<NotFoundPage />} />
+              <Route path="*" element={<Navigate to="/404" replace />} />
+            </Routes>
+          </PortfolioProvider>
+        </BrowserRouter>
+      </div>
+    </div>
   )
 }

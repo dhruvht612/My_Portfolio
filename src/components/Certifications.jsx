@@ -11,7 +11,6 @@ import {
   Sparkles,
   Workflow,
 } from 'lucide-react'
-import SpaceBackground from './SpaceBackground'
 
 function Certifications({ certifications }) {
   const [expandedId, setExpandedId] = useState(null)
@@ -46,16 +45,9 @@ function Certifications({ certifications }) {
   return (
     <section
       id="certifications"
-      className="py-20 px-6 bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden"
+      className="section-fade-in relative z-10 min-h-screen overflow-hidden px-6 py-20 text-[var(--color-text)]"
       aria-labelledby="certifications-heading"
     >
-      <SpaceBackground />
-      <div className="beyond-grid-bg pointer-events-none absolute inset-0 opacity-[0.2]" aria-hidden="true" />
-      <div className="beyond-noise pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden="true" />
-      <div className="absolute -left-24 top-16 h-80 w-80 rounded-full bg-blue-500/20 blur-[120px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute -right-20 top-1/3 h-96 w-96 rounded-full bg-purple-500/16 blur-[130px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-bg-elevated)]/50 to-[var(--color-bg-elevated)] pointer-events-none" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent pointer-events-none" aria-hidden="true" />
       <motion.div
         className="max-w-6xl mx-auto relative z-10"
         initial="hidden"

@@ -5,5 +5,10 @@ import About from '../components/About'
 export default function AboutPage() {
   const { aboutTabs, aboutCounters } = usePortfolio()
   const [aboutTab, setAboutTab] = useState('story')
-  return <About aboutTab={aboutTab} setAboutTab={setAboutTab} aboutTabs={aboutTabs} aboutCounters={aboutCounters} />
+  return (
+    <main className="relative z-10 min-h-screen bg-transparent">
+      <About aboutTab={aboutTab} setAboutTab={setAboutTab} aboutTabs={aboutTabs} aboutCounters={aboutCounters} />
+    </main>
+  )
 }
+

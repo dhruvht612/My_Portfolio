@@ -75,31 +75,33 @@ export default function Layout() {
   }, [chatMessages])
 
   return (
-    <div className="theme-dark-blue-page min-h-screen text-[var(--color-text)]">
-      <SkipLink />
-      <Header
-        navLinks={portfolio.navLinks}
-        activeSection={activeSection}
-        isHeaderScrolled={isHeaderScrolled}
-        isMenuOpen={isMenuOpen}
-        onToggleMenu={toggleMenu}
-        onCloseMenu={closeMenu}
-        scrollProgressRef={scrollProgressRef}
-        fixed={true}
-      />
-      <main id="main-content" className="pt-[72px]">
-        <Outlet />
-      </main>
-      <Footer navLinks={portfolio.navLinks} heroSocials={portfolio.heroSocials} footerBadges={portfolio.footerBadges} />
-      <ChatWidget
-        chatOpen={chatOpen}
-        toggleChat={toggleChatWidget}
-        chatMessages={chatMessages}
-        chatInput={chatInput}
-        onChatInputChange={handleChatInputChange}
-        onChatSend={handleChatSend}
-        chatMessagesRef={chatMessagesRef}
-      />
+    <div className="min-h-screen text-[var(--color-text)]" style={{ position: 'relative', background: 'transparent' }}>
+      <div style={{ position: 'relative', zIndex: 1, background: 'transparent' }}>
+        <SkipLink />
+        <Header
+          navLinks={portfolio.navLinks}
+          activeSection={activeSection}
+          isHeaderScrolled={isHeaderScrolled}
+          isMenuOpen={isMenuOpen}
+          onToggleMenu={toggleMenu}
+          onCloseMenu={closeMenu}
+          scrollProgressRef={scrollProgressRef}
+          fixed={true}
+        />
+        <main id="main-content" className="pt-[72px] relative z-10 min-h-screen">
+          <Outlet />
+        </main>
+        <Footer navLinks={portfolio.navLinks} heroSocials={portfolio.heroSocials} footerBadges={portfolio.footerBadges} />
+        <ChatWidget
+          chatOpen={chatOpen}
+          toggleChat={toggleChatWidget}
+          chatMessages={chatMessages}
+          chatInput={chatInput}
+          onChatInputChange={handleChatInputChange}
+          onChatSend={handleChatSend}
+          chatMessagesRef={chatMessagesRef}
+        />
+      </div>
     </div>
   )
 }

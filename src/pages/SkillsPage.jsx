@@ -3,5 +3,11 @@ import Skills from '../components/Skills'
 
 export default function SkillsPage() {
   const { skillGroups, projects } = usePortfolio()
-  return <Skills skillGroups={skillGroups} projects={projects} />
+  return (
+    <main className="relative z-10 min-h-screen bg-transparent">
+      <Skills skillGroups={skillGroups} projects={projects} />
+    </main>
+  )
 }
+
+

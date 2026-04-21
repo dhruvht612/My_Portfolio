@@ -61,6 +61,8 @@
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+  background: #0a0f1e !important;
+  overflow-x: hidden;
 }
 
 /* Reusable glass panels */
@@ -78,6 +80,26 @@ html {
   -webkit-backdrop-filter: var(--glass-blur-strong);
   border: 1px solid var(--glass-border-strong);
   box-shadow: var(--glass-shadow);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(100, 200, 255, 0.1);
+  border-radius: 12px;
+}
+
+.glass-card-strong {
+  background: rgba(10, 15, 30, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(100, 200, 255, 0.14);
+  border-radius: 12px;
+}
+
+.section-fade-in {
+  background: transparent;
 }
 
 :root {
@@ -116,15 +138,17 @@ html {
 
 html {
   scroll-behavior: smooth;
+  background: #0a0f1e !important;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-bg);
+  background: #0a0f1e !important;
   color: var(--color-text);
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 #root {
@@ -135,6 +159,14 @@ body {
 #main-content {
   display: block;
   min-height: 100vh;
+}
+
+#particles-js canvas {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  display: block;
 }
 
 a {
@@ -399,6 +431,16 @@ select {
 .landing-cta:focus-visible {
   outline: 2px solid #7dd3fc;
   outline-offset: 3px;
+}
+
+.hero-hover-panel {
+  border-radius: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-hover-panel:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(10, 15, 30, 0.42), 0 0 24px rgba(56, 189, 248, 0.16);
 }
 
 /* Skills: animated progress bars */
