@@ -152,12 +152,28 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
             <div className="w-full h-px bg-gradient-to-r from-transparent via-[var(--color-border)] to-transparent mb-6" />
             <div className="w-full space-y-3">
               <a
-                href="/DhruvThakar_2026.pdf"
-                download="DhruvThakar_2026.pdf"
+                href="/Dhruv_Thakar_Software_Developer_Resume.pdf"
+                download="Dhruv_Thakar_Software_Developer_Resume.pdf"
                 className="theme-btn theme-btn-primary block w-full py-3 px-6 text-center focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)]"
               >
                 <Download className="h-4 w-4" aria-hidden="true" />
-                Download Resume
+                Resume · Software Developer
+              </a>
+              <a
+                href="/Dhruv_Thakar_Data_Analyst_Resume.pdf"
+                download="Dhruv_Thakar_Data_Analyst_Resume.pdf"
+                className="theme-btn theme-btn-secondary block w-full py-3 px-6 text-center focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+              >
+                <Download className="h-4 w-4" aria-hidden="true" />
+                Resume · Data Analyst
+              </a>
+              <a
+                href="/Dhruv_Thakar_Systems_Analyst_Resume.pdf"
+                download="Dhruv_Thakar_Systems_Analyst_Resume.pdf"
+                className="theme-btn theme-btn-secondary block w-full py-3 px-6 text-center focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+              >
+                <Download className="h-4 w-4" aria-hidden="true" />
+                Resume · Systems Analyst
               </a>
               <Link
                 to="/contact"
