@@ -20,7 +20,7 @@ function getParticlesConfig() {
         enable: true,
         distance: 185,
         color: '#22d3ee',
-        opacity: 0.55,
+        opacity: 0.35,
         width: 1.2,
       },
       move: {
@@ -34,14 +34,15 @@ function getParticlesConfig() {
       },
     },
     interactivity: {
-      detect_on: 'canvas',
+      detect_on: 'window',
       events: {
         onhover: { enable: true, mode: 'grab' },
         onclick: { enable: true, mode: 'push' },
         resize: true,
       },
       modes: {
-        grab: { distance: 170, line_linked: { opacity: 0.95 } },
+        grab: { distance: 150, line_linked: { opacity: 0.9 } },
+        repulse: { distance: 85, duration: 0.35 },
         push: { particles_nb: 4 },
       },
     },
