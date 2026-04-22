@@ -30,15 +30,18 @@ const AetherFlowHero = () => {
           <span className="text-sm font-medium text-[var(--color-text)]">Computer Science Student · Full-Stack Developer</span>
         </motion.div>
 
-        <motion.h1
-          custom={1}
-          variants={fadeUpVariants}
-          initial="hidden"
-          animate="visible"
-          className="text-5xl md:text-8xl font-bold tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-b from-[var(--color-text)] to-[var(--color-text-muted)]"
-        >
-          Dhruv Thakar
-        </motion.h1>
+        <div className="relative mb-6 flex justify-center">
+          <div className="hero-glow top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <motion.h1
+            custom={1}
+            variants={fadeUpVariants}
+            initial="hidden"
+            animate="visible"
+            className="relative z-10 text-5xl md:text-8xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-[var(--color-text)] to-[var(--color-text-muted)]"
+          >
+            Dhruv Thakar
+          </motion.h1>
+        </div>
 
         <motion.p
           custom={2}
