@@ -42,6 +42,7 @@ export default function App() {
   return (
     <div className="min-h-screen text-[var(--color-text)]" style={{ position: 'relative', background: 'transparent' }}>
       <ParticlesBackground />
+      <div className="liquid-glass-overlay" aria-hidden="true" />
       <div style={{ position: 'relative', zIndex: 1, background: 'transparent' }}>
         <BrowserRouter>
           <PortfolioProvider>

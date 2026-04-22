@@ -160,7 +160,7 @@ function HoverFooter({ navLinks, heroSocials }) {
   }))
 
   return (
-    <footer className="relative h-fit overflow-hidden border-t border-[var(--color-border)]/50 bg-[var(--color-bg)]/70 backdrop-blur-sm">
+    <footer className="relative h-fit overflow-hidden border-t border-[var(--color-border)]/50 bg-[var(--color-bg)]/70 backdrop-blur-sm liquid-glass-footer">
       <div className="max-w-7xl mx-auto p-10 md:p-14 z-40 relative">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 lg:gap-16 pb-12">
           <div className="flex flex-col space-y-4">

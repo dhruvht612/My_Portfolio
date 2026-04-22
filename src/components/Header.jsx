@@ -36,13 +36,7 @@ function Header({
 
       {/* Pill glass nav container – blends with hero when at top */}
       <nav
-        className={`global-nav max-w-6xl mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3 ${isHeaderScrolled ? 'is-scrolled' : ''} ${isOnHome && !isHeaderScrolled ? 'global-nav-in-hero' : ''}`}
-        style={{
-          backgroundColor: 'rgba(10, 15, 30, 0.55)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          borderBottom: '1px solid rgba(100, 200, 255, 0.08)',
-        }}
+        className={`global-nav navbar mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3 ${isHeaderScrolled ? 'is-scrolled scrolled' : ''} ${isOnHome && !isHeaderScrolled ? 'global-nav-in-hero' : ''}`}
         role="navigation"
         aria-label="Main navigation"
       >
@@ -58,10 +52,7 @@ function Header({
             className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-[var(--nav-accent)]/50 object-cover shrink-0"
             loading="eager"
           />
-          <span className="text-lg sm:text-xl font-bold tracking-tight">
-            <span className="text-[var(--color-text)]">Dhruv</span>
-            <span className="global-nav-logo-accent"> Thakar</span>
-          </span>
+          <span className="text-lg sm:text-xl font-bold tracking-tight logo">Dhruv Thakar</span>
         </NavLink>
 
         {/* Desktop nav links with underline effect */}
@@ -82,7 +73,7 @@ function Header({
                     const isSectionActive = activeSection === link.id
                     const active = isActive || isSectionActive
                     return `nav-link inline-block relative px-4 py-2.5 rounded-[var(--radius)] text-sm font-semibold transition-all duration-300 ${
-                      active ? 'active-link' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
+                      active ? 'active-link active' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
                     }`
                   }}
                 >
@@ -114,7 +105,7 @@ function Header({
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <NavLink
             to="/contact"
-            className="global-nav-cta hidden sm:inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 font-bold text-sm rounded-[var(--nav-pill-radius)] hover:opacity-90 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]"
+            className="global-nav-cta contact-btn hidden sm:inline-flex items-center gap-2 font-bold focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]"
             role="menuitem"
           >
             <i className="fas fa-arrow-right text-xs" aria-hidden="true" />
@@ -167,7 +158,7 @@ function Header({
           <li className="pt-2">
             <NavLink
               to="/contact"
-              className="global-nav-cta flex items-center justify-center gap-2 px-4 py-3 rounded-[var(--nav-pill-radius)] font-bold text-sm"
+              className="global-nav-cta contact-btn flex items-center justify-center gap-2 font-bold"
               onClick={onCloseMenu}
             >
               <i className="fas fa-arrow-right text-xs" aria-hidden="true" />
