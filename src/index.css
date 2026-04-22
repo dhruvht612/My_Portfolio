@@ -25,9 +25,9 @@
   --color-accent: #7dd3fc;
   --color-accent-hover: #38bdf8;
 
-  /* === Orange (CTAs, focus) === */
-  --color-orange: #f97316;
-  --color-orange-hover: #fb923c;
+  /* === CTA (blue-cyan gradient, particle-aligned) === */
+  --color-orange: #3b82f6;
+  --color-orange-hover: #06b6d4;
 
   /* === Text === */
   --color-text: #f1f5f9;
@@ -325,14 +325,29 @@ button {
 }
 
 .theme-btn-primary {
-  background: linear-gradient(135deg, var(--color-orange), var(--color-orange-hover));
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
   color: #fff;
-  box-shadow: 0 10px 30px rgba(249, 115, 22, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.theme-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  filter: blur(12px);
+  opacity: 0.6;
+  z-index: -1;
 }
 
 .theme-btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 24px rgba(249, 115, 22, 0.32);
+  background: linear-gradient(135deg, #2563eb, #0891b2);
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.5);
+  transform: translateY(-2px);
 }
 
 .theme-btn-secondary {
