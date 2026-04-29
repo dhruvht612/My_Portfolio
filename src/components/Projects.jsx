@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Tilt from 'react-parallax-tilt'
 import { Code2, ExternalLink, Search, Sparkles, Star, X } from 'lucide-react'
@@ -93,6 +93,16 @@ function Projects({
     () => [featuredProject?.iconClass, 'fas fa-layer-group', 'fas fa-lightbulb'].filter(Boolean),
     [featuredProject]
   )
+
+  // Close modal on Escape key
+  useEffect(() => {
+    if (!selectedProject) return
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setSelectedProject(null)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [selectedProject])
 
   const openProjectModal = (project) => {
     setSelectedProject(project)

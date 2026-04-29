@@ -217,9 +217,17 @@ function HoverFooter({ navLinks, heroSocials }) {
               </a>
             ))}
           </div>
-          <p className="text-center md:text-left text-[var(--color-text-muted)]">
-            &copy; {new Date().getFullYear()} Dhruv Thakar. All rights reserved.
-          </p>
+          <div className="flex flex-col items-center md:items-end gap-2">
+            <p className="text-center md:text-left text-[var(--color-text-muted)]">
+              &copy; {new Date().getFullYear()} Dhruv Thakar. All rights reserved.
+            </p>
+            <p className="text-xs text-[var(--color-text-muted)]/60 flex items-center gap-1.5">
+              Built with
+              <span className="text-[var(--color-accent)]">React</span>·
+              <span className="text-[var(--color-accent)]">Vite</span>·
+              <span className="text-[var(--color-accent)]">Framer Motion</span>
+            </p>
+          </div>
         </div>
       </div>
 

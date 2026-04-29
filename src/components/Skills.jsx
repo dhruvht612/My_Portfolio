@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Tilt from 'react-parallax-tilt'
 import {
@@ -117,6 +117,16 @@ function Skills({ skillGroups, projects = [] }) {
 
   const openModal = useCallback((skill) => setSelectedSkill(skill), [])
   const closeModal = useCallback(() => setSelectedSkill(null), [])
+
+  // Close modal on Escape key
+  useEffect(() => {
+    if (!selectedSkill) return
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') closeModal()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [selectedSkill, closeModal])
 
   return (
     <section id="skills" className="section-fade-in relative z-10 min-h-screen overflow-hidden py-24 md:py-28" aria-labelledby="skills-heading">
