@@ -1,4 +1,10 @@
 import { PROJECT_FILTERS as STATIC_PROJECT_FILTERS } from '../data/projects'
+import {
+  beyondStats as defaultBeyondStats,
+  educationHighlights as defaultEducationHighlights,
+  focusAreas as defaultFocusAreas,
+  goals as defaultGoals,
+} from '../data/portfolioExtras'
 
 /**
  * Maps DB `badge` (string or JSON) to the UI shape `{ label, icon, gradient }`.
@@ -196,6 +202,108 @@ function profileToAboutTabs(profile) {
   return { story, interests, facts }
 }
 
+const HIGHLIGHT_ACCENTS = {
+  Foundations: 'from-blue-500/20 to-blue-600/20',
+  'Hands-On Learning': 'from-teal-500/20 to-teal-600/20',
+  'Engineering Skills': 'from-purple-500/20 to-purple-600/20',
+}
+
+const BEYOND_ICON_STYLES = {
+  Crown: { accent: 'text-red-400', gradient: 'from-red-500/10 to-orange-500/10' },
+  UsersRound: { accent: 'text-teal-400', gradient: 'from-teal-500/10 to-cyan-500/10' },
+  CalendarRange: { accent: 'text-purple-400', gradient: 'from-purple-500/10 to-pink-500/10' },
+  Flame: { accent: 'text-yellow-400', gradient: 'from-yellow-500/10 to-orange-500/10' },
+}
+
+/**
+ * @param {Record<string, unknown> | null} row
+ */
+function mapEducationSlice(row) {
+  if (!row || typeof row !== 'object') {
+    return { focusAreas: defaultFocusAreas, educationHighlights: defaultEducationHighlights }
+  }
+  const focusAreas =
+    Array.isArray(row.focus_areas) && row.focus_areas.length ? row.focus_areas.map(String) : defaultFocusAreas
+  const highlightsRaw = Array.isArray(row.highlights) ? row.highlights : []
+  const educationHighlights =
+    highlightsRaw.length > 0
+      ? highlightsRaw.map((h) => {
+          const title = String(h.title ?? '')
+          const desc = typeof h.description === 'string' ? h.description : ''
+          const bullets = desc.split('\n').map((s) => s.trim()).filter(Boolean)
+          return {
+            title,
+            icon: typeof h.icon === 'string' ? h.icon : 'fas fa-star',
+            accent: HIGHLIGHT_ACCENTS[title] ?? 'from-blue-500/20 to-blue-600/20',
+            bullets: bullets.length ? bullets : [''],
+          }
+        })
+      : defaultEducationHighlights
+  return { focusAreas, educationHighlights }
+}
+
+/**
+ * @param {Array<Record<string, unknown>>} rows
+ */
+function mapBeyondStatsFromDb(rows) {
+  if (!rows?.length) return defaultBeyondStats
+  const sorted = [...rows].sort((a, b) => (Number(a.display_order) || 0) - (Number(b.display_order) || 0))
+  return sorted.map((row) => {
+    const icon = row.icon != null ? String(row.icon) : 'Sparkles'
+    const styles = BEYOND_ICON_STYLES[icon] ?? { accent: 'text-sky-400', gradient: 'from-sky-500/10 to-blue-500/10' }
+    return {
+      value: String(row.value ?? ''),
+      label: String(row.label ?? ''),
+      accent: styles.accent,
+      gradient: styles.gradient,
+      icon,
+    }
+  })
+}
+
+/**
+ * @param {Array<Record<string, unknown>>} rows
+ */
+function mapGoalsFromDb(rows) {
+  if (!rows?.length) return defaultGoals
+  const sorted = [...rows].sort((a, b) => {
+    const ta = String(a.type ?? '')
+    const tb = String(b.type ?? '')
+    return tb.localeCompare(ta)
+  })
+  return sorted.map((row) => {
+    const raw = row.description
+    if (typeof raw === 'string' && raw.trim().startsWith('{')) {
+      try {
+        const o = JSON.parse(raw)
+        if (o && typeof o === 'object') {
+          return {
+            title: String(row.title ?? ''),
+            badge: String(o.badge ?? ''),
+            titleIcon: String(o.titleIcon ?? 'Rocket'),
+            accent: String(o.accent ?? 'from-slate-500/20 to-slate-600/20'),
+            bullets: Array.isArray(o.bullets) ? o.bullets.map(String) : [],
+            ...(typeof o.progress === 'number' ? { progress: o.progress, progressLabel: String(o.progressLabel ?? 'Progress') } : {}),
+            ...(o.vision != null && o.vision !== '' ? { vision: String(o.vision) } : {}),
+          }
+        }
+      } catch {
+        /* fall through */
+      }
+    }
+    const milestones = Array.isArray(row.milestones) ? row.milestones.map(String) : []
+    const pct = row.progress_percent != null ? Number(row.progress_percent) : null
+    return {
+      title: String(row.title ?? ''),
+      badge: row.type === 'long' ? 'Long-term' : 'Short-term',
+      titleIcon: row.type === 'long' ? 'Telescope' : 'Rocket',
+      accent: 'from-slate-500/20 to-slate-600/20',
+      bullets: milestones.length ? milestones : [''],
+      ...(pct != null && !Number.isNaN(pct) ? { progress: pct, progressLabel: 'Momentum' } : {}),
+    }
+  })
+}
+
 /**
  * Fetch portfolio slice from Supabase (parallel reads + transforms).
  * Throws on any Supabase error or missing profile row so the caller can fall back to static data.
@@ -210,6 +318,9 @@ export async function fetchPortfolioFromSupabase(client) {
     skillGroupsRes,
     skillsRes,
     certificationsRes,
+    educationRes,
+    beyondRes,
+    goalsRes,
   ] = await Promise.all([
     client.from('profile').select('*').single(),
     client.from('experiences').select('*').order('display_order', { ascending: true }),
@@ -217,9 +328,22 @@ export async function fetchPortfolioFromSupabase(client) {
     client.from('skill_groups').select('*').order('display_order', { ascending: true }),
     client.from('skills').select('*').order('display_order', { ascending: true }),
     client.from('certifications').select('*').order('created_at', { ascending: false }),
+    client.from('education').select('*').maybeSingle(),
+    client.from('beyond_stats').select('*').order('display_order', { ascending: true }),
+    client.from('goals').select('*').order('type', { ascending: false }),
   ])
 
-  const checks = [profileRes, experiencesRes, projectsRes, skillGroupsRes, skillsRes, certificationsRes]
+  const checks = [
+    profileRes,
+    experiencesRes,
+    projectsRes,
+    skillGroupsRes,
+    skillsRes,
+    certificationsRes,
+    educationRes,
+    beyondRes,
+    goalsRes,
+  ]
   for (const res of checks) {
     if (res.error) throw res.error
   }
@@ -230,6 +354,9 @@ export async function fetchPortfolioFromSupabase(client) {
   const certifications = mapCertifications(certificationsRes.data)
   const experienceByOrg = groupExperiencesByOrg(experiencesRes.data)
   const skillGroups = buildSkillGroups(skillGroupsRes.data, skillsRes.data)
+  const { focusAreas, educationHighlights } = mapEducationSlice(educationRes.data)
+  const beyondStats = mapBeyondStatsFromDb(beyondRes.data)
+  const goals = mapGoalsFromDb(goalsRes.data)
 
   return {
     aboutTabs,
@@ -238,5 +365,9 @@ export async function fetchPortfolioFromSupabase(client) {
     certifications,
     experienceByOrg,
     skillGroups,
+    focusAreas,
+    educationHighlights,
+    beyondStats,
+    goals,
   }
 }

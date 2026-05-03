@@ -6,14 +6,22 @@
  * is in flight, the UI still renders the bundled static data so there is no empty
  * flash. On failure, we keep static data and record `__error` for diagnostics.
  */
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 import { aboutTabs as staticAboutTabs } from '../data/about'
 import { PROJECT_FILTERS as staticProjectFilters, projects as staticProjects } from '../data/projects'
 import { certifications as staticCertifications } from '../data/certifications'
 import { experienceByOrg as staticExperienceByOrg } from '../data/experience'
 import { skillGroups as staticSkillGroups } from '../data/skills'
+import {
+  beyondStats,
+  educationHighlights,
+  focusAreas,
+  goals,
+} from '../data/portfolioExtras'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
-import { fetchPortfolioFromSupabase } from '../lib/portfolioFetchers'
+import { useSupabasePortfolioSlice } from '../hooks/useSupabasePortfolioSlice'
+
+export { beyondStats, educationHighlights, focusAreas, goals }
 
 /** Static fallback — same data as before the Supabase refactor. */
 const STATIC_PORTFOLIO_SLICE = {
@@ -23,6 +31,10 @@ const STATIC_PORTFOLIO_SLICE = {
   certifications: staticCertifications,
   experienceByOrg: staticExperienceByOrg,
   skillGroups: staticSkillGroups,
+  focusAreas,
+  educationHighlights,
+  beyondStats,
+  goals,
 }
 
 export const navLinks = [
@@ -71,67 +83,6 @@ export const projectStats = [
   { value: '2025', label: 'Latest Update', gradient: 'from-[var(--color-orange)]/10 to-[var(--color-accent)]/20', accent: 'text-theme-accent-hover' },
 ]
 
-export const beyondStats = [
-  {
-    value: '5+',
-    label: 'Leadership Roles',
-    accent: 'text-red-400',
-    gradient: 'from-red-500/10 to-orange-500/10',
-    icon: 'Crown',
-  },
-  {
-    value: '500+',
-    label: 'Students Impacted',
-    accent: 'text-teal-400',
-    gradient: 'from-teal-500/10 to-cyan-500/10',
-    icon: 'UsersRound',
-  },
-  {
-    value: '10+',
-    label: 'Events & Initiatives',
-    accent: 'text-purple-400',
-    gradient: 'from-purple-500/10 to-pink-500/10',
-    icon: 'CalendarRange',
-  },
-  {
-    value: '100%',
-    label: 'Passion & Drive',
-    accent: 'text-yellow-400',
-    gradient: 'from-yellow-500/10 to-orange-500/10',
-    icon: 'Flame',
-  },
-]
-
-export const goals = [
-  {
-    title: 'Short-Term Goals',
-    badge: '2025–2026',
-    titleIcon: 'Rocket',
-    accent: 'from-red-500/20 to-orange-500/20',
-    bullets: [
-      'Ship polished full-stack and mobile projects that showcase craft and impact',
-      'Stay sharp on emerging stacks, AI tooling, and product-minded engineering',
-      'Land a strong software or research internship by 2026',
-      'Level up system design, UX judgment, and data fluency in real builds',
-    ],
-    progressLabel: 'Momentum',
-    progress: 45,
-  },
-  {
-    title: 'Long-Term Goals',
-    badge: '2026–2030',
-    titleIcon: 'Telescope',
-    accent: 'from-pink-500/20 to-purple-500/20',
-    bullets: [
-      'Lead and ship technology that solves messy, real-world problems at scale',
-      'Grow into senior technical or research leadership with a mentorship mindset',
-      'Mentor the next generation of builders—especially underrepresented voices in tech',
-      'Bridge rigorous CS depth with humane, accessible product experiences',
-    ],
-    vision: 'Future Tech Leader',
-  },
-]
-
 export const contactCards = [
   { title: 'Email', value: 'thakardhruvh@gmail.com', icon: 'fas fa-envelope', href: 'mailto:thakardhruvh@gmail.com', accent: 'from-[var(--color-blue-soft)] to-[var(--color-blue-medium)]' },
   { title: 'Location', value: 'Oshawa, Ontario, Canada', icon: 'fas fa-map-marker-alt', accent: 'from-[var(--color-blue-medium)] to-[var(--color-blue-soft)]' },
@@ -170,56 +121,29 @@ export const footerBadges = [
   'https://img.shields.io/badge/JavaScript-%23F7DF1E.svg?&style=flat&logo=javascript&logoColor=black',
 ]
 
-export const focusAreas = ['Software Development', 'Data Structures', 'Algorithms', 'OOP (C++, Python, Java)', 'Web Development', 'Statistics & Mathematics']
-
-export const educationHighlights = [
-  { title: 'Foundations', icon: 'fas fa-book-open', accent: 'from-blue-500/20 to-blue-600/20', bullets: ['Data Structures & Algorithms', 'Object-Oriented Programming', 'Database Systems & Web Dev'] },
-  { title: 'Hands-On Learning', icon: 'fas fa-laptop-code', accent: 'from-teal-500/20 to-teal-600/20', bullets: ['15+ course projects completed', 'Hackathon participation', 'Collaborative team projects'] },
-  { title: 'Engineering Skills', icon: 'fas fa-code', accent: 'from-purple-500/20 to-purple-600/20', bullets: ['8+ programming languages', 'Modern frameworks & tools', 'Version control & DevOps basics'] },
-]
-
 export const initialChatMessages = [{ id: 1, from: 'bot', text: 'Hey there! 👋 Ready to build something amazing together?' }]
 
 const PortfolioContext = createContext(null)
 
-function initialDiagnostics() {
-  if (!isSupabaseConfigured) {
-    return { __source: 'fallback', __loading: false, __error: null }
-  }
-  return { __source: 'pending', __loading: true, __error: null }
-}
-
 export function PortfolioProvider({ children }) {
-  const [remoteSlice, setRemoteSlice] = useState(null)
-  const [meta, setMeta] = useState(initialDiagnostics)
+  const { data: remoteSlice, loading: remoteLoading, error: remoteError } = useSupabasePortfolioSlice()
 
-  useEffect(() => {
-    let cancelled = false
-    // When not configured, `initialDiagnostics()` already set __source to `fallback`.
+  const meta = useMemo(() => {
     if (!isSupabaseConfigured || !supabase) {
-      return () => {
-        cancelled = true
-      }
+      return { __source: 'fallback', __loading: false, __error: null }
     }
-    ;(async () => {
-      try {
-        const slice = await fetchPortfolioFromSupabase(supabase)
-        if (!cancelled) {
-          setRemoteSlice(slice)
-          setMeta({ __source: 'supabase', __loading: false, __error: null })
-        }
-      } catch (err) {
-        console.warn('Supabase fetch failed, using fallback data:', err)
-        if (!cancelled) {
-          setRemoteSlice(null)
-          setMeta({ __source: 'fallback', __loading: false, __error: err })
-        }
-      }
-    })()
-    return () => {
-      cancelled = true
+    if (remoteLoading) {
+      return { __source: 'pending', __loading: true, __error: null }
     }
-  }, [])
+    if (remoteError) {
+      console.warn('Supabase fetch failed, using fallback data:', remoteError)
+      return { __source: 'fallback', __loading: false, __error: remoteError }
+    }
+    if (remoteSlice) {
+      return { __source: 'supabase', __loading: false, __error: null }
+    }
+    return { __source: 'fallback', __loading: false, __error: null }
+  }, [remoteLoading, remoteError, remoteSlice])
 
   const slice = remoteSlice ?? STATIC_PORTFOLIO_SLICE
 
@@ -231,13 +155,13 @@ export function PortfolioProvider({ children }) {
       quickStats,
       aboutCounters,
       projectStats,
-      beyondStats,
-      goals,
+      beyondStats: slice.beyondStats,
+      goals: slice.goals,
       contactCards,
       altContactLinks,
       footerBadges,
-      focusAreas,
-      educationHighlights,
+      focusAreas: slice.focusAreas,
+      educationHighlights: slice.educationHighlights,
       initialChatMessages,
       aboutTabs: slice.aboutTabs,
       PROJECT_FILTERS: slice.PROJECT_FILTERS,

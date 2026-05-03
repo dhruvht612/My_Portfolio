@@ -19,7 +19,7 @@ export default function AdminLogin() {
   }, [loading, configured, session, navigate])
 
   const inputClass =
-    'w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/70 px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all'
+    'admin-auth-input w-full rounded-xl border border-slate-600 bg-slate-950 px-4 py-3 text-slate-50 shadow-inner focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-500/35 transition-all'
 
   const handleSubmit = async (e) => {
     e.preventDefault()

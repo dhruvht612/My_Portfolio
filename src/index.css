@@ -402,6 +402,22 @@ select {
   font-family: inherit;
 }
 
+/* Admin login: opaque field + autofill so typed text stays readable (not pale on white). */
+.admin-auth-input {
+  color: #f8fafc;
+  background-color: #020617;
+  caret-color: #38bdf8;
+}
+.admin-auth-input::placeholder {
+  color: #64748b;
+}
+.admin-auth-input:-webkit-autofill,
+.admin-auth-input:-webkit-autofill:hover,
+.admin-auth-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f8fafc !important;
+  box-shadow: inset 0 0 0 100px #020617 !important;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-orange);
   outline-offset: 2px;
