@@ -1,9 +1,29 @@
-import { createContext, useContext } from 'react'
-import { aboutTabs } from '../data/about'
-import { PROJECT_FILTERS, projects } from '../data/projects'
-import { certifications } from '../data/certifications'
-import { experienceByOrg } from '../data/experience'
-import { skillGroups } from '../data/skills'
+/**
+ * Portfolio data layer.
+ *
+ * When `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set, we fetch the slice
+ * that used to live only in `src/data/*` from Supabase on mount. While that request
+ * is in flight, the UI still renders the bundled static data so there is no empty
+ * flash. On failure, we keep static data and record `__error` for diagnostics.
+ */
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { aboutTabs as staticAboutTabs } from '../data/about'
+import { PROJECT_FILTERS as staticProjectFilters, projects as staticProjects } from '../data/projects'
+import { certifications as staticCertifications } from '../data/certifications'
+import { experienceByOrg as staticExperienceByOrg } from '../data/experience'
+import { skillGroups as staticSkillGroups } from '../data/skills'
+import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import { fetchPortfolioFromSupabase } from '../lib/portfolioFetchers'
+
+/** Static fallback — same data as before the Supabase refactor. */
+const STATIC_PORTFOLIO_SLICE = {
+  aboutTabs: staticAboutTabs,
+  projects: staticProjects,
+  PROJECT_FILTERS: staticProjectFilters,
+  certifications: staticCertifications,
+  experienceByOrg: staticExperienceByOrg,
+  skillGroups: staticSkillGroups,
+}
 
 export const navLinks = [
   { id: 'home', path: '/home', label: 'Home' },
@@ -162,29 +182,76 @@ export const initialChatMessages = [{ id: 1, from: 'bot', text: 'Hey there! 👋
 
 const PortfolioContext = createContext(null)
 
-export function PortfolioProvider({ children }) {
-  const value = {
-    navLinks,
-    typedRoles,
-    heroSocials,
-    quickStats,
-    aboutCounters,
-    projectStats,
-    beyondStats,
-    goals,
-    contactCards,
-    altContactLinks,
-    footerBadges,
-    focusAreas,
-    educationHighlights,
-    initialChatMessages,
-    aboutTabs,
-    PROJECT_FILTERS,
-    projects,
-    certifications,
-    experienceByOrg,
-    skillGroups,
+function initialDiagnostics() {
+  if (!isSupabaseConfigured) {
+    return { __source: 'fallback', __loading: false, __error: null }
   }
+  return { __source: 'pending', __loading: true, __error: null }
+}
+
+export function PortfolioProvider({ children }) {
+  const [remoteSlice, setRemoteSlice] = useState(null)
+  const [meta, setMeta] = useState(initialDiagnostics)
+
+  useEffect(() => {
+    let cancelled = false
+    // When not configured, `initialDiagnostics()` already set __source to `fallback`.
+    if (!isSupabaseConfigured || !supabase) {
+      return () => {
+        cancelled = true
+      }
+    }
+    ;(async () => {
+      try {
+        const slice = await fetchPortfolioFromSupabase(supabase)
+        if (!cancelled) {
+          setRemoteSlice(slice)
+          setMeta({ __source: 'supabase', __loading: false, __error: null })
+        }
+      } catch (err) {
+        console.warn('Supabase fetch failed, using fallback data:', err)
+        if (!cancelled) {
+          setRemoteSlice(null)
+          setMeta({ __source: 'fallback', __loading: false, __error: err })
+        }
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const slice = remoteSlice ?? STATIC_PORTFOLIO_SLICE
+
+  const value = useMemo(
+    () => ({
+      navLinks,
+      typedRoles,
+      heroSocials,
+      quickStats,
+      aboutCounters,
+      projectStats,
+      beyondStats,
+      goals,
+      contactCards,
+      altContactLinks,
+      footerBadges,
+      focusAreas,
+      educationHighlights,
+      initialChatMessages,
+      aboutTabs: slice.aboutTabs,
+      PROJECT_FILTERS: slice.PROJECT_FILTERS,
+      projects: slice.projects,
+      certifications: slice.certifications,
+      experienceByOrg: slice.experienceByOrg,
+      skillGroups: slice.skillGroups,
+      __source: meta.__source,
+      __loading: meta.__loading,
+      __error: meta.__error,
+    }),
+    [slice, meta.__source, meta.__loading, meta.__error],
+  )
+
   return <PortfolioContext.Provider value={value}>{children}</PortfolioContext.Provider>
 }
 

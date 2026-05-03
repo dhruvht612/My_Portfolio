@@ -17,6 +17,7 @@ const EducationPage = lazy(() => import('./pages/EducationPage'))
 const CertificationsPage = lazy(() => import('./pages/CertificationsPage'))
 const SkillsPage = lazy(() => import('./pages/SkillsPage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
+const DevSupabaseStatus = import.meta.env.DEV ? lazy(() => import('./pages/DevSupabaseStatus')) : null
 
 function PageLoader() {
   return (
@@ -102,6 +103,9 @@ export default function App() {
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<LandingRoute />} />
+                {import.meta.env.DEV && DevSupabaseStatus ? (
+                  <Route path="dev/supabase" element={<DevSupabaseStatus />} />
+                ) : null}
                 <Route element={<Layout />}>
                   <Route path="home" element={<HomePage />} />
                   <Route path="about" element={<AboutPage />} />
