@@ -8,7 +8,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "seed": "node src/scripts/seed-supabase.js"
+    "seed": "node src/scripts/seed-supabase.js",
+    "migrate-assets": "node src/scripts/migrate-assets.js",
+    "verify:phase5": "node src/scripts/verify-supabase-phase5.js"
   },
   "dependencies": {
     "@formspree/react": "^3.0.0",

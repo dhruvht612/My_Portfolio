@@ -1,3 +1,4 @@
+/* eslint-env node */
 /**
  * One-way seed: clears portfolio content tables and inserts data from `src/data/*`
  * plus shared defaults (profile, education, beyond_stats, goals).
@@ -10,9 +11,15 @@
  *   SUPABASE_SERVICE_ROLE_KEY
  */
 import { createClient } from '@supabase/supabase-js'
-import { existsSync, readFileSync } from 'fs'
-import { join } from 'path'
-import { fileURLToPath } from 'url'
+import { applyDevTlsBypassFromEnv } from './lib/devTlsBypass.js'
+import { loadDotEnv } from './lib/loadDotEnv.js'
+import {
+  formatFetchChain,
+  isTlsCertificateVerificationFailure,
+  normalizeSupabaseProjectUrl,
+  printTlsCertificateVerificationHints,
+  probeSupabaseReachable,
+} from './lib/supabaseProjectUrl.js'
 
 import { aboutTabs } from '../data/about.js'
 import { certifications as certificationsData } from '../data/certifications.js'
@@ -25,29 +32,6 @@ import {
 } from '../data/portfolioExtras.js'
 import { projects as projectsData } from '../data/projects.js'
 import { skillGroups as skillGroupsData } from '../data/skills.js'
-
-const __dirname = fileURLToPath(new URL('.', import.meta.url))
-
-function loadDotEnv() {
-  const envPath = join(process.cwd(), '.env')
-  if (!existsSync(envPath)) return
-  const raw = readFileSync(envPath, 'utf8')
-  for (const line of raw.split('\n')) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) continue
-    const eq = trimmed.indexOf('=')
-    if (eq === -1) continue
-    const key = trimmed.slice(0, eq).trim()
-    let val = trimmed.slice(eq + 1).trim()
-    if (
-      (val.startsWith('"') && val.endsWith('"')) ||
-      (val.startsWith("'") && val.endsWith("'"))
-    ) {
-      val = val.slice(1, -1)
-    }
-    if (process.env[key] === undefined) process.env[key] = val
-  }
-}
 
 function badgeForDb(badge) {
   if (badge == null) return null
@@ -113,16 +97,44 @@ async function clearPortfolioTables(client) {
 
 async function main() {
   loadDotEnv()
-  const url = process.env.VITE_SUPABASE_URL?.trim()
+  applyDevTlsBypassFromEnv()
+  const rawUrl = process.env.VITE_SUPABASE_URL?.trim()
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
-  if (!url || !serviceKey) {
+  if (!rawUrl || !serviceKey) {
     console.error('Missing VITE_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment / .env')
+    process.exit(1)
+  }
+
+  const url = normalizeSupabaseProjectUrl(rawUrl)
+  const probe = await probeSupabaseReachable(url)
+  if (!probe.ok) {
+    console.error('Network probe failed — cannot reach Supabase. Fix connectivity or VITE_SUPABASE_URL.')
+    console.error('Tried:', probe.healthUrl)
+    console.error('Detail:', formatFetchChain(probe.error))
+    if (isTlsCertificateVerificationFailure(probe.error)) printTlsCertificateVerificationHints()
     process.exit(1)
   }
 
   const client = createClient(url, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   })
+
+  let certificationsIncludeImageUrl = true
+  {
+    const { error: colProbe } = await client.from('certifications').select('image_url').limit(1)
+    if (
+      colProbe &&
+      /image_url/i.test(colProbe.message || '') &&
+      /does not exist|schema cache/i.test(colProbe.message || '')
+    ) {
+      certificationsIncludeImageUrl = false
+      console.warn(
+        '[seed] certifications.image_url column missing — run docs/migrations/add_certifications_image_url.sql then re-seed to store cert images. Seeding certs without image_url.',
+      )
+    } else if (colProbe) {
+      throw new Error(`certifications schema probe: ${colProbe.message}`)
+    }
+  }
 
   console.log('Clearing portfolio tables…')
   await clearPortfolioTables(client)
@@ -295,19 +307,22 @@ async function main() {
     if (error) throw new Error(`experiences: ${error.message}`)
   }
 
-  const certRows = certificationsData.map((c) => ({
-    title: c.title,
-    issuer: c.issuer,
-    issued_date: c.issued ?? '',
-    credential_id: c.credentialId ?? null,
-    credential_url: c.credentialUrl ?? '#',
-    tags: c.tags ?? [],
-    category: c.category ?? '',
-    is_featured: Boolean(c.featured),
-    learned: c.learned ?? '',
-    applied: c.applied ?? '',
-    applied_project: c.appliedProject ?? '',
-  }))
+  const certRows = certificationsData.map((c) => {
+    const base = {
+      title: c.title,
+      issuer: c.issuer,
+      issued_date: c.issued ?? '',
+      credential_id: c.credentialId ?? null,
+      credential_url: c.credentialUrl ?? '#',
+      tags: c.tags ?? [],
+      category: c.category ?? '',
+      is_featured: Boolean(c.featured),
+      learned: c.learned ?? '',
+      applied: c.applied ?? '',
+      applied_project: c.appliedProject ?? '',
+    }
+    return certificationsIncludeImageUrl ? { ...base, image_url: null } : base
+  })
   console.log(`Inserting ${certRows.length} certifications…`)
   {
     const { error } = await client.from('certifications').insert(certRows)
