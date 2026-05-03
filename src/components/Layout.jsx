@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { usePortfolio } from '../context/PortfolioContext'
 import { useActiveSection } from '../hooks/useActiveSection'
+import { usePageView } from '../hooks/usePageView'
 import SkipLink from './SkipLink'
 import Header from './Header'
 import Footer from './Footer'
@@ -15,6 +16,7 @@ const pageVariants = {
 }
 
 export default function Layout() {
+  usePageView()
   const portfolio = usePortfolio()
   const location = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)

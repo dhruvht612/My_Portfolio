@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom'
 import { PortfolioProvider } from './context/PortfolioContext'
+import { useAuth } from './hooks/useAuth'
 import ParticlesBackground from './components/ui/particles-bg'
 import SkipLink from './components/SkipLink'
 import Landing from './components/Landing'
@@ -18,6 +19,28 @@ const CertificationsPage = lazy(() => import('./pages/CertificationsPage'))
 const SkillsPage = lazy(() => import('./pages/SkillsPage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
 const DevSupabaseStatus = import.meta.env.DEV ? lazy(() => import('./pages/DevSupabaseStatus')) : null
+
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'))
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
+const AdminProfile = lazy(() => import('./pages/admin/AdminProfile'))
+const AdminExperiences = lazy(() => import('./pages/admin/AdminExperiences'))
+const AdminProjects = lazy(() => import('./pages/admin/AdminProjects'))
+const AdminSkills = lazy(() => import('./pages/admin/AdminSkills'))
+const AdminCertifications = lazy(() => import('./pages/admin/AdminCertifications'))
+const AdminBlog = lazy(() => import('./pages/admin/AdminBlog'))
+const AdminBlogEditor = lazy(() => import('./pages/admin/AdminBlogEditor'))
+const AdminMessages = lazy(() => import('./pages/admin/AdminMessages'))
+const AdminEducation = lazy(() => import('./pages/admin/AdminEducation'))
+const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'))
+
+function ProtectedRoute({ children }) {
+  const { session, loading, configured } = useAuth()
+  if (!configured) return <Navigate to="/admin/login" replace />
+  if (loading) return <PageLoader />
+  if (!session) return <Navigate to="/admin/login" replace />
+  return children
+}
 
 function PageLoader() {
   return (
@@ -106,6 +129,28 @@ export default function App() {
                 {import.meta.env.DEV && DevSupabaseStatus ? (
                   <Route path="dev/supabase" element={<DevSupabaseStatus />} />
                 ) : null}
+                <Route path="admin/login" element={<AdminLogin />} />
+                <Route
+                  path="admin"
+                  element={
+                    <ProtectedRoute>
+                      <AdminLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="profile" element={<AdminProfile />} />
+                  <Route path="experiences" element={<AdminExperiences />} />
+                  <Route path="projects" element={<AdminProjects />} />
+                  <Route path="skills" element={<AdminSkills />} />
+                  <Route path="certifications" element={<AdminCertifications />} />
+                  <Route path="blog" element={<AdminBlog />} />
+                  <Route path="blog/new" element={<AdminBlogEditor />} />
+                  <Route path="blog/edit/:id" element={<AdminBlogEditor />} />
+                  <Route path="messages" element={<AdminMessages />} />
+                  <Route path="education" element={<AdminEducation />} />
+                  <Route path="analytics" element={<AdminAnalytics />} />
+                </Route>
                 <Route element={<Layout />}>
                   <Route path="home" element={<HomePage />} />
                   <Route path="about" element={<AboutPage />} />

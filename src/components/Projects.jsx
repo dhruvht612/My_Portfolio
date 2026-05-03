@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Tilt from 'react-parallax-tilt'
 import { Code2, ExternalLink, Search, Sparkles, Star, X } from 'lucide-react'
+import { trackProjectClick } from '../hooks/usePageView'
 import AnimatedSection from './AnimatedSection'
 import HolographicCard from './ui/holographic-card'
 
@@ -337,7 +338,10 @@ function Projects({
                       target="_blank"
                       rel="noreferrer"
                       className="theme-btn theme-btn-primary flex-1 min-w-[140px] px-4 py-2.5 text-xs text-center"
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (project.links?.live && project.links.live !== '#') trackProjectClick(project.id)
+                      }}
                     >
                       <ExternalLink className="h-3.5 w-3.5" />
                       Live Demo
@@ -347,7 +351,10 @@ function Projects({
                       target="_blank"
                       rel="noreferrer"
                       className="theme-btn theme-btn-secondary flex-1 min-w-[140px] px-4 py-2.5 text-xs text-center border-[var(--color-accent)]/30 hover:border-[var(--color-accent)]"
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (project.links?.code && project.links.code !== '#') trackProjectClick(project.id)
+                      }}
                     >
                       <Code2 className="h-3.5 w-3.5" />
                       GitHub
@@ -442,13 +449,25 @@ function Projects({
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {selectedProject.links?.live && selectedProject.links.live !== '#' && (
-                      <a href={selectedProject.links.live} target="_blank" rel="noreferrer" className="theme-btn theme-btn-primary px-4 py-2.5 text-sm">
+                      <a
+                        href={selectedProject.links.live}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="theme-btn theme-btn-primary px-4 py-2.5 text-sm"
+                        onClick={() => trackProjectClick(selectedProject.id)}
+                      >
                         <ExternalLink className="h-4 w-4" />
                         Live Demo
                       </a>
                     )}
                     {selectedProject.links?.code && selectedProject.links.code !== '#' && (
-                      <a href={selectedProject.links.code} target="_blank" rel="noreferrer" className="theme-btn theme-btn-secondary px-4 py-2.5 text-sm">
+                      <a
+                        href={selectedProject.links.code}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="theme-btn theme-btn-secondary px-4 py-2.5 text-sm"
+                        onClick={() => trackProjectClick(selectedProject.id)}
+                      >
                         <Code2 className="h-4 w-4" />
                         GitHub
                       </a>
