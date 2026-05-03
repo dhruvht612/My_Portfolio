@@ -1,70 +1,105 @@
-import { useAuth } from '../../hooks/useAuth'
-
-const checklist = [
-  { label: 'Phase 1 — Supabase client + context + dev status', done: true },
-  { label: 'Phase 2 — Admin auth, layout, routes, page view hook', done: true },
-  { label: 'Phase 3+ — Seeding, CRUD, contact sync, analytics dashboard', done: false },
-]
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
+import StatusBadge from '../../components/admin/StatusBadge'
+import { isSupabaseConfigured } from '../../lib/supabase'
+import { countBlogByStatus, countTable, fetchRecentActivity } from '../../lib/admin/queries'
 
 export default function AdminDashboard() {
-  const { session } = useAuth()
-  const email = session?.user?.email ?? 'Admin'
+  const [stats, setStats] = useState({ projects: null, certs: null, blog: null, unread: null })
+  const [activity, setActivity] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      if (!isSupabaseConfigured) {
+        setLoading(false)
+        return
+      }
+      setLoading(true)
+      try {
+        const [projects, certs, blog, unread, recent] = await Promise.all([
+          countTable('projects'),
+          countTable('certifications'),
+          countBlogByStatus(),
+          countTable('contact_submissions', { is_read: false }),
+          fetchRecentActivity(),
+        ])
+        if (!cancelled) {
+          setStats({ projects, certs, blog, unread })
+          setActivity(recent)
+        }
+      } catch {
+        if (!cancelled) {
+          setStats({ projects: '—', certs: '—', blog: { draft: '—', published: '—' }, unread: '—' })
+          setActivity([])
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const cards = [
+    { label: 'Projects', value: stats.projects, to: '/admin/projects', hint: 'Manage portfolio projects' },
+    { label: 'Certifications', value: stats.certs, to: '/admin/certifications', hint: 'Manage credentials' },
+    {
+      label: 'Blog posts',
+      value: stats.blog == null ? '—' : `${stats.blog.published} pub · ${stats.blog.draft} draft`,
+      to: '/admin/blog',
+      hint: 'Drafts and published posts',
+    },
+    { label: 'Unread messages', value: stats.unread, to: '/admin/messages', hint: 'Contact submissions' },
+  ]
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
-      <div className="glass-card rounded-2xl border border-[var(--color-border)] p-6 md:p-8">
-        <h2 className="text-2xl font-bold text-[var(--color-text)]">Welcome back</h2>
-        <p className="mt-2 text-[var(--color-text-muted)]">{email}</p>
-        <p className="mt-4 text-sm leading-relaxed text-[var(--color-text-muted)]">
-          This dashboard will show live stats after Phase 5 (CRUD) and Phase 7 (analytics). Navigation on the left is
-          already wired.
-        </p>
-      </div>
-
+    <div className="mx-auto max-w-5xl space-y-8">
+      <NotConfiguredBanner />
       <div>
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
-          Snapshot (placeholders)
-        </h3>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {[
-            { label: 'Projects', value: '—' },
-            { label: 'Certifications', value: '—' },
-            { label: 'Messages', value: '—' },
-            { label: 'Blog posts', value: '—' },
-          ].map((card) => (
-            <div
-              key={card.label}
-              className="glass-card relative overflow-hidden rounded-2xl border border-[var(--color-border)] p-5"
-            >
-              <span className="absolute right-3 top-3 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-card)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
-                Phase 5
-              </span>
-              <div className="text-3xl font-bold text-[var(--color-text)]">{card.value}</div>
-              <div className="mt-1 text-xs uppercase tracking-wide text-[var(--color-text-muted)]">{card.label}</div>
-            </div>
-          ))}
-        </div>
+        <h2 className="text-2xl font-bold text-[var(--color-text)]">Dashboard</h2>
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">Overview of your portfolio backend</p>
       </div>
 
-      <div className="glass-card rounded-2xl border border-[var(--color-border)] p-6 md:p-8">
-        <h3 className="text-lg font-semibold text-[var(--color-text)]">What&apos;s wired up</h3>
-        <ul className="mt-4 space-y-3">
-          {checklist.map((row) => (
-            <li key={row.label} className="flex items-start gap-3 text-sm">
-              <span
-                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${
-                  row.done
-                    ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-300'
-                    : 'border-[var(--color-border)] text-[var(--color-text-muted)]'
-                }`}
-                aria-hidden
-              >
-                {row.done ? '✓' : '…'}
-              </span>
-              <span className={row.done ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]'}>{row.label}</span>
-            </li>
-          ))}
-        </ul>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c) => (
+          <Link
+            key={c.label}
+            to={c.to}
+            className="glass-card group block rounded-2xl border border-[var(--color-border)] p-5 transition-colors hover:border-[var(--color-accent)]/40"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">{c.label}</p>
+              <StatusBadge tone="gray">Live</StatusBadge>
+            </div>
+            <p className="mt-3 text-3xl font-bold text-[var(--color-text)]">{loading && isSupabaseConfigured ? '…' : c.value ?? '—'}</p>
+            <p className="mt-2 text-xs text-[var(--color-text-muted)] group-hover:text-[var(--color-accent)]">{c.hint}</p>
+          </Link>
+        ))}
+      </div>
+
+      <div className="glass-card rounded-2xl border border-[var(--color-border)] p-6">
+        <h3 className="text-lg font-semibold text-[var(--color-text)]">Recent activity</h3>
+        <p className="mt-1 text-xs text-[var(--color-text-muted)]">Latest updates across key tables</p>
+        {!isSupabaseConfigured ? (
+          <p className="mt-4 text-sm text-[var(--color-text-muted)]">Connect Supabase to see activity.</p>
+        ) : activity.length === 0 ? (
+          <p className="mt-4 text-sm text-[var(--color-text-muted)]">No recent updates found.</p>
+        ) : (
+          <ul className="mt-4 divide-y divide-[var(--color-border)]/60">
+            {activity.map((row) => (
+              <li key={`${row.table}-${row.id}`} className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm">
+                <span className="font-medium text-[var(--color-text)]">{row.label}</span>
+                <span className="text-xs text-[var(--color-text-muted)]">
+                  {row.table} · {row.updated_at ? new Date(row.updated_at).toLocaleString() : ''}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   )

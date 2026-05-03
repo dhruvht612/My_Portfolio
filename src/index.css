@@ -455,12 +455,13 @@ select {
 
 /* Global nav pill glass */
 .global-nav {
-  max-width: 1100px;
+  max-width: min(1400px, calc(100vw - 1.5rem));
   margin: 20px auto;
-  min-height: 64px;
+  min-height: 72px;
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  /* Center link list scrolls on narrow desktops; do not clip Admin / Contact */
+  overflow: visible;
   background-color: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -502,6 +503,11 @@ select {
 .liquid-glass-footer > * {
   position: relative;
   z-index: 1;
+}
+
+/* Brand stays above any horizontal overflow from the link scroller */
+.global-nav .logo-pill {
+  z-index: 3;
 }
 
 /* When in hero (top of page), nav blends with background – no bar */
@@ -559,7 +565,7 @@ select {
 }
 
 .global-nav .nav-link.active-link {
-  background: rgba(65, 105, 225, 0.2);
+  background: transparent;
   color: var(--nav-accent);
 }
 

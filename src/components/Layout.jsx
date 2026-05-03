@@ -67,7 +67,7 @@ export default function Layout() {
           scrollProgressRef={scrollProgressRef}
           fixed={true}
         />
-        <main id="main-content" className="pt-[72px] relative z-10 min-h-screen">
+        <main id="main-content" className="pt-[88px] relative z-10 min-h-screen">
           <AnimatePresence mode="wait">
             <motion.div
               key={pathname}

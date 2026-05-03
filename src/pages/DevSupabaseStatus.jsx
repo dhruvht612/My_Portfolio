@@ -44,7 +44,12 @@ export default function DevSupabaseStatus() {
   const [probe, setProbe] = useState({ status: 'idle', ms: null, message: '' })
 
   const urlEnv = import.meta.env.VITE_SUPABASE_URL
-  const keyEnv = import.meta.env.VITE_SUPABASE_ANON_KEY
+  const keyEnv = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+  const keySource = import.meta.env.VITE_SUPABASE_ANON_KEY
+    ? 'VITE_SUPABASE_ANON_KEY'
+    : import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+      ? 'VITE_SUPABASE_PUBLISHABLE_KEY'
+      : '—'
 
   const roleCount = (experienceByOrg || []).reduce((n, org) => n + (org.roles?.length || 0), 0)
 
@@ -95,7 +100,7 @@ export default function DevSupabaseStatus() {
               <dd className="font-mono text-[var(--color-text)] break-all">{maskUrl(urlEnv)}</dd>
             </div>
             <div>
-              <dt className="text-[var(--color-text-muted)]">VITE_SUPABASE_ANON_KEY</dt>
+              <dt className="text-[var(--color-text-muted)]">Public client key ({keySource})</dt>
               <dd className="font-mono text-[var(--color-text)] break-all">{maskKey(keyEnv)}</dd>
             </div>
           </dl>

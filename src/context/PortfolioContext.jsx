@@ -1,7 +1,7 @@
 /**
  * Portfolio data layer.
  *
- * When `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set, we fetch the slice
+ * When `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (or `VITE_SUPABASE_PUBLISHABLE_KEY`) are set, we fetch the slice
  * that used to live only in `src/data/*` from Supabase on mount. While that request
  * is in flight, the UI still renders the bundled static data so there is no empty
  * flash. On failure, we keep static data and record `__error` for diagnostics.

@@ -36,14 +36,14 @@ function Header({
 
       {/* Pill glass nav container – blends with hero when at top */}
       <nav
-        className={`global-nav navbar mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3 ${isHeaderScrolled ? 'is-scrolled scrolled' : ''} ${isOnHome && !isHeaderScrolled ? 'global-nav-in-hero' : ''}`}
+        className={`global-nav navbar mx-auto flex w-full max-w-full min-w-0 items-center justify-between gap-2 sm:gap-3 px-3 py-3 sm:px-5 sm:py-3 ${isHeaderScrolled ? 'is-scrolled scrolled' : ''} ${isOnHome && !isHeaderScrolled ? 'global-nav-in-hero' : ''}`}
         role="navigation"
         aria-label="Main navigation"
       >
         {/* Gradient logo / brand */}
         <NavLink
           to="/home"
-          className="flex items-center gap-2 rounded-[var(--nav-pill-radius)] bg-[var(--color-bg-card)]/50 hover:bg-[var(--color-bg-card)]/80 border border-[var(--color-border)]/50 px-3 py-2 sm:px-4 sm:py-2.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--nav-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)] shrink-0 logo-pill"
+          className="relative z-[3] flex shrink-0 items-center gap-2 rounded-[var(--nav-pill-radius)] bg-[var(--color-bg-card)]/50 hover:bg-[var(--color-bg-card)]/80 border border-[var(--color-border)]/50 px-3 py-2 sm:px-4 sm:py-2.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--nav-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)] logo-pill"
           aria-label="Dhruv Thakar - Go to home"
         >
           <img
@@ -55,57 +55,68 @@ function Header({
           <span className="text-lg sm:text-xl font-bold tracking-tight logo">Dhruv Thakar</span>
         </NavLink>
 
-        {/* Desktop nav links with underline effect */}
-        <ul
-          id="nav-links"
-          role="menubar"
-          className="hidden md:flex items-center gap-1 flex-1 justify-center"
-        >
-          {mainNavLinks.map((link) => {
-            const path = link.path ?? `/${link.id}`
-            return (
-              <li key={link.id} role="none">
-                <NavLink
-                  to={path}
-                  end={link.id === 'home'}
-                  role="menuitem"
-                  className={({ isActive }) => {
-                    const isSectionActive = activeSection === link.id
-                    const active = isActive || isSectionActive
-                    return `nav-link inline-block relative px-4 py-2.5 rounded-[var(--radius)] text-sm font-semibold transition-all duration-300 ${
-                      active ? 'active-link active' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
-                    }`
-                  }}
-                >
-                  {({ isActive }) => {
-                    const isSectionActive = activeSection === link.id
-                    const active = isActive || isSectionActive
-                    return (
-                      <>
-                        <span
-                          style={
-                            active
-                              ? { color: '#38bdf8', textShadow: '0 0 10px rgba(56, 189, 248, 0.35)' }
-                              : undefined
-                          }
-                        >
-                          {link.label}
-                        </span>
-                        <span className={`active-underline absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300 ${active ? 'w-6' : 'w-0'}`} />
-                      </>
-                    )
-                  }}
-                </NavLink>
-              </li>
-            )
-          })}
-        </ul>
+        {/* Middle column: centers link strip when it fits; scrolls from Home (no overlap under logo) */}
+        <div className="relative z-[1] hidden min-h-0 min-w-0 flex-1 items-center justify-center md:flex">
+          <ul
+            id="nav-links"
+            role="menubar"
+            className="flex w-max max-w-full list-none flex-nowrap items-center justify-start gap-0.5 overflow-x-auto overflow-y-visible py-1 pl-1 lg:gap-1 lg:pl-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {mainNavLinks.map((link) => {
+              const path = link.path ?? `/${link.id}`
+              return (
+                <li key={link.id} role="none" className="shrink-0">
+                  <NavLink
+                    to={path}
+                    end={link.id === 'home'}
+                    role="menuitem"
+                    className={({ isActive }) => {
+                      const isSectionActive = activeSection === link.id
+                      const active = isActive || isSectionActive
+                      return `nav-link relative inline-flex shrink-0 items-center whitespace-nowrap rounded-[var(--radius)] px-2.5 py-2 text-xs font-semibold transition-all duration-300 sm:px-3 lg:px-4 lg:text-sm ${
+                        active ? 'active-link active' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card)]/50 hover:text-[var(--color-text)]'
+                      }`
+                    }}
+                  >
+                    {({ isActive }) => {
+                      const isSectionActive = activeSection === link.id
+                      const active = isActive || isSectionActive
+                      return (
+                        <>
+                          <span
+                            style={
+                              active
+                                ? { color: '#38bdf8', textShadow: '0 0 10px rgba(56, 189, 248, 0.35)' }
+                                : undefined
+                            }
+                          >
+                            {link.label}
+                          </span>
+                          <span className={`active-underline absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300 ${active ? 'w-6' : 'w-0'}`} />
+                        </>
+                      )
+                    }}
+                  </NavLink>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
 
         {/* CTA + hamburger (mobile) */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="relative z-[2] flex shrink-0 items-center gap-2 pl-1 sm:gap-2 sm:pl-2">
+          <NavLink
+            to="/admin/login"
+            className="hidden h-9 shrink-0 items-center gap-1.5 rounded-xl border border-[var(--color-border)]/80 bg-[var(--color-bg-card)]/40 px-2.5 text-xs font-semibold text-[var(--color-text-muted)] transition-all hover:border-[var(--nav-accent)]/50 hover:bg-[var(--color-bg-card)]/70 hover:text-[var(--nav-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--nav-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)] sm:inline-flex"
+            role="menuitem"
+            aria-label="Open admin sign-in"
+          >
+            <i className="fas fa-lock text-[10px]" aria-hidden="true" />
+            Admin
+          </NavLink>
           <NavLink
             to="/contact"
-            className="global-nav-cta contact-btn hidden sm:inline-flex items-center gap-2 font-bold focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]"
+            className="global-nav-cta contact-btn hidden shrink-0 sm:inline-flex items-center gap-2 font-bold focus:outline-none focus:ring-2 focus:ring-[var(--color-orange)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]"
             role="menuitem"
           >
             <i className="fas fa-arrow-right text-xs" aria-hidden="true" />
@@ -155,7 +166,16 @@ function Header({
               </li>
             )
           })}
-          <li className="pt-2">
+          <li className="pt-2 space-y-2">
+            <NavLink
+              to="/admin/login"
+              className="flex items-center justify-center gap-2 rounded-xl border border-[var(--color-border)]/80 bg-[var(--color-bg-card)]/40 px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)] transition-all hover:border-[var(--nav-accent)]/50 hover:text-[var(--nav-accent)]"
+              onClick={onCloseMenu}
+              aria-label="Open admin sign-in"
+            >
+              <i className="fas fa-lock text-xs" aria-hidden="true" />
+              Admin
+            </NavLink>
             <NavLink
               to="/contact"
               className="global-nav-cta contact-btn flex items-center justify-center gap-2 font-bold"
