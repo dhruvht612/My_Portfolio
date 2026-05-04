@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import AdminForm from '../../components/admin/AdminForm'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
+import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
 import AdminModal from '../../components/admin/AdminModal'
 import ConfirmDialog from '../../components/admin/ConfirmDialog'
 import EmptyState from '../../components/admin/EmptyState'
+import ExperienceOrgCard from '../../components/admin/experiences/ExperienceOrgCard'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
-import StatusBadge from '../../components/admin/StatusBadge'
 import { useAdminCrud } from '../../hooks/useAdminCrud'
 import { experienceSchema } from '../../schemas/experience.schema'
 import { isSupabaseConfigured } from '../../lib/supabase'
@@ -89,76 +91,44 @@ export default function AdminExperiences() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-8">
       <NotConfiguredBanner />
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-[var(--color-text)]">Experiences</h2>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">Grouped by organization. Reorder updates display_order.</p>
-        </div>
-        <button type="button" disabled={!isSupabaseConfigured} onClick={() => openNew()} className="theme-btn theme-btn-primary px-4 py-2 text-sm">
+
+      <AdminPageHeader
+        eyebrow="Work history"
+        title="Experiences"
+        description="Organizations as cards; roles in order. Use the menu on each role to edit, reorder, or delete."
+      >
+        <AdminPrimaryButton disabled={!isSupabaseConfigured} onClick={() => openNew()} className="self-start sm:self-auto">
+          <Plus className="h-4 w-4" aria-hidden />
           Add experience
-        </button>
-      </div>
+        </AdminPrimaryButton>
+      </AdminPageHeader>
 
       {loading ? (
-        <div className="flex min-h-[200px] items-center justify-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-[var(--color-accent)]/30 border-t-[var(--color-accent)]" />
+        <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-white/[0.06] bg-slate-950/40">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-sky-400/30 border-t-sky-400" />
         </div>
       ) : !rows.length ? (
         <EmptyState title="No experiences" message="Add your first role with the button above." />
       ) : (
-        <div className="space-y-3">
-          {grouped.map(({ org, rows: orgRows }) => {
-            const open = openOrgs[org] ?? true
+        <div className="space-y-5 md:space-y-6">
+          {grouped.map(({ org, rows: orgRows }, index) => {
+            const expanded = openOrgs[org] ?? true
+            const panelId = `exp-org-panel-${index}`
             return (
-              <div key={org} className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/30">
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left"
-                  onClick={() => setOpenOrgs((s) => ({ ...s, [org]: !open }))}
-                >
-                  <span className="font-semibold text-[var(--color-text)]">{org}</span>
-                  {open ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
-                </button>
-                {open && (
-                  <div className="border-t border-[var(--color-border)]/60 px-2 py-2">
-                    {orgRows.map((row) => (
-                      <div
-                        key={row.id}
-                        className="flex flex-wrap items-center justify-between gap-2 rounded-xl px-3 py-2 hover:bg-[var(--color-bg)]/50"
-                      >
-                        <div>
-                          <p className="text-sm font-medium text-[var(--color-text)]">{row.role_title}</p>
-                          <p className="text-xs text-[var(--color-text-muted)]">{row.date_range}</p>
-                          {row.is_featured ? (
-                            <span className="mt-1 inline-block">
-                              <StatusBadge tone="amber">Featured</StatusBadge>
-                            </span>
-                          ) : null}
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          <button type="button" className="theme-btn theme-btn-secondary px-2 py-1 text-xs" onClick={() => moveInOrg(orgRows, row, -1)}>
-                            Up
-                          </button>
-                          <button type="button" className="theme-btn theme-btn-secondary px-2 py-1 text-xs" onClick={() => moveInOrg(orgRows, row, 1)}>
-                            Down
-                          </button>
-                          <button type="button" className="theme-btn theme-btn-secondary px-2 py-1 text-xs" onClick={() => openEdit(row)}>
-                            Edit
-                          </button>
-                          <button type="button" className="theme-btn theme-btn-secondary px-2 py-1 text-xs text-red-300" onClick={() => setConfirmId(row.id)}>
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                    <button type="button" className="mt-2 w-full rounded-lg border border-dashed border-[var(--color-border)] py-2 text-xs text-[var(--color-text-muted)] hover:border-[var(--color-accent)]" onClick={() => openNew(org)}>
-                      + Add role in {org}
-                    </button>
-                  </div>
-                )}
-              </div>
+              <ExperienceOrgCard
+                key={org}
+                org={org}
+                panelId={panelId}
+                orgRows={orgRows}
+                expanded={expanded}
+                onToggle={() => setOpenOrgs((s) => ({ ...s, [org]: !expanded }))}
+                onAddRole={() => openNew(org)}
+                onEdit={openEdit}
+                onDeleteRole={(id) => setConfirmId(id)}
+                onMoveRole={(row, dir) => moveInOrg(orgRows, row, dir)}
+              />
             )
           })}
         </div>

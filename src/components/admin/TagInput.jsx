@@ -22,7 +22,7 @@ export default function TagInput({ value = [], onChange, placeholder = 'Type and
 
   return (
     <div>
-      <div className="flex min-h-[46px] flex-wrap gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/70 p-2">
+      <div className="flex min-h-[46px] flex-wrap gap-2 rounded-xl border border-slate-500/25 bg-slate-900/55 p-2 shadow-sm ring-1 ring-inset ring-white/[0.04]">
         {value.map((tag) => (
           <span
             key={tag}
@@ -50,7 +50,7 @@ export default function TagInput({ value = [], onChange, placeholder = 'Type and
             if (input.trim()) add(input)
           }}
           placeholder={value.length ? '' : placeholder}
-          className="min-w-[8rem] flex-1 border-0 bg-transparent px-2 py-1 text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)]"
+          className="admin-field-input admin-field-input--ghost min-w-[8rem] flex-1 rounded-md border-0 px-2 py-1 text-sm outline-none placeholder:text-slate-500"
         />
       </div>
       {suggestions.length > 0 && (

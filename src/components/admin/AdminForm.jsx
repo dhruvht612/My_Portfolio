@@ -9,7 +9,7 @@ import TagInput from './TagInput'
 import { useToast } from '../../hooks/useToast'
 
 const inputClass =
-  'w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/70 px-3 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]'
+  'admin-field-input w-full rounded-xl border border-slate-500/25 px-3 py-2 text-sm shadow-sm placeholder:text-slate-500 focus:border-sky-400/45 focus:outline-none focus:ring-2 focus:ring-sky-400/25'
 
 /**
  * @param {import('zod').ZodTypeAny} schema
@@ -134,7 +134,13 @@ export default function AdminForm({
             control={control}
             render={({ field: f }) => (
               <label className="inline-flex cursor-pointer items-center gap-2">
-                <input type="checkbox" disabled={disabled} checked={!!f.value} onChange={(e) => f.onChange(e.target.checked)} className="h-4 w-4 rounded" />
+                <input
+                  type="checkbox"
+                  disabled={disabled}
+                  checked={!!f.value}
+                  onChange={(e) => f.onChange(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-500/50 bg-slate-800 text-sky-500 focus:ring-2 focus:ring-sky-400/40"
+                />
                 <span className="text-sm text-[var(--color-text-muted)]">{field.hint}</span>
               </label>
             )}
@@ -190,10 +196,10 @@ export default function AdminForm({
               return (
                 <div className="space-y-3">
                   {list.map((item, idx) => (
-                    <div key={idx} className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)]/50 p-3 space-y-2">
+                    <div key={idx} className="space-y-2 rounded-xl border border-slate-600/20 bg-slate-900/35 p-3 shadow-inner shadow-black/20">
                       {(field.itemFields || []).map((sub) => (
                         <div key={sub.name}>
-                          <label className="mb-1 block text-xs text-[var(--color-text-muted)]">{sub.label}</label>
+                          <label className="mb-1 block text-xs text-slate-400">{sub.label}</label>
                           {sub.type === 'textarea' ? (
                             <textarea
                               disabled={disabled}
@@ -240,7 +246,7 @@ export default function AdminForm({
                         Object.fromEntries((field.itemFields || []).map((sub) => [sub.name, ''])),
                       ])
                     }
-                    className="inline-flex items-center gap-1 rounded-lg border border-dashed border-[var(--color-border)] px-3 py-2 text-xs text-[var(--color-text-muted)] hover:border-[var(--color-accent)]"
+                    className="inline-flex items-center gap-1 rounded-lg border border-dashed border-slate-500/30 px-3 py-2 text-xs text-slate-400 transition-colors hover:border-sky-500/35 hover:text-slate-200"
                   >
                     <Plus className="h-3 w-3" /> Add
                   </button>
@@ -263,6 +269,7 @@ export default function AdminForm({
                 onChange={f.onChange}
                 onUploadError={(msg) => toast.error(msg)}
                 label={field.label}
+                hideLabel
                 disabled={disabled}
               />
             )}
@@ -296,7 +303,7 @@ export default function AdminForm({
 
     return (
       <div key={field.name} className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--color-text-muted)]" htmlFor={field.name}>
+        <label className="block text-xs font-medium text-slate-400" htmlFor={field.name}>
           {field.label}
         </label>
         {controlEl}
@@ -316,23 +323,29 @@ export default function AdminForm({
           return (
             <div
               key={block.section || i}
-              className="space-y-4 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/30 p-5"
+              className="space-y-4 rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.045] to-white/[0.015] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]"
             >
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-[var(--color-accent)]">{block.section}</h3>
+              <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-400/80">{block.section}</h3>
               <div className="grid gap-4 md:grid-cols-2">{block.fields.map((f) => renderField(f))}</div>
             </div>
           )
         }
         return <div key={block.name || i}>{renderField(block)}</div>
       })}
-      {extraFooter ? (
-        <div className="flex flex-wrap gap-2">{extraFooter({ ...methods, getValues, trigger })}</div>
-      ) : null}
-      {!hideSubmitButton ? (
-        <button type="submit" disabled={disabled || isSubmitting} className="theme-btn theme-btn-primary px-6 py-2.5 text-sm disabled:opacity-50">
-          {isSubmitting ? 'Saving…' : submitLabel}
-        </button>
-      ) : null}
+      {(extraFooter || !hideSubmitButton) && (
+        <div className="mt-2 flex flex-wrap items-center gap-3 border-t border-white/[0.06] pt-6">
+          {!hideSubmitButton ? (
+            <button
+              type="submit"
+              disabled={disabled || isSubmitting}
+              className="theme-btn theme-btn-primary px-6 py-2.5 text-sm disabled:opacity-50 sm:mr-auto"
+            >
+              {isSubmitting ? 'Saving…' : submitLabel}
+            </button>
+          ) : null}
+          {extraFooter ? <div className="flex flex-wrap gap-2">{extraFooter({ ...methods, getValues, trigger })}</div> : null}
+        </div>
+      )}
     </form>
   )
 

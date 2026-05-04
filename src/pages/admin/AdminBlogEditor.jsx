@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useFormContext } from 'react-hook-form'
 import AdminForm from '../../components/admin/AdminForm'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
+import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
 import { fetchRowById, insertRow, listSlugs, updateRow } from '../../lib/admin/queries'
 import { ensureUniqueSlug, slugify } from '../../lib/admin/slug'
@@ -20,7 +22,10 @@ const editorSchema = blogSchema
 function BlogAutoSave({ postId, onSave }) {
   const { getValues, formState } = useFormContext()
   const dirtyRef = useRef(false)
-  dirtyRef.current = formState.isDirty
+
+  useEffect(() => {
+    dirtyRef.current = formState.isDirty
+  }, [formState.isDirty])
 
   useEffect(() => {
     if (!postId || !isSupabaseConfigured) return
@@ -174,21 +179,23 @@ export default function AdminBlogEditor() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[240px] items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[var(--color-accent)]/30 border-t-[var(--color-accent)]" />
+      <div className="mx-auto flex max-w-6xl min-h-[240px] items-center justify-center">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-sky-400/30 border-t-sky-400" />
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-8">
       <NotConfiguredBanner />
-      <div>
-        <h2 className="text-2xl font-bold text-[var(--color-text)]">{routeId ? 'Edit post' : 'New post'}</h2>
-        <p className="mt-1 text-sm text-[var(--color-text-muted)]">Markdown content, slug, and publishing.</p>
-      </div>
+      <AdminPageHeader
+        eyebrow="Blog"
+        title={routeId ? 'Edit post' : 'New post'}
+        description="Markdown body, slug, excerpt, cover, and tags. Draft saves to Supabase; publish when ready."
+      />
 
-      <AdminForm
+      <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-white/[0.015] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] md:p-8">
+        <AdminForm
         key={`${routeId || 'new'}-${formKey}`}
         schema={editorSchema}
         defaultValues={defaults}
@@ -197,16 +204,12 @@ export default function AdminBlogEditor() {
         submitLabel="Save draft"
         onSubmit={async (v) => persist(v, 'draft', {})}
         extraFooter={({ handleSubmit }) => (
-          <button
-            type="button"
-            disabled={!isSupabaseConfigured}
-            className="theme-btn theme-btn-primary px-4 py-2 text-sm"
-            onClick={() => void handleSubmit((vals) => persist(vals, 'published', {}))()}
-          >
+          <AdminPrimaryButton disabled={!isSupabaseConfigured} onClick={() => void handleSubmit((vals) => persist(vals, 'published', {}))()}>
             Publish
-          </button>
+          </AdminPrimaryButton>
         )}
       />
+      </div>
     </div>
   )
 }

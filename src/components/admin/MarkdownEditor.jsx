@@ -27,7 +27,7 @@ export default function MarkdownEditor({ value = '', onChange, disabled }) {
   }
 
   const toolbar = (
-    <div className="mb-2 flex flex-wrap gap-1 border-b border-[var(--color-border)] pb-2">
+    <div className="mb-2 flex flex-wrap gap-1 border-b border-white/[0.06] pb-2">
       <button
         type="button"
         disabled={disabled}
@@ -104,7 +104,7 @@ export default function MarkdownEditor({ value = '', onChange, disabled }) {
   )
 
   return (
-    <div className={fullscreen ? 'fixed inset-0 z-[120] flex flex-col bg-[var(--color-bg)] p-4' : 'flex flex-col gap-3'}>
+    <div className={fullscreen ? 'fixed inset-0 z-[120] flex flex-col bg-slate-950 p-4 md:p-6' : 'flex flex-col gap-3'}>
       {toolbar}
       <div className="grid min-h-[280px] flex-1 gap-3 lg:grid-cols-2">
         <textarea
@@ -112,10 +112,10 @@ export default function MarkdownEditor({ value = '', onChange, disabled }) {
           disabled={disabled}
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
-          className="min-h-[260px] w-full resize-y rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/70 p-3 font-mono text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+          className="admin-field-input min-h-[260px] w-full resize-y rounded-xl border border-slate-500/25 p-3 font-mono text-sm shadow-sm placeholder:text-slate-500 focus:border-sky-400/45 focus:outline-none focus:ring-2 focus:ring-sky-400/25"
           placeholder="Write markdown…"
         />
-        <div className="markdown-preview min-h-[260px] overflow-y-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)]/80 p-4 text-sm text-[var(--color-text-muted)] [&_a]:text-[var(--color-accent)] [&_code]:rounded [&_code]:bg-[var(--color-bg-card)] [&_code]:px-1 [&_h1]:text-[var(--color-text)] [&_h2]:text-[var(--color-text)] [&_h3]:text-[var(--color-text)] [&_li]:my-1 [&_p]:my-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
+        <div className="markdown-preview min-h-[260px] overflow-y-auto rounded-xl border border-slate-600/25 bg-slate-900/40 p-4 text-sm text-slate-400 ring-1 ring-inset ring-white/[0.03] [&_a]:text-sky-400 [&_code]:rounded [&_code]:bg-slate-800/80 [&_code]:px-1 [&_code]:text-slate-200 [&_h1]:text-slate-100 [&_h2]:text-slate-100 [&_h3]:text-slate-100 [&_li]:my-1 [&_p]:my-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{value || '*Nothing to preview*'}</ReactMarkdown>
         </div>
       </div>

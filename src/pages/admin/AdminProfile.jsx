@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import AdminForm from '../../components/admin/AdminForm'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
 import { useSupabaseRow } from '../../hooks/useSupabaseRow'
 import { profileSchema } from '../../schemas/profile.schema'
@@ -100,23 +101,22 @@ export default function AdminProfile() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[240px] items-center justify-center">
-        <div
-          className="h-10 w-10 rounded-full border-2 border-[var(--color-accent)]/30 border-t-[var(--color-accent)]"
-          style={{ animation: 'spin 0.7s linear infinite' }}
-        />
+      <div className="mx-auto flex max-w-6xl min-h-[240px] items-center justify-center">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-sky-400/30 border-t-sky-400" />
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-8">
       <NotConfiguredBanner />
-      <div>
-        <h2 className="text-2xl font-bold text-[var(--color-text)]">Profile</h2>
-        <p className="mt-1 text-sm text-[var(--color-text-muted)]">Single-row upsert for the public About / hero content.</p>
-      </div>
-      <AdminForm
+      <AdminPageHeader
+        eyebrow="Identity"
+        title="Profile"
+        description="Single-row upsert for the public About / hero: name, roles, bio, socials, resume, and footer badges."
+      />
+      <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-white/[0.015] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] md:p-8">
+        <AdminForm
         key={data?.id || 'new'}
         schema={profileSchema}
         defaultValues={defaultValues}
@@ -132,6 +132,7 @@ export default function AdminProfile() {
           await save(payload)
         }}
       />
+      </div>
     </div>
   )
 }

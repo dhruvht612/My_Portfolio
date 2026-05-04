@@ -232,7 +232,7 @@ export default function ParticlesBackground() {
 
   return (
     <div
-      className="fixed inset-0 z-0 bg-[#0a0f1e] pointer-events-none"
+      className="fixed inset-0 z-0 bg-[#0a0f1e]/40 pointer-events-none"
       aria-hidden="true"
       style={{
         '--scroll-progress': scrollProgress,

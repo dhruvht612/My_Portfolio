@@ -1,5 +1,8 @@
 import { useState } from 'react'
+import { Plus } from 'lucide-react'
 import AdminForm from '../../components/admin/AdminForm'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
+import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
 import AdminModal from '../../components/admin/AdminModal'
 import ConfirmDialog from '../../components/admin/ConfirmDialog'
 import DataTable from '../../components/admin/DataTable'
@@ -65,7 +68,7 @@ export default function AdminCertifications() {
         row.image_url ? (
           <img src={row.image_url} alt="" className="h-10 w-10 rounded-lg object-cover" />
         ) : (
-          <span className="text-[var(--color-text-muted)]">—</span>
+          <span className="text-slate-500">—</span>
         ),
     },
     { key: 'title', header: 'Title', sortable: true },
@@ -78,20 +81,21 @@ export default function AdminCertifications() {
   ]
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-8">
       <NotConfiguredBanner />
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-[var(--color-text)]">Certifications</h2>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">Badges, issuers, and links.</p>
-        </div>
-        <button type="button" disabled={!isSupabaseConfigured} onClick={openNew} className="theme-btn theme-btn-primary px-4 py-2 text-sm">
+      <AdminPageHeader
+        eyebrow="Credentials"
+        title="Certifications"
+        description="Badges, issuers, links, and narrative fields. Row actions live in the table menu."
+      >
+        <AdminPrimaryButton disabled={!isSupabaseConfigured} onClick={openNew}>
+          <Plus className="h-4 w-4" aria-hidden />
           Add certification
-        </button>
-      </div>
-      <p className="text-xs text-[var(--color-text-muted)]">
-        Badge uploads use the <code className="text-[var(--color-accent)]">cert-images</code> bucket. If save fails with “column image_url does not exist”, run{' '}
-        <code className="text-[var(--color-accent)]">docs/migrations/add_certifications_image_url.sql</code> in Supabase.
+        </AdminPrimaryButton>
+      </AdminPageHeader>
+      <p className="rounded-xl border border-white/[0.06] bg-slate-900/35 px-4 py-3 text-xs leading-relaxed text-slate-400 ring-1 ring-inset ring-white/[0.03]">
+        Badge uploads use the <code className="text-sky-300/90">cert-images</code> bucket. If save fails with “column image_url does not exist”, run{' '}
+        <code className="text-sky-300/90">docs/migrations/add_certifications_image_url.sql</code> in Supabase.
       </p>
 
       <DataTable

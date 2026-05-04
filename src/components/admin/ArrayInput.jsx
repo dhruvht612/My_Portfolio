@@ -45,7 +45,7 @@ export default function ArrayInput({ value = [], onChange, itemLabel = 'Item', m
               value={row}
               onChange={(e) => updateAt(i, e.target.value)}
               rows={3}
-              className="flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/70 px-3 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+              className="admin-field-input flex-1 rounded-xl border border-slate-500/25 px-3 py-2 text-sm shadow-sm placeholder:text-slate-500 focus:border-sky-400/45 focus:outline-none focus:ring-2 focus:ring-sky-400/25"
               placeholder={`${itemLabel} ${i + 1}`}
             />
           ) : (
@@ -54,7 +54,7 @@ export default function ArrayInput({ value = [], onChange, itemLabel = 'Item', m
               disabled={disabled}
               value={row}
               onChange={(e) => updateAt(i, e.target.value)}
-              className="flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/70 px-3 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+              className="admin-field-input flex-1 rounded-xl border border-slate-500/25 px-3 py-2 text-sm shadow-sm placeholder:text-slate-500 focus:border-sky-400/45 focus:outline-none focus:ring-2 focus:ring-sky-400/25"
               placeholder={`${itemLabel} ${i + 1}`}
             />
           )}
@@ -73,7 +73,7 @@ export default function ArrayInput({ value = [], onChange, itemLabel = 'Item', m
         type="button"
         disabled={disabled}
         onClick={() => onChange?.([...value, ''])}
-        className="inline-flex items-center gap-2 rounded-xl border border-dashed border-[var(--color-border)] px-3 py-2 text-sm text-[var(--color-text-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] disabled:opacity-40"
+        className="inline-flex items-center gap-2 rounded-xl border border-dashed border-slate-500/30 px-3 py-2 text-sm text-slate-400 transition-colors hover:border-sky-500/35 hover:text-slate-200 disabled:opacity-40"
       >
         <Plus className="h-4 w-4" />
         Add {itemLabel}

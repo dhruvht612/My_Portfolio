@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
-import { Sparkles } from 'lucide-react'
+import { Plus, Sparkles } from 'lucide-react'
 import AdminForm, { AdminFormWatch } from '../../components/admin/AdminForm'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
+import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
 import AdminModal from '../../components/admin/AdminModal'
 import ConfirmDialog from '../../components/admin/ConfirmDialog'
 import DataTable from '../../components/admin/DataTable'
@@ -96,7 +98,7 @@ function ProjectHoloPreview() {
 }
 
 export default function AdminProjects() {
-  const { rows, loading, error, refresh, create, update, remove } = useAdminCrud('projects', {
+  const { rows, loading, error, create, update, remove } = useAdminCrud('projects', {
     column: 'display_order',
     ascending: true,
   })
@@ -147,7 +149,7 @@ export default function AdminProjects() {
         row.image_url ? (
           <img src={row.image_url} alt="" className="h-12 w-16 rounded-lg object-cover" />
         ) : (
-          <div className="flex h-12 w-16 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)]/50 text-[var(--color-text-muted)]">
+          <div className="flex h-12 w-16 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-slate-500">
             <i className={row.icon_class || 'fas fa-code'} />
           </div>
         ),
@@ -159,7 +161,7 @@ export default function AdminProjects() {
       render: (row) => (
         <div className="flex flex-wrap gap-1">
           {(row.categories || []).slice(0, 4).map((c) => (
-            <span key={c} className="rounded-md border border-[var(--color-border)] px-1.5 py-0.5 text-[10px] uppercase text-[var(--color-text-muted)]">
+            <span key={c} className="rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] uppercase text-slate-500">
               {c}
             </span>
           ))}
@@ -185,17 +187,18 @@ export default function AdminProjects() {
   ]
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-8">
       <NotConfiguredBanner />
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-[var(--color-text)]">Projects</h2>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">CRUD with holographic preview.</p>
-        </div>
-        <button type="button" disabled={!isSupabaseConfigured} onClick={openNew} className="theme-btn theme-btn-primary px-4 py-2 text-sm">
+      <AdminPageHeader
+        eyebrow="Portfolio"
+        title="Projects"
+        description="Case studies and builds. Edit rows from the table menu; preview updates live in the form sidebar."
+      >
+        <AdminPrimaryButton disabled={!isSupabaseConfigured} onClick={openNew}>
+          <Plus className="h-4 w-4" aria-hidden />
           Add project
-        </button>
-      </div>
+        </AdminPrimaryButton>
+      </AdminPageHeader>
 
       <DataTable
         columns={columns}

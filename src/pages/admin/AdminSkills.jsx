@@ -1,5 +1,9 @@
 import { useMemo, useState } from 'react'
+import { Plus } from 'lucide-react'
 import AdminForm from '../../components/admin/AdminForm'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
+import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
+import AdminSegmentedControl from '../../components/admin/AdminSegmentedControl'
 import AdminModal from '../../components/admin/AdminModal'
 import ConfirmDialog from '../../components/admin/ConfirmDialog'
 import DataTable from '../../components/admin/DataTable'
@@ -93,7 +97,7 @@ export default function AdminSkills() {
 
   const groupColumns = [
     { key: 'group_name', header: 'Group', sortable: true },
-    { key: 'icon_class', header: 'Icon', render: (r) => <span className="text-xs text-[var(--color-text-muted)]">{r.icon_class || '—'}</span> },
+    { key: 'icon_class', header: 'Icon', render: (r) => <span className="text-xs text-slate-500">{r.icon_class || '—'}</span> },
     {
       key: 'count',
       header: 'Skills',
@@ -120,40 +124,34 @@ export default function AdminSkills() {
 
   const nChild = deleteGroup ? childCountForGroup.get(deleteGroup.id) || 0 : 0
 
+  const tabOptions = [
+    { value: 'groups', label: 'Skill groups' },
+    { value: 'skills', label: 'Skills' },
+  ]
+
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-8">
       <NotConfiguredBanner />
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-[var(--color-text)]">Skills</h2>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">Manage skill groups and individual skills.</p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            disabled={!isSupabaseConfigured}
-            onClick={() => setTab('groups')}
-            className={`rounded-xl px-4 py-2 text-sm font-medium ${tab === 'groups' ? 'bg-[var(--color-accent)] text-[var(--color-bg)]' : 'border border-[var(--color-border)] text-[var(--color-text-muted)]'}`}
-          >
-            Skill groups
-          </button>
-          <button
-            type="button"
-            disabled={!isSupabaseConfigured}
-            onClick={() => setTab('skills')}
-            className={`rounded-xl px-4 py-2 text-sm font-medium ${tab === 'skills' ? 'bg-[var(--color-accent)] text-[var(--color-bg)]' : 'border border-[var(--color-border)] text-[var(--color-text-muted)]'}`}
-          >
-            Skills
-          </button>
-        </div>
-      </div>
+      <AdminPageHeader
+        eyebrow="Capabilities"
+        title="Skills"
+        description="Skill groups organize the grid on your site; skills belong to one group and can link to a project."
+      >
+        <AdminSegmentedControl
+          options={tabOptions}
+          value={tab}
+          onChange={setTab}
+          disabled={!isSupabaseConfigured}
+        />
+      </AdminPageHeader>
 
       {tab === 'groups' ? (
         <>
           <div className="flex justify-end">
-            <button type="button" disabled={!isSupabaseConfigured} onClick={openNewGroup} className="theme-btn theme-btn-primary px-4 py-2 text-sm">
+            <AdminPrimaryButton disabled={!isSupabaseConfigured} onClick={openNewGroup}>
+              <Plus className="h-4 w-4" aria-hidden />
               Add group
-            </button>
+            </AdminPrimaryButton>
           </div>
           <DataTable
             columns={groupColumns}
@@ -168,12 +166,15 @@ export default function AdminSkills() {
       ) : (
         <>
           <div className="flex justify-end">
-            <button type="button" disabled={!isSupabaseConfigured || !groupsCrud.rows.length} onClick={openNewSkill} className="theme-btn theme-btn-primary px-4 py-2 text-sm">
+            <AdminPrimaryButton disabled={!isSupabaseConfigured || !groupsCrud.rows.length} onClick={openNewSkill}>
+              <Plus className="h-4 w-4" aria-hidden />
               Add skill
-            </button>
+            </AdminPrimaryButton>
           </div>
           {!groupsCrud.rows.length ? (
-            <p className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100">Create a skill group first.</p>
+            <p className="rounded-xl border border-amber-500/35 bg-amber-500/[0.08] p-4 text-sm text-amber-100 shadow-lg shadow-black/20">
+              Create a skill group first.
+            </p>
           ) : null}
           <DataTable
             columns={skillColumns}

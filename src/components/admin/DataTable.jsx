@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Pencil, Trash2 } from 'lucide-react'
+import ActionMenu from './ActionMenu'
 import EmptyState from './EmptyState'
 
 /**
@@ -42,11 +42,8 @@ export default function DataTable({
 
   if (loading) {
     return (
-      <div className="flex min-h-[200px] items-center justify-center rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/40">
-        <div
-          className="h-10 w-10 rounded-full border-2 border-[var(--color-accent)]/30 border-t-[var(--color-accent)]"
-          style={{ animation: 'spin 0.7s linear infinite' }}
-        />
+      <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-white/[0.06] bg-slate-950/40">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-sky-400/30 border-t-sky-400" />
       </div>
     )
   }
@@ -59,61 +56,70 @@ export default function DataTable({
     return <EmptyState title="No data" message={emptyMessage} />
   }
 
+  const showActions = Boolean(onEdit || onDelete)
+
   return (
-    <div className="overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/40">
+    <div className="overflow-x-auto rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
       <table className="min-w-full text-left text-sm">
-        <thead className="sticky top-0 z-10 border-b border-[var(--color-border)] bg-[var(--color-bg)]/95 backdrop-blur">
+        <thead className="sticky top-0 z-10 border-b border-white/10 bg-[var(--color-admin-canvas)]/90 backdrop-blur-md">
           <tr>
             {columns.map((col) => (
               <th
                 key={col.key}
                 style={{ width: col.width }}
-                className={`px-4 py-3 font-semibold text-[var(--color-text-muted)] ${col.sortable ? 'cursor-pointer select-none hover:text-[var(--color-accent)]' : ''}`}
+                className={`px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-500 ${
+                  col.sortable ? 'cursor-pointer select-none hover:text-sky-300' : ''
+                }`}
                 onClick={() => toggleSort(col.key, col.sortable)}
               >
                 {col.header}
-                {sort.key === col.key ? (sort.dir === 'asc' ? ' ▲' : ' ▼') : ''}
+                {sort.key === col.key ? (sort.dir === 'asc' ? ' \u25b2' : ' \u25bc') : ''}
               </th>
             ))}
-            {(onEdit || onDelete) && <th className="px-4 py-3 w-24">Actions</th>}
+            {showActions ? (
+              <th className="w-14 px-3 py-3.5">
+                <span className="sr-only">Actions</span>
+              </th>
+            ) : null}
           </tr>
         </thead>
         <tbody>
-          {sorted.map((row) => (
-            <tr key={row[rowKey] ?? row.id} className="border-b border-[var(--color-border)]/60 hover:bg-[var(--color-bg-card)]/50">
-              {columns.map((col) => (
-                <td key={col.key} className="px-4 py-3 align-middle text-[var(--color-text)]">
-                  {col.render ? col.render(row) : row[col.key]}
-                </td>
-              ))}
-              {(onEdit || onDelete) && (
-                <td className="px-4 py-3">
-                  <div className="flex gap-1">
-                    {onEdit ? (
-                      <button
-                        type="button"
-                        onClick={() => onEdit(row)}
-                        className="rounded-lg p-2 text-[var(--color-text-muted)] hover:bg-[var(--color-accent)]/15 hover:text-[var(--color-accent)]"
-                        aria-label="Edit"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                    ) : null}
-                    {onDelete ? (
-                      <button
-                        type="button"
-                        onClick={() => onDelete(row)}
-                        className="rounded-lg p-2 text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-300"
-                        aria-label="Delete"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    ) : null}
-                  </div>
-                </td>
-              )}
-            </tr>
-          ))}
+          {sorted.map((row) => {
+            const rk = row[rowKey] ?? row.id
+            const menuItems = []
+            if (onEdit) menuItems.push({ id: 'edit', label: 'Edit', onClick: () => onEdit(row) })
+            if (onDelete) {
+              menuItems.push({
+                id: 'delete',
+                label: 'Delete',
+                danger: true,
+                onClick: () => onDelete(row),
+              })
+            }
+            return (
+              <tr
+                key={rk}
+                className="border-b border-white/[0.06] transition-colors last:border-0 hover:bg-white/[0.04]"
+              >
+                {columns.map((col) => (
+                  <td key={col.key} className="px-4 py-3.5 align-middle text-slate-200">
+                    {col.render ? col.render(row) : row[col.key]}
+                  </td>
+                ))}
+                {showActions ? (
+                  <td className="px-2 py-2 align-middle">
+                    <ActionMenu
+                      menuId={`dt-menu-${rk}`}
+                      align="right"
+                      variant="vertical"
+                      triggerLabel="Row actions"
+                      items={menuItems}
+                    />
+                  </td>
+                ) : null}
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </div>

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { eachDayOfInterval, format, startOfDay, subDays } from 'date-fns'
 import AnalyticsChart from '../../components/admin/AnalyticsChart'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
+import AdminSegmentedControl from '../../components/admin/AdminSegmentedControl'
 import EmptyState from '../../components/admin/EmptyState'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
 import { countTable, ensureClient, listTable } from '../../lib/admin/queries'
@@ -178,39 +180,39 @@ export default function AdminAnalytics() {
     return () => window.clearInterval(id)
   }, [load])
 
+  const rangeOptions = RANGE_OPTIONS.map((o) => ({ value: o.days, label: o.label }))
+
   return (
     <div className="mx-auto max-w-6xl space-y-8">
       <NotConfiguredBanner />
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-[var(--color-text)]">Analytics</h2>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">Built from `page_views` + contact volume. Cached ~30s per range.</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {RANGE_OPTIONS.map((o) => (
-            <button
-              key={o.days}
-              type="button"
-              disabled={!isSupabaseConfigured}
-              onClick={() => setDays(o.days)}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-                days === o.days ? 'bg-[var(--color-accent)] text-[var(--color-bg)]' : 'border border-[var(--color-border)] text-[var(--color-text-muted)]'
-              }`}
-            >
-              {o.label}
-            </button>
-          ))}
-          <button type="button" disabled={!isSupabaseConfigured} onClick={() => void load(true)} className="theme-btn theme-btn-secondary px-3 py-1.5 text-xs">
+      <AdminPageHeader
+        eyebrow="Traffic"
+        title="Analytics"
+        description="Built from page_views plus contact volume. Each range is cached about 30 seconds."
+      >
+        <div className="flex flex-wrap items-center gap-2">
+          <AdminSegmentedControl
+            options={rangeOptions}
+            value={days}
+            onChange={(v) => setDays(Number(v))}
+            disabled={!isSupabaseConfigured}
+          />
+          <button
+            type="button"
+            disabled={!isSupabaseConfigured}
+            onClick={() => void load(true)}
+            className="rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 text-xs font-semibold text-slate-300 transition-colors hover:bg-white/[0.08] hover:text-slate-100 disabled:opacity-50"
+          >
             Refresh
           </button>
         </div>
-      </div>
+      </AdminPageHeader>
 
       {!isSupabaseConfigured ? (
         <EmptyState title="Analytics offline" message="Configure Supabase env vars to load charts." />
       ) : loading && !bundle ? (
-        <div className="flex min-h-[200px] items-center justify-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-[var(--color-accent)]/30 border-t-[var(--color-accent)]" />
+        <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-white/[0.06] bg-slate-950/40">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-sky-400/30 border-t-sky-400" />
         </div>
       ) : error ? (
         <EmptyState title="Could not load analytics" message={error.message || 'Check that `page_views` exists and RLS allows authenticated SELECT.'} />
@@ -219,55 +221,55 @@ export default function AdminAnalytics() {
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/40 p-4">
-              <p className="text-xs font-medium uppercase text-[var(--color-text-muted)]">Total visits</p>
-              <p className="mt-1 text-2xl font-bold text-[var(--color-text)]">{bundle.totalVisits}</p>
+            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.05] to-white/[0.018] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Total visits</p>
+              <p className="mt-1 text-2xl font-bold tabular-nums text-slate-50">{bundle.totalVisits}</p>
               <p className={`mt-1 text-xs ${bundle.deltaPct >= 0 ? 'text-emerald-300' : 'text-red-300'}`}>
                 Δ {bundle.deltaPct >= 0 ? '+' : ''}
                 {bundle.deltaPct}% vs prior {rangeLabel}
               </p>
             </div>
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/40 p-4">
-              <p className="text-xs font-medium uppercase text-[var(--color-text-muted)]">Unique visitors</p>
-              <p className="mt-1 text-2xl font-bold text-[var(--color-text)]">{bundle.uniqueVisitors}</p>
-              <p className="mt-1 text-xs text-[var(--color-text-muted)]">Prior window: {bundle.prevUniqueVisitors}</p>
+            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.05] to-white/[0.018] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Unique visitors</p>
+              <p className="mt-1 text-2xl font-bold tabular-nums text-slate-50">{bundle.uniqueVisitors}</p>
+              <p className="mt-1 text-xs text-slate-500">Prior window: {bundle.prevUniqueVisitors}</p>
             </div>
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/40 p-4">
-              <p className="text-xs font-medium uppercase text-[var(--color-text-muted)]">Total messages</p>
-              <p className="mt-1 text-2xl font-bold text-[var(--color-text)]">{bundle.messagesCount}</p>
-              <p className="mt-1 text-xs text-[var(--color-text-muted)]">All-time inbox count</p>
+            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.05] to-white/[0.018] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Total messages</p>
+              <p className="mt-1 text-2xl font-bold tabular-nums text-slate-50">{bundle.messagesCount}</p>
+              <p className="mt-1 text-xs text-slate-500">All-time inbox count</p>
             </div>
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/40 p-4">
-              <p className="text-xs font-medium uppercase text-[var(--color-text-muted)]">Avg views / day</p>
-              <p className="mt-1 text-2xl font-bold text-[var(--color-text)]">{bundle.avgPerDay.toFixed(1)}</p>
-              <p className="mt-1 text-xs text-[var(--color-text-muted)]">Over selected range</p>
+            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.05] to-white/[0.018] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Avg views / day</p>
+              <p className="mt-1 text-2xl font-bold tabular-nums text-slate-50">{bundle.avgPerDay.toFixed(1)}</p>
+              <p className="mt-1 text-xs text-slate-500">Over selected range</p>
             </div>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/30 p-4">
-              <h3 className="mb-2 text-sm font-semibold text-[var(--color-text)]">Visits over time</h3>
+            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+              <h3 className="mb-3 text-sm font-semibold text-slate-100">Visits over time</h3>
               <AnalyticsChart kind="line" data={bundle.visitsByDay} dataKey="value" nameKey="name" height={260} />
             </div>
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/30 p-4">
-              <h3 className="mb-2 text-sm font-semibold text-[var(--color-text)]">Top pages</h3>
+            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+              <h3 className="mb-3 text-sm font-semibold text-slate-100">Top pages</h3>
               <AnalyticsChart kind="bar" data={bundle.topPages} dataKey="value" nameKey="name" height={260} />
             </div>
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/30 p-4">
-              <h3 className="mb-2 text-sm font-semibold text-[var(--color-text)]">Referrers</h3>
+            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+              <h3 className="mb-3 text-sm font-semibold text-slate-100">Referrers</h3>
               <AnalyticsChart kind="pie" data={bundle.referrers} dataKey="value" nameKey="name" height={260} />
             </div>
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/30 p-4">
-              <h3 className="mb-2 text-sm font-semibold text-[var(--color-text)]">Devices</h3>
+            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+              <h3 className="mb-3 text-sm font-semibold text-slate-100">Devices</h3>
               <AnalyticsChart kind="pie" data={bundle.devices} dataKey="value" nameKey="name" height={260} />
             </div>
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/30 p-4 lg:col-span-2">
-              <h3 className="mb-2 text-sm font-semibold text-[var(--color-text)]">Top project clicks</h3>
+            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] p-4 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] lg:col-span-2">
+              <h3 className="mb-2 text-sm font-semibold text-slate-100">Top project clicks</h3>
               {bundle.topProjectClicks.length === 0 ? (
-                <p className="text-sm text-[var(--color-text-muted)]">No project CTA clicks in this window.</p>
+                <p className="text-sm text-slate-400">No project CTA clicks in this window.</p>
               ) : (
-                <p className="mb-3 text-xs text-[var(--color-text-muted)]">
-                  <Link to="/admin/projects" className="text-[var(--color-accent)] hover:underline">
+                <p className="mb-3 text-xs text-slate-400">
+                  <Link to="/admin/projects" className="text-sky-400 hover:text-sky-300 hover:underline">
                     Open projects admin
                   </Link>{' '}
                   to edit cards.
@@ -279,7 +281,7 @@ export default function AdminAnalytics() {
         </>
       )}
 
-      <p className="text-center text-xs text-[var(--color-text-muted)]">
+      <p className="text-center text-xs text-slate-500">
         Privacy: visits store an anonymous `visitor_id` in localStorage only on your domain — no third-party trackers in this dashboard.
       </p>
     </div>

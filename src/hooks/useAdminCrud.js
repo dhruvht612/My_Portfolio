@@ -88,11 +88,18 @@ export function useAdminCrud(table, order = { column: 'display_order', ascending
     [table, refresh, toast],
   )
 
+  /** Updates display_order only; does not toast or refresh (call `refresh` after batch swaps). */
   const reorder = useCallback(
     async (id, newOrder) => {
-      await update(id, { display_order: newOrder })
+      if (!isSupabaseConfigured) return
+      try {
+        await updateRow(table, id, { display_order: newOrder })
+      } catch (e) {
+        toast.error(e.message || 'Reorder failed')
+        throw e
+      }
     },
-    [update],
+    [table, toast],
   )
 
   return { rows, loading, error, refresh, create, update, remove, reorder }

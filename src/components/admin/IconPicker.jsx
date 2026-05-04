@@ -15,7 +15,7 @@ export default function IconPicker({ value, onChange, disabled }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] text-[var(--color-accent)]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-600/30 bg-slate-800/50 text-sky-400">
           <Selected className="h-6 w-6" aria-hidden />
         </div>
         <div className="relative flex-1">
@@ -26,12 +26,12 @@ export default function IconPicker({ value, onChange, disabled }) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search icons…"
-            className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]/70 py-2 pl-9 pr-3 text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+            className="admin-field-input w-full rounded-xl border border-slate-500/25 py-2 pl-9 pr-3 text-sm shadow-sm placeholder:text-slate-500 focus:border-sky-400/45 focus:outline-none focus:ring-2 focus:ring-sky-400/25"
           />
         </div>
       </div>
-      <p className="text-xs text-[var(--color-text-muted)]">Selected: {value || '—'}</p>
-      <div className="max-h-48 overflow-y-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)]/80 p-2">
+      <p className="text-xs text-slate-500">Selected: {value || '—'}</p>
+      <div className="max-h-48 overflow-y-auto rounded-xl border border-slate-600/25 bg-slate-900/45 p-2 ring-1 ring-inset ring-white/[0.03]">
         <div className="grid grid-cols-6 gap-1 sm:grid-cols-8">
           {filtered.map((name) => {
             const Icon = LUCIDE_ICON_MAP[name]

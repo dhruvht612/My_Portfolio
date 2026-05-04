@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Plus } from 'lucide-react'
+import { ADMIN_PRIMARY_CLASS } from '../../components/admin/AdminPrimaryButton'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
+import DashboardActivityFeed from '../../components/admin/dashboard/DashboardActivityFeed'
+import DashboardStatCard from '../../components/admin/dashboard/DashboardStatCard'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
-import StatusBadge from '../../components/admin/StatusBadge'
 import { isSupabaseConfigured } from '../../lib/supabase'
 import { countBlogByStatus, countTable, fetchRecentActivity } from '../../lib/admin/queries'
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({ projects: null, certs: null, blog: null, unread: null })
+  const [stats, setStats] = useState({
+    projects: null,
+    certs: null,
+    blog: null,
+    unread: null,
+  })
   const [activity, setActivity] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -32,7 +41,12 @@ export default function AdminDashboard() {
         }
       } catch {
         if (!cancelled) {
-          setStats({ projects: '—', certs: '—', blog: { draft: '—', published: '—' }, unread: '—' })
+          setStats({
+            projects: '—',
+            certs: '—',
+            blog: { draft: '—', published: '—' },
+            unread: '—',
+          })
           setActivity([])
         }
       } finally {
@@ -44,63 +58,98 @@ export default function AdminDashboard() {
     }
   }, [])
 
-  const cards = [
-    { label: 'Projects', value: stats.projects, to: '/admin/projects', hint: 'Manage portfolio projects' },
-    { label: 'Certifications', value: stats.certs, to: '/admin/certifications', hint: 'Manage credentials' },
-    {
-      label: 'Blog posts',
-      value: stats.blog == null ? '—' : `${stats.blog.published} pub · ${stats.blog.draft} draft`,
-      to: '/admin/blog',
-      hint: 'Drafts and published posts',
-    },
-    { label: 'Unread messages', value: stats.unread, to: '/admin/messages', hint: 'Contact submissions' },
-  ]
+  const blog = stats.blog
+  const published = blog && typeof blog === 'object' && typeof blog.published === 'number' ? blog.published : null
+  const drafts = blog && typeof blog === 'object' && typeof blog.draft === 'number' ? blog.draft : null
+  const blogBadges = []
+  if (published != null && published > 0) blogBadges.push({ label: 'Live', tone: 'green' })
+  if (drafts != null && drafts > 0) blogBadges.push({ label: 'Draft', tone: 'amber' })
+
+  const unreadNum = typeof stats.unread === 'number' ? stats.unread : null
+  const messageBadges =
+    unreadNum != null
+      ? [{ label: unreadNum > 0 ? 'Action' : 'Clear', tone: unreadNum > 0 ? 'amber' : 'gray' }]
+      : [{ label: '—', tone: 'gray' }]
+
+  const blogSubtitle =
+    drafts != null && drafts > 0
+      ? `${drafts} draft${drafts === 1 ? '' : 's'}`
+      : loading && isSupabaseConfigured
+        ? undefined
+        : drafts === 0
+          ? 'No drafts'
+          : undefined
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8">
+    <div className="relative mx-auto max-w-6xl space-y-8 lg:space-y-10">
       <NotConfiguredBanner />
-      <div>
-        <h2 className="text-2xl font-bold text-[var(--color-text)]">Dashboard</h2>
-        <p className="mt-1 text-sm text-[var(--color-text-muted)]">Overview of your portfolio backend</p>
+
+      <AdminPageHeader
+        eyebrow="Overview"
+        title="At a glance"
+        description="Portfolio counts and recent edits. Cards link to each admin section."
+      >
+        <Link to="/admin/projects" className={`${ADMIN_PRIMARY_CLASS} self-start sm:self-auto`}>
+          <Plus className="h-4 w-4" aria-hidden />
+          New project
+        </Link>
+      </AdminPageHeader>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 xl:grid-rows-2 xl:gap-5">
+        <DashboardStatCard
+          className="md:col-span-2 xl:col-span-2 xl:row-span-2"
+          title="Projects"
+          value={loading && isSupabaseConfigured ? null : stats.projects ?? '—'}
+          subtitle="Manage portfolio projects and case studies"
+          badges={[{ label: 'Live', tone: 'gray' }]}
+          accent="sky"
+          to="/admin/projects"
+          featured
+          loading={loading && isSupabaseConfigured}
+        />
+        <DashboardStatCard
+          className="xl:col-start-3"
+          title="Certifications"
+          value={loading && isSupabaseConfigured ? null : stats.certs ?? '—'}
+          subtitle="Credentials and badges"
+          badges={[{ label: 'Live', tone: 'gray' }]}
+          accent="violet"
+          to="/admin/certifications"
+          loading={loading && isSupabaseConfigured}
+        />
+        <DashboardStatCard
+          className="xl:col-start-4"
+          title="Blog posts"
+          value={loading && isSupabaseConfigured ? null : published ?? '—'}
+          subtitle={blogSubtitle}
+          badges={blogBadges.length ? blogBadges : [{ label: '—', tone: 'gray' }]}
+          accent="emerald"
+          to="/admin/blog"
+          loading={loading && isSupabaseConfigured}
+        />
+        <DashboardStatCard
+          className="md:col-span-2 xl:col-span-2 xl:col-start-3 xl:row-start-2"
+          title="Unread messages"
+          value={loading && isSupabaseConfigured ? null : stats.unread ?? '—'}
+          subtitle="Contact form submissions"
+          badges={messageBadges}
+          accent="amber"
+          to="/admin/messages"
+          loading={loading && isSupabaseConfigured}
+        />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map((c) => (
-          <Link
-            key={c.label}
-            to={c.to}
-            className="glass-card group block rounded-2xl border border-[var(--color-border)] p-5 transition-colors hover:border-[var(--color-accent)]/40"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">{c.label}</p>
-              <StatusBadge tone="gray">Live</StatusBadge>
-            </div>
-            <p className="mt-3 text-3xl font-bold text-[var(--color-text)]">{loading && isSupabaseConfigured ? '…' : c.value ?? '—'}</p>
-            <p className="mt-2 text-xs text-[var(--color-text-muted)] group-hover:text-[var(--color-accent)]">{c.hint}</p>
-          </Link>
-        ))}
-      </div>
-
-      <div className="glass-card rounded-2xl border border-[var(--color-border)] p-6">
-        <h3 className="text-lg font-semibold text-[var(--color-text)]">Recent activity</h3>
-        <p className="mt-1 text-xs text-[var(--color-text-muted)]">Latest updates across key tables</p>
-        {!isSupabaseConfigured ? (
-          <p className="mt-4 text-sm text-[var(--color-text-muted)]">Connect Supabase to see activity.</p>
-        ) : activity.length === 0 ? (
-          <p className="mt-4 text-sm text-[var(--color-text-muted)]">No recent updates found.</p>
-        ) : (
-          <ul className="mt-4 divide-y divide-[var(--color-border)]/60">
-            {activity.map((row) => (
-              <li key={`${row.table}-${row.id}`} className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm">
-                <span className="font-medium text-[var(--color-text)]">{row.label}</span>
-                <span className="text-xs text-[var(--color-text-muted)]">
-                  {row.table} · {row.updated_at ? new Date(row.updated_at).toLocaleString() : ''}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <section className="overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.045] to-white/[0.02] shadow-xl shadow-black/30 ring-1 ring-inset ring-white/[0.03]">
+        <div className="border-b border-white/10 px-6 py-5 md:px-8">
+          <h2 className="text-lg font-semibold tracking-tight text-slate-50">Recent activity</h2>
+          <p className="mt-1 text-sm text-slate-500">Latest updates across your portfolio tables</p>
+        </div>
+        <DashboardActivityFeed
+          activity={activity}
+          loading={loading && isSupabaseConfigured}
+          configured={isSupabaseConfigured}
+        />
+      </section>
     </div>
   )
 }

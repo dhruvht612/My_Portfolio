@@ -12,6 +12,8 @@ export default function ImageUploader({
   accept = 'image/*',
   maxSizeMb = 8,
   disabled,
+  /** When true, omit the caption line (e.g. parent form already shows the field label). */
+  hideLabel = false,
 }) {
   const inputRef = useRef(null)
   const [progress, setProgress] = useState(0)
@@ -42,13 +44,13 @@ export default function ImageUploader({
 
   return (
     <div className="space-y-2">
-      <p className="text-xs font-medium text-[var(--color-text-muted)]">{label}</p>
+      {hideLabel ? null : <p className="text-xs font-medium text-slate-400">{label}</p>}
       {!configured ? (
         <p className="text-xs text-amber-200/90">Configure Supabase to enable uploads.</p>
       ) : null}
       <div
-        className={`relative flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-bg-card)]/50 p-6 ${
-          disabled || !configured ? 'opacity-50' : 'cursor-pointer hover:border-[var(--color-accent)]/50'
+        className={`relative flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-500/30 bg-slate-800/35 p-6 transition-colors ${
+          disabled || !configured ? 'opacity-50' : 'cursor-pointer hover:border-sky-500/35 hover:bg-slate-800/50'
         }`}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
@@ -80,14 +82,14 @@ export default function ImageUploader({
           }}
         />
         {value && accept.startsWith('image') ? (
-          <img src={value} alt="" className="max-h-40 rounded-lg border border-[var(--color-border)] object-contain" />
+          <img src={value} alt="" className="max-h-40 rounded-lg border border-slate-600/40 object-contain shadow-md shadow-black/30" />
         ) : value && accept.includes('pdf') ? (
-          <p className="text-sm text-[var(--color-text-muted)]">PDF linked</p>
+          <p className="text-sm text-slate-400">PDF linked</p>
         ) : (
-          <ImagePlus className="h-10 w-10 text-[var(--color-text-muted)]" />
+          <ImagePlus className="h-10 w-10 text-slate-500" />
         )}
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <span className="inline-flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
+          <span className="inline-flex items-center gap-2 text-xs text-slate-400">
             <Upload className="h-4 w-4" />
             Drop file or click to upload
           </span>
@@ -108,9 +110,9 @@ export default function ImageUploader({
         </div>
         {busy ? (
           <div className="w-full max-w-xs">
-            <div className="h-1.5 overflow-hidden rounded-full bg-[var(--color-border)]">
+            <div className="h-1.5 overflow-hidden rounded-full bg-slate-700/80">
               <div
-                className="h-full bg-[var(--color-accent)] transition-all"
+                className="h-full bg-gradient-to-r from-sky-500 to-cyan-400 transition-all"
                 style={{ width: `${Math.max(progress, 15)}%` }}
               />
             </div>

@@ -1,8 +1,9 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom'
 import { PortfolioProvider } from './context/PortfolioContext'
 import { useAuth } from './hooks/useAuth'
 import ParticlesBackground from './components/ui/particles-bg'
+import ShaderGridBackground from './components/ui/shader-grid-background'
 import SkipLink from './components/SkipLink'
 import Landing from './components/Landing'
 import Layout from './components/Layout'
@@ -65,6 +66,23 @@ function LandingRoute() {
   )
 }
 
+/** Public site: shader + particles + glass. Authenticated admin (`/admin/*` except login): shader only. */
+function AmbientLayers() {
+  const { pathname } = useLocation()
+  const adminApp = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')
+  return (
+    <>
+      <ShaderGridBackground />
+      {!adminApp ? (
+        <>
+          <ParticlesBackground />
+          <div className="liquid-glass-overlay" aria-hidden="true" />
+        </>
+      ) : null}
+    </>
+  )
+}
+
 function NotFoundPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-6" style={{ background: 'transparent', color: '#f1f5f9' }}>
@@ -117,11 +135,10 @@ function NotFoundPage() {
 
 export default function App() {
   return (
-    <div className="min-h-screen text-[var(--color-text)]" style={{ position: 'relative', background: 'transparent' }}>
-      <ParticlesBackground />
-      <div className="liquid-glass-overlay" aria-hidden="true" />
-      <div style={{ position: 'relative', zIndex: 1, background: 'transparent' }}>
-        <BrowserRouter>
+    <BrowserRouter>
+      <div className="min-h-screen text-[var(--color-text)]" style={{ position: 'relative', background: 'transparent' }}>
+        <AmbientLayers />
+        <div style={{ position: 'relative', zIndex: 1, background: 'transparent' }}>
           <PortfolioProvider>
             <Suspense fallback={<PageLoader />}>
               <Routes>
@@ -167,8 +184,8 @@ export default function App() {
               </Routes>
             </Suspense>
           </PortfolioProvider>
-        </BrowserRouter>
+        </div>
       </div>
-    </div>
+    </BrowserRouter>
   )
 }
