@@ -1,4 +1,5 @@
 import {
+  Activity,
   Award,
   BarChart3,
   Briefcase,
@@ -7,6 +8,7 @@ import {
   GraduationCap,
   LayoutDashboard,
   Mail,
+  ScrollText,
   Sparkles,
   UserRound,
 } from 'lucide-react'
@@ -23,4 +25,6 @@ export const ADMIN_NAV = [
   { to: '/admin/messages', label: 'Messages', icon: Mail },
   { to: '/admin/education', label: 'Education', icon: GraduationCap },
   { to: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  { to: '/admin/system-health', label: 'System health', icon: Activity },
+  { to: '/admin/logs', label: 'Logs', icon: ScrollText },
 ]
