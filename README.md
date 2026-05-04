@@ -43,7 +43,7 @@ Modern, dark-themed, data-driven developer portfolio built with React + Vite. Th
 | Frontend | React 19, React Router 7 |
 | Build Tool | Vite 7 |
 | Styling | Tailwind CSS 3, custom CSS utilities, icon libraries |
-| Forms | Formspree (`@formspree/react`) |
+| Backend / forms | Supabase (`contact_submissions` for the public contact form; React Hook Form + Zod in admin) |
 | Motion | Framer Motion |
 | Quality | ESLint 9 |
 
@@ -74,15 +74,16 @@ Local URL: `http://localhost:5173`
 
 ## Environment Variables
 
-Create a `.env.local` file in the project root:
+Create a `.env.local` file in the project root (see `.env.example`):
 
 ```bash
-VITE_FORMSPREE_FORM_ID=your_form_id_here
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-or-publishable-key
 ```
 
 - Variables must be prefixed with `VITE_` to be available in client code.
-- Access them with `import.meta.env`, for example:
-  `import.meta.env.VITE_FORMSPREE_FORM_ID`
+- The contact form inserts into Supabase only; it does **not** send email. For inbox notifications, add a Supabase Database Webhook, Edge Function, or another provider later.
+- Access them with `import.meta.env`, for example: `import.meta.env.VITE_SUPABASE_URL`
 
 ## Project Structure
 
@@ -129,7 +130,7 @@ Build and deploy the `dist/` folder to any static host:
 
 1. `npm run build`
 2. Configure SPA fallback so non-root routes return `index.html`
-3. Add production environment variables (`VITE_FORMSPREE_FORM_ID`, etc.)
+3. Add production environment variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, etc.)
 
 See also: `docs/deployment.md`
 
@@ -142,7 +143,7 @@ See also: `docs/deployment.md`
 ## Troubleshooting
 
 - If a route 404s in production, verify SPA fallback rewrites are enabled.
-- If contact submissions fail, confirm `VITE_FORMSPREE_FORM_ID` is set correctly.
+- If contact submissions fail, confirm `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set and that RLS allows anonymous `INSERT` on `contact_submissions` (see `docs/backend-integration-plan.md`).
 - If styles look off, run a clean install (`rm -rf node_modules package-lock.json && npm install`) and restart the dev server.
 
 ## License

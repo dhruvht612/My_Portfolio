@@ -6,7 +6,7 @@ import { Eye, EyeOff, Mail, User, MessageSquare, Code2, Database, Globe, Cpu, Br
 import { cn } from '../../lib/utils'
 
 const Input = memo(
-  forwardRef(function Input({ className, type, icon: Icon, ...props }, ref) {
+  forwardRef(function Input({ className, type, icon: Icon, label, ...props }, ref) {
     const radius = 100
     const [visible, setVisible] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
@@ -20,6 +20,12 @@ const Input = memo(
     }
 
     const actualType = type === 'password' ? (showPassword ? 'text' : 'password') : type
+    /** Outer chrome; value is typed in the inner area below the label strip (no overlap). */
+    const fieldChrome =
+      'overflow-hidden rounded-md border border-slate-200/80 bg-white/95 shadow-sm transition duration-300 focus-within:ring-2 focus-within:ring-sky-500/45'
+
+    const valueClasses =
+      'w-full border-0 bg-transparent px-3 text-sm text-slate-900 caret-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0'
 
     return (
       <motion.div
@@ -37,45 +43,36 @@ const Input = memo(
         onMouseLeave={() => setVisible(false)}
         className="group/input rounded-lg p-[2px] transition duration-300"
       >
-        <div className="relative">
-          {Icon && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
-              <Icon size={16} />
-            </span>
-          )}
+        <div className={cn('relative', fieldChrome)}>
+          <div className="flex items-center gap-2 border-b border-slate-200/70 bg-slate-50/95 px-3 py-2">
+            {Icon && <Icon size={16} className="shrink-0 text-slate-500" aria-hidden />}
+            {label}
+          </div>
           {type === 'textarea' ? (
             <textarea
-              className={cn(
-                `peer shadow-input flex min-h-[140px] w-full rounded-md border-none bg-[var(--color-bg-card)]/60 p-3 text-sm text-[var(--color-text)] placeholder:text-transparent transition duration-300 resize-none
-                 group-hover/input:shadow-none focus-visible:ring-[2px] focus-visible:ring-[var(--color-accent)]/60 focus-visible:outline-none`,
-                className
-              )}
+              className={cn(`${valueClasses} min-h-[132px] resize-y py-3`, className)}
               ref={ref}
               {...props}
             />
           ) : (
-            <input
-              type={actualType}
-              className={cn(
-                `peer shadow-input flex h-11 w-full rounded-md border-none bg-[var(--color-bg-card)]/60 ${
-                  Icon ? 'pl-10' : 'pl-3'
-                } pr-10 py-2 text-sm text-[var(--color-text)] placeholder:text-transparent transition duration-300
-                 group-hover/input:shadow-none focus-visible:ring-[2px] focus-visible:ring-[var(--color-accent)]/60 focus-visible:outline-none`,
-                className
+            <div className="relative">
+              <input
+                type={actualType}
+                className={cn(`${valueClasses} h-11 py-2`, type === 'password' ? 'pr-11' : '', className)}
+                ref={ref}
+                {...props}
+              />
+              {type === 'password' && (
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((p) => !p)}
+                  className="absolute inset-y-0 right-2 flex items-center text-slate-500 hover:text-slate-700"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                </button>
               )}
-              ref={ref}
-              {...props}
-            />
-          )}
-          {type === 'password' && (
-            <button
-              type="button"
-              onClick={() => setShowPassword((p) => !p)}
-              className="absolute inset-y-0 right-3 flex items-center text-[var(--color-text-muted)]"
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
-            >
-              {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
-            </button>
+            </div>
           )}
         </div>
       </motion.div>
@@ -147,6 +144,7 @@ export const AnimatedForm = memo(function AnimatedForm({
   onSubmit,
   isSubmitting = false,
   isSuccess = false,
+  submitDisabled = false,
   serverError,
   successMessage,
 }) {
@@ -190,22 +188,16 @@ export const AnimatedForm = memo(function AnimatedForm({
                   type={field.type}
                   id={field.name}
                   name={field.name}
-                  placeholder=" "
+                  placeholder={field.placeholder ?? ''}
                   icon={iconMap[field.name]}
                   required={field.required}
+                  label={
+                    <label htmlFor={field.name} className="min-w-0 text-xs font-semibold uppercase tracking-wide text-slate-700">
+                      {field.label}
+                      {field.required && <span className="text-red-500"> *</span>}
+                    </label>
+                  }
                 />
-                <label
-                  htmlFor={field.name}
-                  className={`absolute ${
-                    iconMap[field.name] ? 'left-10' : 'left-3'
-                  } ${
-                    field.type === 'textarea' ? 'top-3' : 'top-1/2 -translate-y-1/2'
-                  } origin-left bg-[var(--color-bg-card)]/80 px-1 text-[var(--color-text-muted)] text-xs transition-all duration-200
-                  peer-focus:top-0 peer-focus:translate-y-[-50%] peer-focus:scale-90 peer-focus:text-[var(--color-accent)]
-                  peer-not-placeholder-shown:top-0 peer-not-placeholder-shown:translate-y-[-50%] peer-not-placeholder-shown:scale-90`}
-                >
-                  {field.label} {field.required && <span className="text-red-400">*</span>}
-                </label>
               </div>
               <section className="h-4">
                 {errors[field.name] && <p className="text-red-500 text-xs">{errors[field.name]}</p>}
@@ -221,7 +213,7 @@ export const AnimatedForm = memo(function AnimatedForm({
           <button
             className="bg-gradient-to-br relative group/btn from-zinc-200 to-zinc-200 dark:from-zinc-900 dark:to-zinc-900 block w-full text-black dark:text-white rounded-md h-11 font-medium outline-hidden"
             type="submit"
-            disabled={isSubmitting || isSuccess}
+            disabled={isSubmitting || isSuccess || submitDisabled}
           >
             {isSubmitting ? 'Sending...' : isSuccess ? 'Message Sent' : `${submitButton} →`}
             <BottomGradient />

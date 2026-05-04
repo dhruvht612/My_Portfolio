@@ -1,23 +1,56 @@
 import { useState, useCallback } from 'react'
-import { useForm, ValidationError } from '@formspree/react'
 import { motion } from 'framer-motion'
-import { ArrowUpRight, Copy, Globe, Mail, MapPin, Rocket, Send, Sparkles, Users } from 'lucide-react'
+import { ArrowUpRight, Copy, Globe, Mail, Rocket, Send, Sparkles, Users } from 'lucide-react'
 import AnimatedSection from './AnimatedSection'
 import Toast from './Toast'
-import AnimatedForm, { ContactTechOrbit } from './ui/modern-animated-sign-in'
-
-const FORMSPREE_FORM_ID = import.meta.env.VITE_FORMSPREE_FORM_ID ?? 'mwpabokg'
+import AnimatedForm from './ui/modern-animated-sign-in'
+import { isSupabaseConfigured, supabase } from '../lib/supabase'
 
 function Contact({ contactCards, heroSocials, altContactLinks }) {
-  const [state, handleSubmit] = useForm(FORMSPREE_FORM_ID)
+  const [submitting, setSubmitting] = useState(false)
+  const [succeeded, setSucceeded] = useState(false)
+  const [error, setError] = useState(null)
   const [copyToastVisible, setCopyToastVisible] = useState(false)
-  const isSubmitting = state.submitting
-  const isSuccess = state.succeeded
   const socialIconMap = {
     GitHub: Globe,
     LinkedIn: Users,
     Email: Mail,
   }
+
+  const handleContactSubmit = useCallback(async (event) => {
+    if (!isSupabaseConfigured || !supabase) {
+      setError(
+        'The contact form is unavailable: set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (or VITE_SUPABASE_PUBLISHABLE_KEY) in your environment.'
+      )
+      return
+    }
+
+    const name = event.target.name?.value?.trim() ?? ''
+    const email = event.target.email?.value?.trim() ?? ''
+    const message = event.target.message?.value?.trim() ?? ''
+
+    if (!name || !email || !message) {
+      setError('Please fill in all required fields.')
+      return
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setError('Please enter a valid email address.')
+      return
+    }
+
+    setError(null)
+    setSubmitting(true)
+    try {
+      const { error: insertError } = await supabase.from('contact_submissions').insert({ name, email, message })
+      if (insertError) {
+        setError(insertError.message || 'Could not send your message. Please try again or use email below.')
+        return
+      }
+      setSucceeded(true)
+    } finally {
+      setSubmitting(false)
+    }
+  }, [])
 
   const copyEmail = useCallback(async () => {
     const emailCard = contactCards.find((c) => c.title === 'Email')
@@ -131,6 +164,12 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
                   </div>
                 </motion.div>
               </div>
+              {!isSupabaseConfigured && (
+                <p className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-200/95" role="status">
+                  Contact form is disabled until you configure Supabase (<code className="text-xs">VITE_SUPABASE_URL</code> and{' '}
+                  <code className="text-xs">VITE_SUPABASE_ANON_KEY</code>). You can still reach out via email or the links on this page.
+                </p>
+              )}
               <AnimatedForm
                 header="Send Me a Message"
                 subHeader="Share your idea, project details, or collaboration request."
@@ -140,13 +179,14 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
                   { name: 'message', label: 'Your Message', required: true, type: 'textarea', placeholder: 'Tell me about your project or idea...' },
                 ]}
                 submitButton="Send Message"
-                onSubmit={handleSubmit}
-                isSubmitting={isSubmitting}
-                isSuccess={isSuccess}
-                serverError={<ValidationError prefix="Form" field="FORM" errors={state.errors} className="text-sm font-medium text-rose-400" />}
+                onSubmit={handleContactSubmit}
+                isSubmitting={submitting}
+                isSuccess={succeeded}
+                submitDisabled={!isSupabaseConfigured}
+                serverError={error ? <p className="text-sm font-medium text-rose-400">{error}</p> : null}
                 successMessage="Thanks for reaching out! I will respond soon."
               />
-              {isSuccess && (
+              {succeeded && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -199,4 +239,3 @@ function Contact({ contactCards, heroSocials, altContactLinks }) {
 }
 
 export default Contact
-
