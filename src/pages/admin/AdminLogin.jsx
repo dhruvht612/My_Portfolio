@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import SkipLink from '../../components/SkipLink'
+import { SupabaseConfigureHintBody } from '../../components/admin/SupabaseConfigureHint'
 import { useAuth } from '../../hooks/useAuth'
 import { isSupabaseConfigured, supabase } from '../../lib/supabase'
 
@@ -68,14 +69,7 @@ export default function AdminLogin() {
               role="status"
             >
               <p className="font-semibold text-amber-50">Supabase not configured</p>
-              <p className="mt-2 text-amber-100/90">
-                Add <code className="rounded bg-black/20 px-1">VITE_SUPABASE_URL</code> and{' '}
-                <code className="rounded bg-black/20 px-1">VITE_SUPABASE_ANON_KEY</code> (or{' '}
-                <code className="rounded bg-black/20 px-1">VITE_SUPABASE_PUBLISHABLE_KEY</code>) to{' '}
-                <code className="rounded bg-black/20 px-1">.env</code> or{' '}
-                <code className="rounded bg-black/20 px-1">.env.local</code>, then restart{' '}
-                <code className="rounded bg-black/20 px-1">npm run dev</code>.
-              </p>
+              <SupabaseConfigureHintBody className="mt-2 text-amber-100/90" />
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
