@@ -319,7 +319,7 @@ export default function AdminForm({
 
   const formInner = (
     <form onSubmit={submit} className="flex h-full min-h-0 flex-col">
-      <div className="min-h-0 flex-1 space-y-4 pr-1">
+      <div className={`min-h-0 flex-1 space-y-4 pr-1 ${stickyFooter ? 'pb-20' : ''}`}>
       {fields.map((block, i) => {
         if (block.section && Array.isArray(block.fields)) {
           return (
@@ -338,7 +338,7 @@ export default function AdminForm({
       {(extraFooter || !hideSubmitButton) && (
         <div
           className={`mt-3 flex flex-wrap items-center gap-3 border-t border-white/[0.06] pt-3 ${
-            stickyFooter ? 'sticky bottom-0 bg-slate-950/95 pb-1' : ''
+            stickyFooter ? 'sticky bottom-0 z-10 bg-slate-950/95 pb-2 backdrop-blur-sm' : ''
           }`}
         >
           {!hideSubmitButton ? (

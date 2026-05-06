@@ -75,23 +75,29 @@ export default function AdminFormWizard({
           stickyFooter
           hideSubmitButton
           extraFooter={({ getValues, handleSubmit }) => (
-            <>
-              {onCancel ? (
-                <button type="button" onClick={onCancel} className="theme-btn theme-btn-secondary px-4 py-2 text-sm">
-                  {cancelLabel}
+            <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex w-full gap-2 sm:w-auto">
+                {onCancel ? (
+                  <button
+                    type="button"
+                    onClick={onCancel}
+                    className="theme-btn theme-btn-secondary flex-1 px-4 py-2 text-sm sm:flex-none"
+                  >
+                    {cancelLabel}
+                  </button>
+                ) : null}
+                <button
+                  type="button"
+                  disabled={currentStep === 0}
+                  onClick={() => {
+                    saveDraft(getValues())
+                    setCurrentStep((s) => Math.max(0, s - 1))
+                  }}
+                  className="theme-btn theme-btn-secondary flex-1 px-4 py-2 text-sm disabled:opacity-50 sm:flex-none"
+                >
+                  Back
                 </button>
-              ) : null}
-              <button
-                type="button"
-                disabled={currentStep === 0}
-                onClick={() => {
-                  saveDraft(getValues())
-                  setCurrentStep((s) => Math.max(0, s - 1))
-                }}
-                className="theme-btn theme-btn-secondary px-4 py-2 text-sm disabled:opacity-50"
-              >
-                Back
-              </button>
+              </div>
               <button
                 type="button"
                 onClick={() =>
@@ -104,11 +110,11 @@ export default function AdminFormWizard({
                     await onSubmit(vals)
                   })()
                 }
-                className="theme-btn theme-btn-primary px-5 py-2 text-sm"
+                className="theme-btn theme-btn-primary w-full px-5 py-2 text-sm sm:w-auto"
               >
                 {lastStep ? submitLabel : 'Next'}
               </button>
-            </>
+            </div>
           )}
           onSubmit={() => {}}
         />
