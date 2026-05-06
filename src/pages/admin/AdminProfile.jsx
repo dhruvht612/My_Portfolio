@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import AdminForm from '../../components/admin/AdminForm'
+import AdminFormWizard from '../../components/admin/AdminFormWizard'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
 import { useSupabaseRow } from '../../hooks/useSupabaseRow'
@@ -39,62 +39,68 @@ export default function AdminProfile() {
     }
   }, [data])
 
-  const fields = [
+  const steps = [
     {
-      section: 'Basic info',
-      fields: [
-        { type: 'text', name: 'full_name', label: 'Full name' },
-        { type: 'array', name: 'typed_roles', label: 'Typed roles (hero)', itemLabel: 'Role' },
-      ],
+      id: 'core',
+      label: 'Core information',
+      fields: [{ section: 'Basic info', fields: [{ type: 'text', name: 'full_name', label: 'Full name' }, { type: 'array', name: 'typed_roles', label: 'Typed roles (hero)', itemLabel: 'Role' }] }],
     },
     {
-      section: 'Bio / story',
-      fields: [{ type: 'array', name: 'bio_story', label: 'Paragraphs', multiline: true, itemLabel: 'Paragraph' }],
+      id: 'story',
+      label: 'Story',
+      fields: [{ section: 'Bio / story', fields: [{ type: 'array', name: 'bio_story', label: 'Paragraphs', multiline: true, itemLabel: 'Paragraph' }] }],
     },
     {
-      section: 'Interests',
+      id: 'meta',
+      label: 'Metadata',
       fields: [
         {
-          type: 'arrayOfObjects',
-          name: 'interests',
-          label: 'Interest cards',
-          itemFields: [
-            { name: 'icon', label: 'Icon class (e.g. fas fa-code)', type: 'text' },
-            { name: 'title', label: 'Title', type: 'text' },
-            { name: 'copy', label: 'Copy', type: 'textarea' },
+          section: 'Interests & fun facts',
+          fields: [
+            {
+              type: 'arrayOfObjects',
+              name: 'interests',
+              label: 'Interest cards',
+              itemFields: [
+                { name: 'icon', label: 'Icon class (e.g. fas fa-code)', type: 'text' },
+                { name: 'title', label: 'Title', type: 'text' },
+                { name: 'copy', label: 'Copy', type: 'textarea' },
+              ],
+            },
+            {
+              type: 'arrayOfObjects',
+              name: 'fun_facts',
+              label: 'Facts',
+              itemFields: [
+                { name: 'emoji', label: 'Emoji', type: 'text' },
+                { name: 'title', label: 'Title', type: 'text' },
+                { name: 'copy', label: 'Copy', type: 'textarea' },
+              ],
+            },
           ],
         },
       ],
     },
     {
-      section: 'Fun facts',
+      id: 'links',
+      label: 'Links & assets',
       fields: [
         {
-          type: 'arrayOfObjects',
-          name: 'fun_facts',
-          label: 'Facts',
-          itemFields: [
-            { name: 'emoji', label: 'Emoji', type: 'text' },
-            { name: 'title', label: 'Title', type: 'text' },
-            { name: 'copy', label: 'Copy', type: 'textarea' },
+          section: 'Social links',
+          fields: [
+            { type: 'text', name: 'social_links.github', label: 'GitHub URL' },
+            { type: 'text', name: 'social_links.linkedin', label: 'LinkedIn URL' },
+            { type: 'text', name: 'social_links.instagram', label: 'Instagram URL' },
+            { type: 'email', name: 'social_links.email', label: 'Email' },
           ],
         },
-      ],
-    },
-    {
-      section: 'Social links',
-      fields: [
-        { type: 'text', name: 'social_links.github', label: 'GitHub URL' },
-        { type: 'text', name: 'social_links.linkedin', label: 'LinkedIn URL' },
-        { type: 'text', name: 'social_links.instagram', label: 'Instagram URL' },
-        { type: 'email', name: 'social_links.email', label: 'Email' },
-      ],
-    },
-    {
-      section: 'Assets',
-      fields: [
-        { type: 'image', name: 'resume_url', label: 'Resume PDF', bucket: 'resumes', accept: 'application/pdf' },
-        { type: 'array', name: 'footer_badges', label: 'Footer badge image URLs', itemLabel: 'URL' },
+        {
+          section: 'Assets',
+          fields: [
+            { type: 'image', name: 'resume_url', label: 'Resume PDF', bucket: 'resumes', accept: 'application/pdf' },
+            { type: 'array', name: 'footer_badges', label: 'Footer badge image URLs', itemLabel: 'URL' },
+          ],
+        },
       ],
     },
   ]
@@ -116,22 +122,25 @@ export default function AdminProfile() {
         description="Single-row upsert for the public About / hero: name, roles, bio, socials, resume, and footer badges."
       />
       <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-white/[0.015] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] md:p-8">
-        <AdminForm
-        key={data?.id || 'new'}
-        schema={profileSchema}
-        defaultValues={defaultValues}
-        fields={fields}
-        disabled={!isSupabaseConfigured}
-        onSubmit={async (values) => {
-          const payload = {
-            ...values,
-            typed_roles: values.typed_roles.filter(Boolean),
-            bio_story: values.bio_story.filter(Boolean),
-            footer_badges: values.footer_badges.filter(Boolean),
-          }
-          await save(payload)
-        }}
-      />
+        <div className="h-[min(80vh,780px)]">
+          <AdminFormWizard
+            key={data?.id || 'new'}
+            schema={profileSchema}
+            defaultValues={defaultValues}
+            steps={steps}
+            disabled={!isSupabaseConfigured}
+            submitLabel="Save"
+            onSubmit={async (values) => {
+              const payload = {
+                ...values,
+                typed_roles: values.typed_roles.filter(Boolean),
+                bio_story: values.bio_story.filter(Boolean),
+                footer_badges: values.footer_badges.filter(Boolean),
+              }
+              await save(payload)
+            }}
+          />
+        </div>
       </div>
     </div>
   )

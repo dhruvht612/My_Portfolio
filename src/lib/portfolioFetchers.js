@@ -23,7 +23,44 @@ function normalizeBadge(raw) {
       gradient: typeof o.gradient === 'string' ? o.gradient : 'from-slate-400 to-slate-600',
     }
   }
-  const s = String(raw)
+  const s = String(raw).trim()
+  const parseAttempts = [s]
+  // Handle DB strings that are JSON-escaped and wrapped in quotes, e.g. "\"{\\\"label\\\":...}\""
+  if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+    parseAttempts.push(s.slice(1, -1))
+  }
+
+  for (const attempt of parseAttempts) {
+    const candidate = attempt.trim()
+    if (!candidate) continue
+    if (!candidate.startsWith('{')) continue
+    try {
+      const parsed = JSON.parse(candidate)
+      if (parsed && typeof parsed === 'object' && 'label' in parsed) {
+        return {
+          label: String(parsed.label ?? 'Project'),
+          icon: typeof parsed.icon === 'string' ? parsed.icon : 'fas fa-star',
+          gradient: typeof parsed.gradient === 'string' ? parsed.gradient : 'from-slate-400 to-slate-600',
+        }
+      }
+    } catch {
+      // Continue fallback attempts.
+    }
+    // Try un-escaping JSON payloads wrapped as a string.
+    try {
+      const unescaped = candidate.replace(/\\"/g, '"')
+      const parsed = JSON.parse(unescaped)
+      if (parsed && typeof parsed === 'object' && 'label' in parsed) {
+        return {
+          label: String(parsed.label ?? 'Project'),
+          icon: typeof parsed.icon === 'string' ? parsed.icon : 'fas fa-star',
+          gradient: typeof parsed.gradient === 'string' ? parsed.gradient : 'from-slate-400 to-slate-600',
+        }
+      }
+    } catch {
+      // Continue to plain-string fallback.
+    }
+  }
   return { label: s, icon: 'fas fa-star', gradient: 'from-sky-400 to-blue-500' }
 }
 

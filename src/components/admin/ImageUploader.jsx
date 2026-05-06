@@ -49,7 +49,7 @@ export default function ImageUploader({
         <p className="text-xs text-amber-200/90">Configure Supabase to enable uploads.</p>
       ) : null}
       <div
-        className={`relative flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-500/30 bg-slate-800/35 p-6 transition-colors ${
+        className={`relative flex min-h-36 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-500/30 bg-slate-800/35 p-3 transition-colors ${
           disabled || !configured ? 'opacity-50' : 'cursor-pointer hover:border-sky-500/35 hover:bg-slate-800/50'
         }`}
         onDragOver={(e) => e.preventDefault()}
@@ -82,11 +82,11 @@ export default function ImageUploader({
           }}
         />
         {value && accept.startsWith('image') ? (
-          <img src={value} alt="" className="max-h-40 rounded-lg border border-slate-600/40 object-contain shadow-md shadow-black/30" />
+          <img src={value} alt="" className="h-20 w-full max-w-[180px] rounded-lg border border-slate-600/40 object-cover shadow-md shadow-black/30" />
         ) : value && accept.includes('pdf') ? (
           <p className="text-sm text-slate-400">PDF linked</p>
         ) : (
-          <ImagePlus className="h-10 w-10 text-slate-500" />
+          <ImagePlus className="h-8 w-8 text-slate-500" />
         )}
         <div className="flex flex-wrap items-center justify-center gap-2">
           <span className="inline-flex items-center gap-2 text-xs text-slate-400">

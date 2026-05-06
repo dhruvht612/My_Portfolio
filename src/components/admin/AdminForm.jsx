@@ -32,6 +32,7 @@ export default function AdminForm({
   sidebar,
   extraFooter,
   hideSubmitButton,
+  stickyFooter = false,
 }) {
   const toast = useToast()
   const methods = useForm({
@@ -317,23 +318,29 @@ export default function AdminForm({
   }
 
   const formInner = (
-    <form onSubmit={submit} className="space-y-6">
+    <form onSubmit={submit} className="flex h-full min-h-0 flex-col">
+      <div className="min-h-0 flex-1 space-y-4 pr-1">
       {fields.map((block, i) => {
         if (block.section && Array.isArray(block.fields)) {
           return (
             <div
               key={block.section || i}
-              className="space-y-4 rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.045] to-white/[0.015] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]"
+              className="space-y-3 rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.045] to-white/[0.015] p-4 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]"
             >
               <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-400/80">{block.section}</h3>
-              <div className="grid gap-4 md:grid-cols-2">{block.fields.map((f) => renderField(f))}</div>
+              <div className="grid gap-3 md:grid-cols-2">{block.fields.map((f) => renderField(f))}</div>
             </div>
           )
         }
         return <div key={block.name || i}>{renderField(block)}</div>
       })}
+      </div>
       {(extraFooter || !hideSubmitButton) && (
-        <div className="mt-2 flex flex-wrap items-center gap-3 border-t border-white/[0.06] pt-6">
+        <div
+          className={`mt-3 flex flex-wrap items-center gap-3 border-t border-white/[0.06] pt-3 ${
+            stickyFooter ? 'sticky bottom-0 bg-slate-950/95 pb-1' : ''
+          }`}
+        >
           {!hideSubmitButton ? (
             <button
               type="submit"

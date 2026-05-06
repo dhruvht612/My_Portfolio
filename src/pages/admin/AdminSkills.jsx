@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Plus } from 'lucide-react'
-import AdminForm from '../../components/admin/AdminForm'
+import AdminFormWizard from '../../components/admin/AdminFormWizard'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
 import AdminSegmentedControl from '../../components/admin/AdminSegmentedControl'
@@ -190,7 +190,7 @@ export default function AdminSkills() {
 
       <AdminModal open={groupModal} onClose={() => setGroupModal(false)} title={groupEditing?.id ? 'Edit skill group' : 'New skill group'}>
         {groupEditing ? (
-          <AdminForm
+          <AdminFormWizard
             key={groupEditing.id || 'ng'}
             schema={skillGroupSchema}
             defaultValues={{
@@ -200,14 +200,25 @@ export default function AdminSkills() {
             }}
             disabled={!isSupabaseConfigured}
             submitLabel={groupEditing.id ? 'Save' : 'Create'}
-            fields={[
+            onCancel={() => setGroupModal(false)}
+            steps={[
               {
-                section: 'Group',
+                id: 'core',
+                label: 'Core information',
                 fields: [
-                  { type: 'text', name: 'group_name', label: 'Group name' },
-                  { type: 'text', name: 'icon_class', label: 'Icon class (Font Awesome)' },
-                  { type: 'number', name: 'display_order', label: 'Display order' },
+                  {
+                    section: 'Group',
+                    fields: [
+                      { type: 'text', name: 'group_name', label: 'Group name' },
+                      { type: 'text', name: 'icon_class', label: 'Icon class (Font Awesome)' },
+                    ],
+                  },
                 ],
+              },
+              {
+                id: 'meta',
+                label: 'Metadata',
+                fields: [{ section: 'Metadata', fields: [{ type: 'number', name: 'display_order', label: 'Display order' }] }],
               },
             ]}
             onSubmit={saveGroup}
@@ -217,7 +228,7 @@ export default function AdminSkills() {
 
       <AdminModal open={skillModal} onClose={() => setSkillModal(false)} title={skillEditing?.id ? 'Edit skill' : 'New skill'} size="lg">
         {skillEditing ? (
-          <AdminForm
+          <AdminFormWizard
             key={skillEditing.id || 'ns'}
             schema={skillSchema}
             defaultValues={{
@@ -232,18 +243,36 @@ export default function AdminSkills() {
             }}
             disabled={!isSupabaseConfigured}
             submitLabel={skillEditing.id ? 'Save' : 'Create'}
-            fields={[
+            onCancel={() => setSkillModal(false)}
+            steps={[
               {
-                section: 'Skill',
+                id: 'core',
+                label: 'Core information',
                 fields: [
-                  { type: 'select', name: 'skill_group_id', label: 'Group', options: groupOptions },
-                  { type: 'text', name: 'name', label: 'Name' },
-                  { type: 'slider', name: 'proficiency', label: 'Proficiency', min: 0, max: 100 },
-                  { type: 'text', name: 'icon_class', label: 'Icon class' },
-                  { type: 'text', name: 'level', label: 'Level label' },
-                  { type: 'array', name: 'details', label: 'Detail lines', itemLabel: 'Line' },
-                  { type: 'select', name: 'related_project_id', label: 'Related project', options: projectOptions },
-                  { type: 'number', name: 'display_order', label: 'Display order' },
+                  {
+                    section: 'Skill',
+                    fields: [
+                      { type: 'select', name: 'skill_group_id', label: 'Group', options: groupOptions },
+                      { type: 'text', name: 'name', label: 'Name' },
+                      { type: 'slider', name: 'proficiency', label: 'Proficiency', min: 0, max: 100 },
+                      { type: 'text', name: 'icon_class', label: 'Icon class' },
+                      { type: 'text', name: 'level', label: 'Level label' },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: 'meta',
+                label: 'Links & metadata',
+                fields: [
+                  {
+                    section: 'Links & metadata',
+                    fields: [
+                      { type: 'array', name: 'details', label: 'Detail lines', itemLabel: 'Line' },
+                      { type: 'select', name: 'related_project_id', label: 'Related project', options: projectOptions },
+                      { type: 'number', name: 'display_order', label: 'Display order' },
+                    ],
+                  },
                 ],
               },
             ]}

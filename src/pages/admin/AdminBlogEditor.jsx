@@ -2,9 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { z } from 'zod'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useFormContext } from 'react-hook-form'
-import AdminForm from '../../components/admin/AdminForm'
+import AdminFormWizard from '../../components/admin/AdminFormWizard'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
-import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
 import { fetchRowById, insertRow, listSlugs, updateRow } from '../../lib/admin/queries'
 import { ensureUniqueSlug, slugify } from '../../lib/admin/slug'
@@ -143,33 +142,57 @@ export default function AdminBlogEditor() {
     [routeId, navigate, toast, load, bumpForm],
   )
 
-  const fields = useMemo(
+  const steps = useMemo(
     () => [
       {
-        section: 'Post',
+        id: 'core',
+        label: 'Core information',
         fields: [
           {
-            type: 'text',
-            name: 'title',
-            label: 'Title',
-            onBlur: async (e, { setValue, getValues }) => {
-              const title = e.target.value.trim()
-              if (!title) return
-              const existing = await listSlugs('blog_posts', routeId || undefined)
-              const cur = (getValues('slug') || '').trim()
-              if (!cur) setValue('slug', ensureUniqueSlug(slugify(title), existing))
-            },
+            section: 'Core information',
+            fields: [
+              {
+                type: 'text',
+                name: 'title',
+                label: 'Title',
+                onBlur: async (e, { setValue, getValues }) => {
+                  const title = e.target.value.trim()
+                  if (!title) return
+                  const existing = await listSlugs('blog_posts', routeId || undefined)
+                  const cur = (getValues('slug') || '').trim()
+                  if (!cur) setValue('slug', ensureUniqueSlug(slugify(title), existing))
+                },
+              },
+              { type: 'text', name: 'slug', label: 'Slug' },
+              { type: 'textarea', name: 'excerpt', label: 'Excerpt', rows: 3 },
+            ],
           },
-          { type: 'text', name: 'slug', label: 'Slug' },
-          { type: 'textarea', name: 'excerpt', label: 'Excerpt', rows: 3 },
-          { type: 'image', name: 'cover_image_url', label: 'Cover image', bucket: 'blog-images', accept: 'image/*' },
-          { type: 'tags', name: 'tags', label: 'Tags' },
-          { type: 'markdown', name: 'content', label: 'Content' },
+        ],
+      },
+      {
+        id: 'media',
+        label: 'Media & tags',
+        fields: [
           {
-            type: 'custom',
-            name: '_autosave',
-            label: 'Notes',
-            render: () => <BlogAutoSave postId={routeId} onSave={persist} />,
+            section: 'Media & tags',
+            fields: [
+              { type: 'image', name: 'cover_image_url', label: 'Cover image', bucket: 'blog-images', accept: 'image/*' },
+              { type: 'tags', name: 'tags', label: 'Tags' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'review',
+        label: 'Review & publish',
+        fields: [
+          {
+            section: 'Content',
+            fields: [{ type: 'markdown', name: 'content', label: 'Content' }],
+          },
+          {
+            section: 'Notes',
+            fields: [{ type: 'custom', name: '_autosave', label: 'Notes', render: () => <BlogAutoSave postId={routeId} onSave={persist} /> }],
           },
         ],
       },
@@ -195,20 +218,19 @@ export default function AdminBlogEditor() {
       />
 
       <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-white/[0.015] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] md:p-8">
-        <AdminForm
-        key={`${routeId || 'new'}-${formKey}`}
-        schema={editorSchema}
-        defaultValues={defaults}
-        disabled={!isSupabaseConfigured}
-        fields={fields}
-        submitLabel="Save draft"
-        onSubmit={async (v) => persist(v, 'draft', {})}
-        extraFooter={({ handleSubmit }) => (
-          <AdminPrimaryButton disabled={!isSupabaseConfigured} onClick={() => void handleSubmit((vals) => persist(vals, 'published', {}))()}>
-            Publish
-          </AdminPrimaryButton>
-        )}
-      />
+        <div className="h-[min(80vh,780px)]">
+          <AdminFormWizard
+            key={`${routeId || 'new'}-${formKey}`}
+            schema={editorSchema}
+            defaultValues={defaults}
+            disabled={!isSupabaseConfigured}
+            steps={steps}
+            submitLabel="Save draft"
+            cancelLabel="Back to posts"
+            onCancel={() => navigate('/admin/blog')}
+            onSubmit={async (v) => persist(v, 'draft', {})}
+          />
+        </div>
       </div>
     </div>
   )

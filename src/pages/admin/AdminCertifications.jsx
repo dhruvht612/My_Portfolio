@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import AdminForm from '../../components/admin/AdminForm'
+import AdminFormWizard from '../../components/admin/AdminFormWizard'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
 import AdminModal from '../../components/admin/AdminModal'
@@ -110,33 +110,57 @@ export default function AdminCertifications() {
 
       <AdminModal open={modalOpen} onClose={() => setModalOpen(false)} title={editing?.id ? 'Edit certification' : 'New certification'} size="lg">
         {editing ? (
-          <AdminForm
+          <AdminFormWizard
             key={editing.id || 'nc'}
             schema={certificationSchema}
             defaultValues={mapRow(editing)}
             disabled={!isSupabaseConfigured}
             submitLabel={editing.id ? 'Save' : 'Create'}
-            fields={[
+            onCancel={() => setModalOpen(false)}
+            steps={[
               {
-                section: 'Credential',
+                id: 'core',
+                label: 'Core information',
                 fields: [
-                  { type: 'text', name: 'title', label: 'Title' },
-                  { type: 'text', name: 'issuer', label: 'Issuer' },
-                  { type: 'text', name: 'issued_date', label: 'Issued (text or date)' },
-                  { type: 'text', name: 'credential_id', label: 'Credential ID' },
-                  { type: 'text', name: 'credential_url', label: 'Credential URL' },
-                  { type: 'image', name: 'image_url', label: 'Badge image', bucket: 'cert-images', accept: 'image/*' },
-                  { type: 'text', name: 'category', label: 'Category' },
-                  { type: 'tags', name: 'tags', label: 'Tags' },
-                  { type: 'toggle', name: 'is_featured', label: 'Featured', hint: ' ' },
+                  {
+                    section: 'Credential',
+                    fields: [
+                      { type: 'text', name: 'title', label: 'Title' },
+                      { type: 'text', name: 'issuer', label: 'Issuer' },
+                      { type: 'text', name: 'issued_date', label: 'Issued (text or date)' },
+                      { type: 'text', name: 'credential_id', label: 'Credential ID' },
+                      { type: 'text', name: 'credential_url', label: 'Credential URL' },
+                    ],
+                  },
                 ],
               },
               {
-                section: 'Narrative',
+                id: 'media',
+                label: 'Media & tags',
                 fields: [
-                  { type: 'textarea', name: 'learned', label: 'Learned', rows: 3 },
-                  { type: 'textarea', name: 'applied', label: 'Applied', rows: 3 },
-                  { type: 'text', name: 'applied_project', label: 'Applied project' },
+                  {
+                    section: 'Media & tags',
+                    fields: [
+                      { type: 'image', name: 'image_url', label: 'Badge image', bucket: 'cert-images', accept: 'image/*' },
+                      { type: 'text', name: 'category', label: 'Category' },
+                      { type: 'tags', name: 'tags', label: 'Tags' },
+                      { type: 'toggle', name: 'is_featured', label: 'Featured', hint: ' ' },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: 'review',
+                label: 'Narrative',
+                fields: [
+                  {
+                    section: 'Narrative',
+                    fields: [
+                      { type: 'textarea', name: 'learned', label: 'Learned', rows: 2 },
+                      { type: 'textarea', name: 'applied', label: 'Applied', rows: 2 },
+                      { type: 'text', name: 'applied_project', label: 'Applied project' },
+                    ],
+                  },
                 ],
               },
             ]}

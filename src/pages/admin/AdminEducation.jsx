@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import AdminForm from '../../components/admin/AdminForm'
+import AdminFormWizard from '../../components/admin/AdminFormWizard'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
 import { useSupabaseRow } from '../../hooks/useSupabaseRow'
@@ -32,32 +32,41 @@ export default function AdminEducation() {
     }
   }, [data])
 
-  const fields = [
+  const steps = [
     {
-      section: 'Program',
+      id: 'core',
+      label: 'Core information',
       fields: [
-        { type: 'text', name: 'institution', label: 'Institution' },
-        { type: 'text', name: 'degree', label: 'Degree' },
-        { type: 'image', name: 'logo_url', label: 'Institution logo', bucket: 'logos', accept: 'image/*' },
-        { type: 'slider', name: 'progress_percent', label: 'Progress %', min: 0, max: 100 },
-        { type: 'toggle', name: 'is_active', label: 'Currently enrolled', hint: ' ' },
+        {
+          section: 'Program',
+          fields: [
+            { type: 'text', name: 'institution', label: 'Institution' },
+            { type: 'text', name: 'degree', label: 'Degree' },
+            { type: 'image', name: 'logo_url', label: 'Institution logo', bucket: 'logos', accept: 'image/*' },
+            { type: 'slider', name: 'progress_percent', label: 'Progress %', min: 0, max: 100 },
+            { type: 'toggle', name: 'is_active', label: 'Currently enrolled', hint: ' ' },
+          ],
+        },
       ],
     },
     {
-      section: 'Focus areas',
-      fields: [{ type: 'array', name: 'focus_areas', label: 'Focus areas', itemLabel: 'Area' }],
-    },
-    {
-      section: 'Highlights',
+      id: 'meta',
+      label: 'Focus & highlights',
       fields: [
+        { section: 'Focus areas', fields: [{ type: 'array', name: 'focus_areas', label: 'Focus areas', itemLabel: 'Area' }] },
         {
-          type: 'arrayOfObjects',
-          name: 'highlights',
-          label: 'Highlight cards',
-          itemFields: [
-            { name: 'icon', label: 'Icon class', type: 'text' },
-            { name: 'title', label: 'Title', type: 'text' },
-            { name: 'description', label: 'Description', type: 'textarea' },
+          section: 'Highlights',
+          fields: [
+            {
+              type: 'arrayOfObjects',
+              name: 'highlights',
+              label: 'Highlight cards',
+              itemFields: [
+                { name: 'icon', label: 'Icon class', type: 'text' },
+                { name: 'title', label: 'Title', type: 'text' },
+                { name: 'description', label: 'Description', type: 'textarea' },
+              ],
+            },
           ],
         },
       ],
@@ -81,19 +90,22 @@ export default function AdminEducation() {
         description="Single-row upsert for the Education page: institution, degree, progress, focus areas, and highlights."
       />
       <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-white/[0.015] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] md:p-8">
-        <AdminForm
-        key={data?.id || 'new'}
-        schema={educationSchema}
-        defaultValues={defaultValues}
-        fields={fields}
-        disabled={!isSupabaseConfigured}
-        onSubmit={async (values) => {
-          await save({
-            ...values,
-            focus_areas: values.focus_areas.filter(Boolean),
-          })
-        }}
-      />
+        <div className="h-[min(80vh,780px)]">
+          <AdminFormWizard
+            key={data?.id || 'new'}
+            schema={educationSchema}
+            defaultValues={defaultValues}
+            steps={steps}
+            disabled={!isSupabaseConfigured}
+            submitLabel="Save"
+            onSubmit={async (values) => {
+              await save({
+                ...values,
+                focus_areas: values.focus_areas.filter(Boolean),
+              })
+            }}
+          />
+        </div>
       </div>
     </div>
   )

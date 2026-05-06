@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Plus, Sparkles } from 'lucide-react'
-import AdminForm, { AdminFormWatch } from '../../components/admin/AdminForm'
+import { AdminFormWatch } from '../../components/admin/AdminForm'
+import AdminFormWizard from '../../components/admin/AdminFormWizard'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
 import AdminModal from '../../components/admin/AdminModal'
@@ -210,9 +211,15 @@ export default function AdminProjects() {
         onDelete={isSupabaseConfigured ? (row) => setConfirmId(row.id) : undefined}
       />
 
-      <AdminModal open={modalOpen} onClose={() => setModalOpen(false)} title={editing?.id ? 'Edit project' : 'New project'} size="xl">
+      <AdminModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editing?.id ? 'Edit project' : 'New project'}
+        size="xl"
+        variant="drawer"
+      >
         {editing ? (
-          <AdminForm
+          <AdminFormWizard
             key={editing.id || 'new'}
             schema={projectSchema}
             defaultValues={{
@@ -233,41 +240,64 @@ export default function AdminProjects() {
             disabled={!isSupabaseConfigured}
             submitLabel={editing.id ? 'Save' : 'Create'}
             sidebar={() => <ProjectHoloPreview />}
-            fields={[
+            onCancel={() => setModalOpen(false)}
+            steps={[
               {
-                section: 'Core',
+                id: 'core',
+                label: 'Core information',
                 fields: [
-                  { type: 'text', name: 'title', label: 'Title' },
-                  { type: 'textarea', name: 'description', label: 'Description', rows: 5 },
                   {
-                    type: 'text',
-                    name: 'icon_class',
-                    label: 'Icon class (Font Awesome, e.g. fas fa-code)',
+                    section: 'Core information',
+                    fields: [
+                      { type: 'text', name: 'title', label: 'Title' },
+                      { type: 'textarea', name: 'description', label: 'Description', rows: 3 },
+                      { type: 'text', name: 'icon_class', label: 'Icon class (Font Awesome, e.g. fas fa-code)' },
+                      { type: 'text', name: 'badge', label: 'Badge label (short)' },
+                      { type: 'number', name: 'display_order', label: 'Display order' },
+                    ],
                   },
-                  { type: 'text', name: 'badge', label: 'Badge label (short)' },
-                  { type: 'number', name: 'display_order', label: 'Display order' },
-                  { type: 'toggle', name: 'is_featured', label: 'Featured', hint: ' ' },
-                  { type: 'toggle', name: 'is_disabled', label: 'Disabled / in development', hint: ' ' },
                 ],
               },
               {
-                section: 'Media & links',
+                id: 'media',
+                label: 'Media & links',
                 fields: [
-                  { type: 'image', name: 'image_url', label: 'Card image', bucket: 'project-images', accept: 'image/*' },
-                  { type: 'text', name: 'live_url', label: 'Live URL' },
-                  { type: 'text', name: 'code_url', label: 'Repository URL' },
+                  {
+                    section: 'Media & links',
+                    fields: [
+                      { type: 'image', name: 'image_url', label: 'Card image', bucket: 'project-images', accept: 'image/*' },
+                      { type: 'text', name: 'live_url', label: 'Live URL' },
+                      { type: 'text', name: 'code_url', label: 'Repository URL' },
+                    ],
+                  },
                 ],
               },
               {
-                section: 'Taxonomy',
+                id: 'meta',
+                label: 'Metadata',
                 fields: [
-                  { type: 'tags', name: 'tech_stack', label: 'Tech stack', suggestions: [] },
-                  { type: 'tags', name: 'categories', label: 'Categories', suggestions: categorySuggestions },
+                  {
+                    section: 'Metadata / tags',
+                    fields: [
+                      { type: 'tags', name: 'tech_stack', label: 'Tech stack', suggestions: [] },
+                      { type: 'tags', name: 'categories', label: 'Categories', suggestions: categorySuggestions },
+                      { type: 'array', name: 'features', label: 'Feature bullets', multiline: true, itemLabel: 'Feature' },
+                    ],
+                  },
                 ],
               },
               {
-                section: 'Features',
-                fields: [{ type: 'array', name: 'features', label: 'Feature bullets', multiline: true, itemLabel: 'Feature' }],
+                id: 'review',
+                label: 'Review & publish',
+                fields: [
+                  {
+                    section: 'Review & publish',
+                    fields: [
+                      { type: 'toggle', name: 'is_featured', label: 'Featured', hint: ' ' },
+                      { type: 'toggle', name: 'is_disabled', label: 'Disabled / in development', hint: ' ' },
+                    ],
+                  },
+                ],
               },
             ]}
             onSubmit={saveProject}

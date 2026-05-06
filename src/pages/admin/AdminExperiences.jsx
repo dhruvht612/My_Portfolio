@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Plus } from 'lucide-react'
-import AdminForm from '../../components/admin/AdminForm'
+import AdminFormWizard from '../../components/admin/AdminFormWizard'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
 import AdminModal from '../../components/admin/AdminModal'
@@ -134,70 +134,95 @@ export default function AdminExperiences() {
         </div>
       )}
 
-      <AdminModal open={modalOpen} onClose={() => setModalOpen(false)} title={editing?.id ? 'Edit experience' : 'New experience'} size="xl">
+      <AdminModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editing?.id ? 'Edit experience' : 'New experience'}
+        size="xl"
+        variant="drawer"
+      >
         {editing ? (
-          <div className="space-y-4">
-            <AdminForm
-              key={editing.id || 'new'}
-              schema={experienceSchema}
-              defaultValues={{
-                organization: editing.organization,
-                organization_sub: editing.organization_sub,
-                employment_type: editing.employment_type,
-                role_title: editing.role_title,
-                date_range: editing.date_range,
-                location: editing.location,
-                work_mode: editing.work_mode,
-                description: editing.description,
-                bullets: editing.bullets,
-                skills_used: editing.skills_used,
-                logo_url: editing.logo_url,
-                is_featured: editing.is_featured,
-                display_order: editing.display_order,
-              }}
-              disabled={!isSupabaseConfigured}
-              fields={[
-                {
-                  section: 'Role',
-                  fields: [
-                    {
-                      type: 'text',
-                      name: 'organization',
-                      label: 'Organization',
-                      datalistId: 'exp-org-list',
-                      datalistOptions: orgOptions,
-                    },
-                    { type: 'text', name: 'organization_sub', label: 'Organization subtitle' },
-                    { type: 'text', name: 'employment_type', label: 'Employment type' },
-                    { type: 'text', name: 'role_title', label: 'Role title' },
-                    { type: 'text', name: 'date_range', label: 'Date range' },
-                    { type: 'text', name: 'location', label: 'Location' },
-                    {
-                      type: 'select',
-                      name: 'work_mode',
-                      label: 'Work mode',
-                      options: [
-                        { value: '', label: '—' },
-                        { value: 'Remote', label: 'Remote' },
-                        { value: 'Hybrid', label: 'Hybrid' },
-                        { value: 'On-site', label: 'On-site' },
-                      ],
-                    },
-                    { type: 'textarea', name: 'description', label: 'Description', rows: 4 },
-                    { type: 'array', name: 'bullets', label: 'Bullets', multiline: true, itemLabel: 'Bullet' },
-                    { type: 'tags', name: 'skills_used', label: 'Skills used' },
-                    { type: 'image', name: 'logo_url', label: 'Logo', bucket: 'logos', accept: 'image/*' },
-                    { type: 'toggle', name: 'is_featured', label: 'Featured', hint: ' ' },
-                    { type: 'number', name: 'display_order', label: 'Display order' },
-                  ],
-                },
-              ]}
-              submitLabel={editing.id ? 'Save' : 'Create'}
-              onSubmit={async (vals) => {
-                await saveExperience(vals)
-              }}
-            />
-          </div>
+          <AdminFormWizard
+            key={editing.id || 'new'}
+            schema={experienceSchema}
+            defaultValues={{
+              organization: editing.organization,
+              organization_sub: editing.organization_sub,
+              employment_type: editing.employment_type,
+              role_title: editing.role_title,
+              date_range: editing.date_range,
+              location: editing.location,
+              work_mode: editing.work_mode,
+              description: editing.description,
+              bullets: editing.bullets,
+              skills_used: editing.skills_used,
+              logo_url: editing.logo_url,
+              is_featured: editing.is_featured,
+              display_order: editing.display_order,
+            }}
+            disabled={!isSupabaseConfigured}
+            submitLabel={editing.id ? 'Save' : 'Create'}
+            onCancel={() => setModalOpen(false)}
+            steps={[
+              {
+                id: 'core',
+                label: 'Core information',
+                fields: [
+                  {
+                    section: 'Core information',
+                    fields: [
+                      { type: 'text', name: 'organization', label: 'Organization', datalistId: 'exp-org-list', datalistOptions: orgOptions },
+                      { type: 'text', name: 'organization_sub', label: 'Organization subtitle' },
+                      { type: 'text', name: 'employment_type', label: 'Employment type' },
+                      { type: 'text', name: 'role_title', label: 'Role title' },
+                      { type: 'text', name: 'date_range', label: 'Date range' },
+                      { type: 'text', name: 'location', label: 'Location' },
+                      {
+                        type: 'select',
+                        name: 'work_mode',
+                        label: 'Work mode',
+                        options: [
+                          { value: '', label: '—' },
+                          { value: 'Remote', label: 'Remote' },
+                          { value: 'Hybrid', label: 'Hybrid' },
+                          { value: 'On-site', label: 'On-site' },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: 'media',
+                label: 'Media & narrative',
+                fields: [
+                  {
+                    section: 'Media & narrative',
+                    fields: [
+                      { type: 'image', name: 'logo_url', label: 'Logo', bucket: 'logos', accept: 'image/*' },
+                      { type: 'textarea', name: 'description', label: 'Description', rows: 3 },
+                      { type: 'array', name: 'bullets', label: 'Bullets', multiline: true, itemLabel: 'Bullet' },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: 'meta',
+                label: 'Skills & publish',
+                fields: [
+                  {
+                    section: 'Skills / metadata',
+                    fields: [
+                      { type: 'tags', name: 'skills_used', label: 'Skills used' },
+                      { type: 'toggle', name: 'is_featured', label: 'Featured', hint: ' ' },
+                      { type: 'number', name: 'display_order', label: 'Display order' },
+                    ],
+                  },
+                ],
+              },
+            ]}
+            onSubmit={saveExperience}
+          />
         ) : null}
       </AdminModal>
 
