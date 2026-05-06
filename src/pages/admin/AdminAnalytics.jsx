@@ -221,7 +221,7 @@ export default function AdminAnalytics() {
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.05] to-white/[0.018] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+            <div className="admin-card-premium p-5">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Total visits</p>
               <p className="mt-1 text-2xl font-bold tabular-nums text-slate-50">{bundle.totalVisits}</p>
               <p className={`mt-1 text-xs ${bundle.deltaPct >= 0 ? 'text-emerald-300' : 'text-red-300'}`}>
@@ -229,17 +229,17 @@ export default function AdminAnalytics() {
                 {bundle.deltaPct}% vs prior {rangeLabel}
               </p>
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.05] to-white/[0.018] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+            <div className="admin-card-premium p-5">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Unique visitors</p>
               <p className="mt-1 text-2xl font-bold tabular-nums text-slate-50">{bundle.uniqueVisitors}</p>
               <p className="mt-1 text-xs text-slate-500">Prior window: {bundle.prevUniqueVisitors}</p>
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.05] to-white/[0.018] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+            <div className="admin-card-premium p-5">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Total messages</p>
               <p className="mt-1 text-2xl font-bold tabular-nums text-slate-50">{bundle.messagesCount}</p>
               <p className="mt-1 text-xs text-slate-500">All-time inbox count</p>
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.05] to-white/[0.018] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+            <div className="admin-card-premium p-5">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Avg views / day</p>
               <p className="mt-1 text-2xl font-bold tabular-nums text-slate-50">{bundle.avgPerDay.toFixed(1)}</p>
               <p className="mt-1 text-xs text-slate-500">Over selected range</p>
@@ -247,23 +247,23 @@ export default function AdminAnalytics() {
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+            <div className="admin-card-premium p-5">
               <h3 className="mb-3 text-sm font-semibold text-slate-100">Visits over time</h3>
               <AnalyticsChart kind="line" data={bundle.visitsByDay} dataKey="value" nameKey="name" height={260} />
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+            <div className="admin-card-premium p-5">
               <h3 className="mb-3 text-sm font-semibold text-slate-100">Top pages</h3>
               <AnalyticsChart kind="bar" data={bundle.topPages} dataKey="value" nameKey="name" height={260} />
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+            <div className="admin-card-premium p-5">
               <h3 className="mb-3 text-sm font-semibold text-slate-100">Referrers</h3>
               <AnalyticsChart kind="pie" data={bundle.referrers} dataKey="value" nameKey="name" height={260} />
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+            <div className="admin-card-premium p-5">
               <h3 className="mb-3 text-sm font-semibold text-slate-100">Devices</h3>
               <AnalyticsChart kind="pie" data={bundle.devices} dataKey="value" nameKey="name" height={260} />
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] p-4 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] lg:col-span-2">
+            <div className="admin-card-premium p-4 lg:col-span-2">
               <h3 className="mb-2 text-sm font-semibold text-slate-100">Top project clicks</h3>
               {bundle.topProjectClicks.length === 0 ? (
                 <p className="text-sm text-slate-400">No project CTA clicks in this window.</p>

@@ -3,7 +3,7 @@ import AdminForm from './AdminForm'
 
 function StepProgress({ steps, currentStep, onJump }) {
   return (
-    <ol className="grid grid-cols-2 gap-2 border-b border-white/[0.06] pb-3 md:grid-cols-4">
+    <ol className="admin-card-premium grid grid-cols-2 gap-2 p-2 md:grid-cols-4">
       {steps.map((step, index) => {
         const active = index === currentStep
         const done = index < currentStep
@@ -15,7 +15,7 @@ function StepProgress({ steps, currentStep, onJump }) {
               disabled={!done}
               className={`w-full rounded-xl border px-2.5 py-2 text-left transition ${
                 active
-                  ? 'border-sky-400/45 bg-sky-400/10 text-sky-100'
+                  ? 'border-sky-400/45 bg-sky-400/15 text-sky-100'
                   : done
                     ? 'border-white/15 bg-white/[0.03] text-slate-200 hover:border-sky-400/35'
                     : 'border-white/[0.08] bg-white/[0.02] text-slate-500'

@@ -56,7 +56,7 @@ export default function AdminModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="admin-modal-title"
-        className={`relative z-10 flex h-[min(88vh,860px)] max-h-[88vh] flex-col overflow-hidden border border-white/[0.08] bg-slate-950/95 shadow-[0_24px_80px_rgba(0,0,0,0.55)] ring-1 ring-inset ring-white/[0.04] ${
+        className={`admin-panel-glass relative z-10 flex h-[min(88vh,860px)] max-h-[88vh] flex-col overflow-hidden border border-white/[0.08] ring-1 ring-inset ring-white/[0.04] ${
           variant === 'drawer'
             ? `${drawerSizes[size] || drawerSizes.lg} rounded-2xl sm:rounded-3xl`
             : `w-full rounded-2xl ${sizes[size] || sizes.lg}`

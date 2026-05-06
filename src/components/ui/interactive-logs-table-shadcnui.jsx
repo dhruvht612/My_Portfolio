@@ -336,16 +336,16 @@ export function InteractiveLogsTable({ logs: logsProp, embedded = false, title =
   const activeFilters = filters.level.length + filters.service.length + filters.status.length
 
   const shellClass = embedded
-    ? 'flex h-full min-h-[360px] max-h-[min(640px,62vh)] w-full flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[#0b0f17]'
-    : 'flex h-screen w-full flex-col bg-[#0b0f17]'
+    ? 'flex h-full min-h-[360px] max-h-[min(640px,62vh)] w-full flex-col overflow-hidden rounded-xl border border-emerald-400/20 bg-[#050912]'
+    : 'flex h-screen w-full flex-col bg-[#050912]'
 
   return (
     <div className={shellClass}>
-      <div className="flex min-h-0 flex-1 flex-col">
-        <div className="border-b border-white/10 bg-slate-900/80 p-4 md:p-6">
+      <div className="flex min-h-0 flex-1 flex-col font-mono">
+        <div className="border-b border-emerald-400/20 bg-slate-950/80 p-4 md:p-6">
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-semibold text-slate-100 md:text-2xl">{title}</h2>
+              <h2 className="text-xl font-semibold text-emerald-300 md:text-2xl">{title}</h2>
               <p className="text-sm text-slate-500">
                 {filteredLogs.length} of {sourceLogs.length} logs
               </p>

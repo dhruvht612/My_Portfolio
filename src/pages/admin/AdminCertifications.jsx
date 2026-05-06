@@ -93,7 +93,7 @@ export default function AdminCertifications() {
           Add certification
         </AdminPrimaryButton>
       </AdminPageHeader>
-      <p className="rounded-xl border border-white/[0.06] bg-slate-900/35 px-4 py-3 text-xs leading-relaxed text-slate-400 ring-1 ring-inset ring-white/[0.03]">
+      <p className="admin-card-premium px-4 py-3 text-xs leading-relaxed text-slate-400">
         Badge uploads use the <code className="text-sky-300/90">cert-images</code> bucket. If save fails with “column image_url does not exist”, run{' '}
         <code className="text-sky-300/90">docs/migrations/add_certifications_image_url.sql</code> in Supabase.
       </p>

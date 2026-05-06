@@ -109,7 +109,7 @@ export default function AdminMessages() {
           )}
         </div>
 
-        <aside className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-white/[0.015] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] lg:sticky lg:top-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-auto">
+        <aside className="admin-card-premium p-5 lg:sticky lg:top-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-auto">
           {selected ? (
             <div className="space-y-4">
               <div className="flex items-start justify-between gap-2">

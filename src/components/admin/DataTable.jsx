@@ -59,9 +59,9 @@ export default function DataTable({
   const showActions = Boolean(onEdit || onDelete)
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.035] to-white/[0.012] shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]">
+    <div className="admin-card-premium overflow-x-auto">
       <table className="min-w-full text-left text-sm">
-        <thead className="sticky top-0 z-10 border-b border-white/10 bg-[var(--color-admin-canvas)]/90 backdrop-blur-md">
+        <thead className="sticky top-0 z-10 border-b border-white/10 bg-[var(--color-admin-canvas)]/92 backdrop-blur-md">
           <tr>
             {columns.map((col) => (
               <th
@@ -97,10 +97,7 @@ export default function DataTable({
               })
             }
             return (
-              <tr
-                key={rk}
-                className="border-b border-white/[0.06] transition-colors last:border-0 hover:bg-white/[0.04]"
-              >
+              <tr key={rk} className="border-b border-white/[0.06] transition-colors duration-200 last:border-0 hover:bg-sky-400/[0.07]">
                 {columns.map((col) => (
                   <td key={col.key} className="px-4 py-3.5 align-middle text-slate-200">
                     {col.render ? col.render(row) : row[col.key]}

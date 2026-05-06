@@ -8,7 +8,9 @@ import {
   GraduationCap,
   LayoutDashboard,
   Mail,
+  Bell,
   ScrollText,
+  Settings,
   Sparkles,
   UserRound,
 } from 'lucide-react'
@@ -27,4 +29,7 @@ export const ADMIN_NAV = [
   { to: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/admin/system-health', label: 'System health', icon: Activity },
   { to: '/admin/logs', label: 'Logs', icon: ScrollText },
+  { to: '/admin/notifications', label: 'Notifications', icon: Bell },
+  { to: '/admin/settings', label: 'Settings', icon: Settings },
+  { to: '/admin/account', label: 'Account profile', icon: UserRound },
 ]

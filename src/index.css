@@ -466,6 +466,56 @@ select {
   outline-offset: 2px;
 }
 
+/* Premium admin shell effects */
+.admin-shell-bg {
+  background:
+    radial-gradient(ellipse 72% 55% at 50% -8%, rgba(56, 189, 248, 0.11), transparent 56%),
+    radial-gradient(ellipse 50% 36% at 100% 18%, rgba(168, 85, 247, 0.12), transparent 54%),
+    radial-gradient(ellipse 44% 40% at 0% 100%, rgba(14, 165, 233, 0.08), transparent 56%),
+    #070b12;
+}
+
+.admin-shell-noise {
+  opacity: 0.12;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+.admin-panel-glass {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
+    rgba(4, 8, 18, 0.82);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.admin-card-premium {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.32);
+}
+
+.admin-card-premium::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 55% at 50% 0%, rgba(125, 211, 252, 0.12), transparent 60%);
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+
+.admin-card-premium:hover::before {
+  opacity: 1;
+}
+
 /* === Page background (solid base + gradient, fixed on scroll) === */
 .theme-dark-blue-page {
   position: relative;

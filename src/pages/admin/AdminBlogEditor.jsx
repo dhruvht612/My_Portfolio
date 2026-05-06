@@ -217,7 +217,7 @@ export default function AdminBlogEditor() {
         description="Markdown body, slug, excerpt, cover, and tags. Draft saves to Supabase; publish when ready."
       />
 
-      <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-white/[0.015] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] md:p-8">
+      <div className="admin-card-premium p-5 md:p-8">
         <div className="h-[min(80vh,780px)]">
           <AdminFormWizard
             key={`${routeId || 'new'}-${formKey}`}

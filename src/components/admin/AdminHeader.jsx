@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { LogOut, Menu } from 'lucide-react'
+import { Command, Keyboard, LogOut, Menu } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { ADMIN_NAV } from '../../constants/adminNav'
 
@@ -27,7 +27,7 @@ function firstNameFromSession(session) {
   return 'Dhruv'
 }
 
-export default function AdminHeader({ onMenuClick }) {
+export default function AdminHeader({ onMenuClick, onOpenCommandPalette, onOpenShortcuts }) {
   const location = useLocation()
   const navigate = useNavigate()
   const { session, signOut } = useAuth()
@@ -77,6 +77,23 @@ export default function AdminHeader({ onMenuClick }) {
       </div>
 
       <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <button
+          type="button"
+          onClick={onOpenCommandPalette}
+          className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-slate-300 transition hover:bg-white/[0.09] hover:text-white"
+        >
+          <Command className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">Search</span>
+          <kbd className="rounded border border-white/15 bg-black/20 px-1.5 py-0.5 text-[10px] text-slate-500">⌘K</kbd>
+        </button>
+        <button
+          type="button"
+          onClick={onOpenShortcuts}
+          className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2 text-xs text-slate-300 transition hover:bg-white/[0.09] hover:text-white"
+          aria-label="Keyboard shortcuts"
+        >
+          <Keyboard className="h-3.5 w-3.5" />
+        </button>
         {email ? (
           <>
             <span

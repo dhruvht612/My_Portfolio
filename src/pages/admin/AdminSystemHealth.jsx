@@ -23,7 +23,7 @@ export default function AdminSystemHealth() {
     <div className="mx-auto max-w-[1400px] space-y-8">
       <NotConfiguredBanner />
 
-      <div className="rounded-2xl border border-white/[0.08] bg-[#0b0f17]/92 p-6 shadow-[0_8px_40px_rgba(0,0,0,0.45)] ring-1 ring-inset ring-white/[0.05] md:p-8">
+      <div className="admin-card-premium p-6 md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <AdminPageHeader
             eyebrow="Observability"
@@ -41,7 +41,7 @@ export default function AdminSystemHealth() {
             </button>
           </AdminPageHeader>
 
-          <div className="flex flex-col items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 lg:items-end">
+          <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/[0.06] px-4 py-3 lg:items-end">
             <div className="flex flex-wrap items-center gap-2">
               <StatusBadge tone={overall.tone}>{overall.headline}</StatusBadge>
               {running && initialComplete ? (

@@ -325,7 +325,7 @@ export default function AdminForm({
           return (
             <div
               key={block.section || i}
-              className="space-y-3 rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.045] to-white/[0.015] p-4 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03]"
+              className="admin-card-premium space-y-3 p-4"
             >
               <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-400/80">{block.section}</h3>
               <div className="grid gap-3 md:grid-cols-2">{block.fields.map((f) => renderField(f))}</div>

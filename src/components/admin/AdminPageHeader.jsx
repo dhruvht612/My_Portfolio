@@ -3,7 +3,7 @@
  */
 export default function AdminPageHeader({ eyebrow, title, description, children }) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="admin-card-premium flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-end sm:justify-between sm:px-5">
       <div>
         {eyebrow ? (
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-400/55">{eyebrow}</p>

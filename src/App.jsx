@@ -36,6 +36,9 @@ const AdminEducation = lazy(() => import('./pages/admin/AdminEducation'))
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'))
 const AdminSystemHealth = lazy(() => import('./pages/admin/AdminSystemHealth'))
 const AdminLogs = lazy(() => import('./pages/admin/AdminLogs'))
+const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'))
+const AdminNotifications = lazy(() => import('./pages/admin/AdminNotifications'))
+const AdminAccountProfile = lazy(() => import('./pages/admin/AdminAccountProfile'))
 
 function ProtectedRoute({ children }) {
   const { session, loading, configured } = useAuth()
@@ -171,6 +174,9 @@ export default function App() {
                   <Route path="analytics" element={<AdminAnalytics />} />
                   <Route path="system-health" element={<AdminSystemHealth />} />
                   <Route path="logs" element={<AdminLogs />} />
+                  <Route path="settings" element={<AdminSettings />} />
+                  <Route path="notifications" element={<AdminNotifications />} />
+                  <Route path="account" element={<AdminAccountProfile />} />
                 </Route>
                 <Route element={<Layout />}>
                   <Route path="home" element={<HomePage />} />

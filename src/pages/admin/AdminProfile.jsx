@@ -121,7 +121,7 @@ export default function AdminProfile() {
         title="Profile"
         description="Single-row upsert for the public About / hero: name, roles, bio, socials, resume, and footer badges."
       />
-      <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-white/[0.015] p-5 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] md:p-8">
+      <div className="admin-card-premium p-5 md:p-8">
         <div className="h-[min(80vh,780px)]">
           <AdminFormWizard
             key={data?.id || 'new'}

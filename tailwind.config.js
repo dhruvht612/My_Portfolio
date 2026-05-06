@@ -36,6 +36,8 @@ export default {
         'hero-reveal': 'hero-reveal 0.5s ease-out forwards',
         ripple: 'ripple 2s ease calc(var(--i, 0) * 0.2s) infinite',
         orbit: 'orbit calc(var(--duration) * 1s) linear infinite',
+        'pulse-soft': 'pulse-soft 2.4s ease-in-out infinite',
+        'sheen-sweep': 'sheen-sweep 2.8s linear infinite',
       },
       boxShadow: {
         input: [
@@ -76,6 +78,14 @@ export default {
         orbit: {
           '0%': { transform: 'rotate(0deg) translateY(calc(var(--radius) * 1px)) rotate(0deg)' },
           '100%': { transform: 'rotate(360deg) translateY(calc(var(--radius) * 1px)) rotate(-360deg)' },
+        },
+        'pulse-soft': {
+          '0%, 100%': { opacity: '0.5', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.03)' },
+        },
+        'sheen-sweep': {
+          '0%': { transform: 'translateX(-120%)' },
+          '100%': { transform: 'translateX(220%)' },
         },
       },
     },
