@@ -1,150 +1,204 @@
 # Dhruv Thakar - Portfolio
 
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&color=0:0f172a,100:1e293b&section=header" alt="header wave" />
-</p>
+A modern portfolio and full admin CMS built with React + Vite, backed by Supabase for content, auth, storage, messages, and analytics.
 
-<p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=600&size=24&duration=2800&pause=900&color=38BDF8&center=true&vCenter=true&width=900&lines=Modern+React+Portfolio;Animated+UI+%7C+Data-Driven+Sections;Built+with+Vite+%2B+Tailwind+%2B+Framer+Motion" alt="typing intro banner" />
-</p>
+## Highlights
 
-<p align="center">
-  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-0a0a23?logo=react&logoColor=61dafb" alt="React 19" /></a>
-  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-7-0a0a23?logo=vite&logoColor=ffd62e" alt="Vite 7" /></a>
-  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-3-0f172a?logo=tailwindcss&logoColor=38bdf8" alt="Tailwind CSS 3" /></a>
-  <a href="https://reactrouter.com/"><img src="https://img.shields.io/badge/React_Router-7-0f172a?logo=reactrouter&logoColor=f97316" alt="React Router 7" /></a>
-  <a href="https://www.framer.com/motion/"><img src="https://img.shields.io/badge/Framer_Motion-Animation-0f172a?logo=framer&logoColor=ff66cc" alt="Framer Motion" /></a>
-  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"><img src="https://img.shields.io/badge/JavaScript-ES2024-0f172a?logo=javascript&logoColor=facc15" alt="JavaScript ES2024" /></a>
-  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-18%2B-0f172a?logo=nodedotjs&logoColor=22c55e" alt="Node.js 18+" /></a>
-  <a href="https://eslint.org/"><img src="https://img.shields.io/badge/ESLint-9-0f172a?logo=eslint&logoColor=a78bfa" alt="ESLint 9" /></a>
-  <a href="../../"><img src="https://img.shields.io/badge/Status-Actively_Improving-0f172a?logo=github&logoColor=38bdf8" alt="Status Actively Improving" /></a>
-  <a href="#license"><img src="https://img.shields.io/badge/License-MIT-0f172a.svg" alt="License MIT" /></a>
-</p>
+- Public multi-page portfolio with animated sections and route-based navigation.
+- Protected `/admin` portal with a full content workflow (create/edit/delete).
+- Supabase-backed data layer with static-data fallback for resiliency.
+- Reusable form system (React Hook Form + Zod) with wizard steps and live previews.
+- Built-in analytics dashboard (charts, top pages, referrers, devices).
+- Contact form persistence in Supabase (`contact_submissions`) for admin inbox management.
 
-Modern, dark-themed, data-driven developer portfolio built with React + Vite. The app includes a landing flow, multi-route pages, animated sections, filterable projects, and an interactive skills-to-projects modal.
+## Live Feature Set
 
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&height=100&color=0:1e293b,100:0f172a&section=footer" alt="footer wave" />
-</p>
+### Public Portfolio
 
-## What This Portfolio Includes
+- Landing experience with animated hero and modern background layers.
+- Dedicated pages for Home, About, Projects, Beyond, Experience, Education, Certifications, Skills, and Contact.
+- Project filtering and rich project cards (badges, tech stack, links, status).
+- Skills mapped to related projects for contextual exploration.
 
-- Landing experience with preloader and entry CTA.
-- Route-based pages for About, Projects, Beyond, Experience, Education, Certifications, Skills, and Contact.
-- Reusable section UI with gradients, glassmorphism cards, and motion effects.
-- Projects section with category filters and rich metadata.
-- Skills section where each skill can open a modal showing related projects.
-- Accessibility basics such as skip links, focus states, semantic markup, and ARIA usage.
+### Admin Portal (`/admin`)
+
+- Auth-protected admin shell with sidebar navigation and responsive layout.
+- Dashboard overview for content and operational visibility.
+- Content management pages:
+  - Profile
+  - Experiences
+  - Projects
+  - Skills
+  - Certifications
+  - Blog + Blog Editor
+  - Education
+  - Messages
+  - Analytics
+  - System Health
+  - Logs
+  - Notifications
+  - Settings
+  - Account Profile
+- Reusable admin UI patterns:
+  - Data tables
+  - Confirm dialogs
+  - Tag inputs
+  - Markdown editor
+  - Image uploader (Supabase Storage)
+  - Multi-step form wizard
 
 ## Tech Stack
 
 | Layer | Tools |
 | --- | --- |
 | Frontend | React 19, React Router 7 |
-| Build Tool | Vite 7 |
-| Styling | Tailwind CSS 3, custom CSS utilities, icon libraries |
-| Backend / forms | Supabase (`contact_submissions` for the public contact form; React Hook Form + Zod in admin) |
-| Motion | Framer Motion |
+| Build | Vite 7 |
+| Styling | Tailwind CSS 3 + custom UI classes |
+| Data / Auth / Storage | Supabase (`@supabase/supabase-js`) |
+| Forms & Validation | React Hook Form, Zod, `@hookform/resolvers` |
+| Content Rendering | `react-markdown`, `remark-gfm` |
+| Analytics Charts | Recharts, date-fns |
 | Quality | ESLint 9 |
+
+## Routes
+
+### Public
+
+- `/`
+- `/home`
+- `/about`
+- `/projects`
+- `/beyond`
+- `/experience`
+- `/education`
+- `/certifications`
+- `/skills`
+- `/contact`
+
+### Admin
+
+- `/admin/login`
+- `/admin` (dashboard)
+- `/admin/profile`
+- `/admin/experiences`
+- `/admin/projects`
+- `/admin/skills`
+- `/admin/certifications`
+- `/admin/blog`
+- `/admin/blog/new`
+- `/admin/blog/edit/:id`
+- `/admin/messages`
+- `/admin/education`
+- `/admin/analytics`
+- `/admin/system-health`
+- `/admin/logs`
+- `/admin/notifications`
+- `/admin/settings`
+- `/admin/account`
 
 ## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ (or current LTS)
+- Node.js 18+
 - npm
 
-### Run Locally
+### Install and Run
 
 ```bash
 npm install
 npm run dev
 ```
 
-Local URL: `http://localhost:5173`
-
-## Available Scripts
-
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Starts the Vite development server |
-| `npm run build` | Creates an optimized production build in `dist/` |
-| `npm run preview` | Serves the production build locally |
-| `npm run lint` | Runs ESLint checks |
+App runs at: `http://localhost:5173`
 
 ## Environment Variables
 
-Create a `.env.local` file in the project root (see `.env.example`):
+Create `.env.local` (or `.env`) in project root:
 
 ```bash
 VITE_SUPABASE_URL=https://your-project-id.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-or-publishable-key
+VITE_SUPABASE_ANON_KEY=your-anon-public-key
+VITE_FORMSPREE_FORM_ID=your-formspree-id
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
 
-- Variables must be prefixed with `VITE_` to be available in client code.
-- The contact form inserts into Supabase only; it does **not** send email. For inbox notifications, add a Supabase Database Webhook, Edge Function, or another provider later.
-- Access them with `import.meta.env`, for example: `import.meta.env.VITE_SUPABASE_URL`
+Notes:
+
+- `VITE_*` variables are exposed to client code.
+- `SUPABASE_SERVICE_ROLE_KEY` is for local scripts only (never expose publicly).
+- If Supabase env vars are missing, public pages can still use local fallback content.
+
+## Scripts
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start Vite development server |
+| `npm run build` | Build production bundle (`dist/`) |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | Run ESLint |
+| `npm run seed` | Seed Supabase from local portfolio data |
+| `npm run migrate-assets` | Migrate/upload assets to storage workflow |
+| `npm run verify:phase5` | Verify Supabase phase-5 migration/setup |
 
 ## Project Structure
 
 ```text
 .
 ├── src/
-│   ├── components/      # Reusable sections and UI building blocks
-│   ├── pages/           # Route-level page wrappers
-│   ├── data/            # Portfolio content (projects, skills, about, etc.)
-│   ├── context/         # Shared app-level context/providers
-│   ├── constants/       # Shared constants/media maps
-│   ├── hooks/           # Custom hooks (scroll, effects, canvas behavior)
+│   ├── components/            # Public + admin reusable components
+│   ├── pages/                 # Public and /admin route pages
+│   ├── hooks/                 # Auth, CRUD, analytics, Supabase hooks
+│   ├── context/               # Portfolio data provider
+│   ├── lib/                   # Supabase client + data adapters/utilities
+│   ├── schemas/               # Zod schemas for admin forms
+│   ├── scripts/               # Seeding/migration/verification scripts
+│   ├── constants/             # Shared route/nav/UI constants
+│   ├── data/                  # Static fallback content
 │   ├── App.jsx
 │   └── main.jsx
-├── public/              # Static assets, PDFs, manifest
-├── docs/                # Extended project docs
-├── index.html
+├── docs/                      # Setup and architecture docs
+├── public/                    # Static assets
 └── package.json
 ```
 
-## Customization Guide
+## Content & Data Model
 
-### Update Content
+The app is now Supabase-first for portfolio content:
 
-- Projects: `src/data/projects.js`
-- Skills: `src/data/skills.js`
-- About: `src/data/about.js`
-- Certifications: `src/data/certifications.js`
-- Leadership/Beyond: `src/data/leadership.js`
-- Experience: `src/data/experience.js`
+- Profile
+- Experiences
+- Projects
+- Skill groups and skills
+- Certifications
+- Blog posts
+- Education
+- Contact submissions
+- Page views (analytics)
 
-### Update Visual Assets
+Reference docs:
 
-- Add/update files in `src/assets/`
-- Map reusable media references in `src/constants/media.js`
-
-### Update Resume Files
-
-- Replace resume PDFs in `public/` while preserving filenames used by the UI.
-
-## Deployment
-
-Build and deploy the `dist/` folder to any static host:
-
-1. `npm run build`
-2. Configure SPA fallback so non-root routes return `index.html`
-3. Add production environment variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, etc.)
-
-See also: `docs/deployment.md`
-
-## Additional Documentation
-
-- `docs/overview.md`
+- `docs/backend-integration-plan.md`
 - `docs/content-management.md`
-- `docs/deployment.md`
+- `docs/overview.md`
+
+## Deployment Notes
+
+1. Build with `npm run build`.
+2. Deploy `dist/` to static hosting.
+3. Configure SPA rewrites so non-root routes serve `index.html`.
+4. Add required environment variables in hosting provider settings.
+5. Ensure Supabase RLS policies and storage buckets are configured.
+
+See `docs/deployment.md` for deployment details.
 
 ## Troubleshooting
 
-- If a route 404s in production, verify SPA fallback rewrites are enabled.
-- If contact submissions fail, confirm `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set and that RLS allows anonymous `INSERT` on `contact_submissions` (see `docs/backend-integration-plan.md`).
-- If styles look off, run a clean install (`rm -rf node_modules package-lock.json && npm install`) and restart the dev server.
+- Route 404s in production: verify SPA fallback rewrites.
+- Admin login issues: confirm Supabase URL/key and auth setup.
+- Missing data in admin/public pages: verify table policies and seeded records.
+- Contact inbox empty: check `contact_submissions` insert policy and env config.
+- Styling/build issues: reinstall dependencies and restart dev server.
 
 ## License
 
