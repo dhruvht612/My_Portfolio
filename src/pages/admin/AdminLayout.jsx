@@ -17,6 +17,12 @@ export default function AdminLayout() {
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
 
   useEffect(() => {
+    const onPalette = () => setPaletteOpen(true)
+    window.addEventListener('admin:command-palette', onPalette)
+    return () => window.removeEventListener('admin:command-palette', onPalette)
+  }, [])
+
+  useEffect(() => {
     const onKeyDown = (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault()

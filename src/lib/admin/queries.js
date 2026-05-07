@@ -1,3 +1,4 @@
+import { eachDayOfInterval, format, startOfDay, subDays } from 'date-fns'
 import { supabase } from '../supabase'
 
 export function ensureClient() {
@@ -81,7 +82,7 @@ export async function countBlogByStatus() {
   return { draft: draft ?? 0, published: pub ?? 0 }
 }
 
-export async function fetchRecentActivity() {
+export async function fetchRecentActivity(limit = 12) {
   const c = ensureClient()
   const tables = [
     { table: 'projects', labelKey: 'title' },
@@ -102,5 +103,93 @@ export async function fetchRecentActivity() {
       }))
     }),
   )
-  return chunks.flat().sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, 5)
+  return chunks.flat().sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, limit)
+}
+
+/** Daily visit counts for charts (best-effort — empty if `page_views` missing or RLS blocks). */
+export async function fetchPageViewsDailyBuckets(days = 14) {
+  const c = ensureClient()
+  const end = startOfDay(new Date())
+  const start = startOfDay(subDays(end, Math.max(1, days) - 1))
+  const dayKeys = eachDayOfInterval({ start, end }).map((d) => format(d, 'yyyy-MM-dd'))
+  const base = dayKeys.map((day) => ({ day, count: 0 }))
+
+  try {
+    const { data, error } = await c
+      .from('page_views')
+      .select('viewed_at')
+      .gte('viewed_at', start.toISOString())
+      .lte('viewed_at', new Date(end.getTime() + 86400000 - 1).toISOString())
+
+    if (error) return { series: base, error: error.message }
+
+    const bucket = Object.fromEntries(dayKeys.map((d) => [d, 0]))
+    for (const row of data || []) {
+      if (!row.viewed_at) continue
+      const k = format(startOfDay(new Date(row.viewed_at)), 'yyyy-MM-dd')
+      if (k in bucket) bucket[k]++
+    }
+    return { series: dayKeys.map((day) => ({ day, count: bucket[day] })), error: null }
+  } catch (e) {
+    return { series: base, error: e?.message || 'unknown' }
+  }
+}
+
+/** Top paths in the last window (for insights). */
+export async function fetchTopPagePaths(days = 14, limit = 6) {
+  const c = ensureClient()
+  const start = startOfDay(subDays(new Date(), Math.max(1, days) - 1))
+  try {
+    const { data, error } = await c.from('page_views').select('path').gte('viewed_at', start.toISOString())
+    if (error) return { paths: [], error: error.message }
+    const counts = {}
+    for (const row of data || []) {
+      const p = row.path || '/'
+      counts[p] = (counts[p] || 0) + 1
+    }
+    const paths = Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, limit)
+      .map(([path, hits]) => ({ path, hits }))
+    return { paths, error: null }
+  } catch (e) {
+    return { paths: [], error: e?.message || 'unknown' }
+  }
+}
+
+/** Tag frequency across projects for lightweight intelligence. */
+/** Count rows updated across core tables since `isoSince` — lightweight activity velocity. */
+export async function countRecentUpdatesSince(isoSince) {
+  const c = ensureClient()
+  const tables = ['projects', 'blog_posts', 'certifications', 'experiences', 'skills']
+  const parts = await Promise.all(
+    tables.map(async (table) => {
+      const { count, error } = await c.from(table).select('*', { count: 'exact', head: true }).gte('updated_at', isoSince)
+      if (error) return 0
+      return count ?? 0
+    })
+  )
+  return parts.reduce((a, b) => a + b, 0)
+}
+
+export async function fetchProjectTechFrequency() {
+  const c = ensureClient()
+  try {
+    const { data, error } = await c.from('projects').select('tech_stack, categories')
+    if (error) return { tags: [], error: error.message }
+    const freq = {}
+    for (const row of data || []) {
+      const tags = [...(row.tech_stack || []), ...(row.categories || [])].map((x) => String(x).toLowerCase().trim()).filter(Boolean)
+      for (const t of tags) {
+        freq[t] = (freq[t] || 0) + 1
+      }
+    }
+    const tags = Object.entries(freq)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 12)
+      .map(([tag, n]) => ({ tag, n }))
+    return { tags, error: null }
+  } catch (e) {
+    return { tags: [], error: e?.message || 'unknown' }
+  }
 }
