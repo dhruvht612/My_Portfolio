@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
-import AdminFormWizard from '../../components/admin/AdminFormWizard'
+import { Sparkles } from 'lucide-react'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
+import EducationLoadingSkeleton from '../../components/admin/education/EducationLoadingSkeleton'
+import EducationWorkspace from '../../components/admin/education/EducationWorkspace'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
 import { useSupabaseRow } from '../../hooks/useSupabaseRow'
-import { educationSchema } from '../../schemas/education.schema'
 import { isSupabaseConfigured } from '../../lib/supabase'
 
 const empty = {
@@ -32,81 +33,30 @@ export default function AdminEducation() {
     }
   }, [data])
 
-  const steps = [
-    {
-      id: 'core',
-      label: 'Core information',
-      fields: [
-        {
-          section: 'Program',
-          fields: [
-            { type: 'text', name: 'institution', label: 'Institution' },
-            { type: 'text', name: 'degree', label: 'Degree' },
-            { type: 'image', name: 'logo_url', label: 'Institution logo', bucket: 'logos', accept: 'image/*' },
-            { type: 'slider', name: 'progress_percent', label: 'Progress %', min: 0, max: 100 },
-            { type: 'toggle', name: 'is_active', label: 'Currently enrolled', hint: ' ' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'meta',
-      label: 'Focus & highlights',
-      fields: [
-        { section: 'Focus areas', fields: [{ type: 'array', name: 'focus_areas', label: 'Focus areas', itemLabel: 'Area' }] },
-        {
-          section: 'Highlights',
-          fields: [
-            {
-              type: 'arrayOfObjects',
-              name: 'highlights',
-              label: 'Highlight cards',
-              itemFields: [
-                { name: 'icon', label: 'Icon class', type: 'text' },
-                { name: 'title', label: 'Title', type: 'text' },
-                { name: 'description', label: 'Description', type: 'textarea' },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ]
-
-  if (loading) {
-    return (
-      <div className="mx-auto flex max-w-6xl min-h-[240px] items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-sky-400/30 border-t-sky-400" />
-      </div>
-    )
-  }
-
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="mx-auto max-w-7xl space-y-5">
       <NotConfiguredBanner />
       <AdminPageHeader
         eyebrow="Academics"
         title="Education"
-        description="Single-row upsert for the Education page: institution, degree, progress, focus areas, and highlights."
-      />
-      <div className="admin-card-premium p-5 md:p-8">
-        <div className="h-[min(80vh,780px)]">
-          <AdminFormWizard
-            key={data?.id || 'new'}
-            schema={educationSchema}
-            defaultValues={defaultValues}
-            steps={steps}
-            disabled={!isSupabaseConfigured}
-            submitLabel="Save"
-            onSubmit={async (values) => {
-              await save({
-                ...values,
-                focus_areas: values.focus_areas.filter(Boolean),
-              })
-            }}
-          />
-        </div>
-      </div>
+        description="Futuristic student identity workspace — institution profile, degree trajectory, focus map, and milestone highlights for your public Education page."
+      >
+        <span className="edu-header-badge inline-flex items-center gap-1.5 self-start rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-1 text-[11px] font-medium text-violet-200 sm:self-auto">
+          <Sparkles className="h-3.5 w-3.5" aria-hidden />
+          Student OS
+        </span>
+      </AdminPageHeader>
+
+      {loading ? (
+        <EducationLoadingSkeleton />
+      ) : (
+        <EducationWorkspace
+          key={data?.id || 'new'}
+          defaultValues={defaultValues}
+          disabled={!isSupabaseConfigured}
+          onSubmit={save}
+        />
+      )}
     </div>
   )
 }
