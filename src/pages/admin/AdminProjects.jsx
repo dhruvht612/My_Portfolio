@@ -1,14 +1,15 @@
 import { useMemo, useState } from 'react'
-import { Plus, Sparkles } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Plus, Rocket } from 'lucide-react'
 import { AdminFormWatch } from '../../components/admin/AdminForm'
 import AdminFormWizard from '../../components/admin/AdminFormWizard'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
 import AdminModal from '../../components/admin/AdminModal'
 import ConfirmDialog from '../../components/admin/ConfirmDialog'
-import DataTable from '../../components/admin/DataTable'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
-import StatusBadge from '../../components/admin/StatusBadge'
+import ProjectsLoadingSkeleton from '../../components/admin/projects/ProjectsLoadingSkeleton'
+import ProjectsWorkspace from '../../components/admin/projects/ProjectsWorkspace'
 import HolographicCard from '../../components/ui/holographic-card'
 import { useAdminCrud } from '../../hooks/useAdminCrud'
 import { projectSchema } from '../../schemas/project.schema'
@@ -45,7 +46,7 @@ function ProjectHoloPreview() {
         const imageUrl = vals.image_url ? String(vals.image_url) : ''
 
         return (
-          <div className="space-y-2">
+          <motion.div className="space-y-2">
             <p className="text-xs font-medium uppercase tracking-wide text-[var(--color-text-muted)]">Live preview</p>
             <HolographicCard className="project-card relative overflow-hidden rounded-2xl border border-[var(--color-blue)]/20 bg-gradient-to-br from-[var(--color-bg)] to-[var(--color-bg-elevated)] shadow-xl">
               {badgeLabel ? (
@@ -81,17 +82,12 @@ function ProjectHoloPreview() {
                   {disabled ? (
                     <span className="text-xs text-[var(--color-text-muted)]">In development (disabled)</span>
                   ) : (
-                    <>
-                      <span className="theme-btn theme-btn-primary pointer-events-none flex-1 px-3 py-2 text-center text-xs opacity-90">
-                        <Sparkles className="inline h-3 w-3" /> Live
-                      </span>
-                      <span className="theme-btn theme-btn-secondary pointer-events-none flex-1 px-3 py-2 text-center text-xs opacity-90">GitHub</span>
-                    </>
+                    <span className="theme-btn theme-btn-primary pointer-events-none flex-1 px-3 py-2 text-center text-xs opacity-90">Live</span>
                   )}
                 </div>
-              </div>
+                </div>
             </HolographicCard>
-          </div>
+          </motion.div>
         )
       }}
     </AdminFormWatch>
@@ -123,7 +119,8 @@ export default function AdminProjects() {
   }
 
   const openEdit = (row) => {
-    setEditing({ id: row.id, ...mapRowToForm(row) })
+    const id = row.id ?? null
+    setEditing({ id, ...mapRowToForm(row) })
     setModalOpen(true)
   }
 
@@ -141,75 +138,45 @@ export default function AdminProjects() {
     setEditing(null)
   }
 
-  const columns = [
-    {
-      key: 'image_url',
-      header: '',
-      width: '72px',
-      render: (row) =>
-        row.image_url ? (
-          <img src={row.image_url} alt="" className="h-12 w-16 rounded-lg object-cover" />
-        ) : (
-          <div className="flex h-12 w-16 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-slate-500">
-            <i className={row.icon_class || 'fas fa-code'} />
-          </div>
-        ),
-    },
-    { key: 'title', header: 'Title', sortable: true },
-    {
-      key: 'categories',
-      header: 'Categories',
-      render: (row) => (
-        <div className="flex flex-wrap gap-1">
-          {(row.categories || []).slice(0, 4).map((c) => (
-            <span key={c} className="rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] uppercase text-slate-500">
-              {c}
-            </span>
-          ))}
-        </div>
-      ),
-    },
-    {
-      key: 'tech_stack',
-      header: 'Tech',
-      render: (row) => <span className="text-[var(--color-text-muted)]">{Array.isArray(row.tech_stack) ? row.tech_stack.length : 0}</span>,
-    },
-    {
-      key: 'status',
-      header: 'Status',
-      render: (row) =>
-        row.is_disabled ? <StatusBadge tone="gray">Disabled</StatusBadge> : <StatusBadge tone="green">Live</StatusBadge>,
-    },
-    {
-      key: 'is_featured',
-      header: '',
-      render: (row) => (row.is_featured ? <StatusBadge tone="amber">Featured</StatusBadge> : null),
-    },
-  ]
+  const toggleFeatured = async (row) => {
+    if (!isSupabaseConfigured) return
+    await update(row.id, { is_featured: !row.is_featured })
+  }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="mx-auto max-w-7xl space-y-5">
       <NotConfiguredBanner />
       <AdminPageHeader
         eyebrow="Portfolio"
         title="Projects"
-        description="Case studies and builds. Edit rows from the table menu; preview updates live in the form sidebar."
+        description="Futuristic product showcase — cinematic cards, deployment signals, stack intelligence, and portfolio analytics."
       >
-        <AdminPrimaryButton disabled={!isSupabaseConfigured} onClick={openNew}>
-          <Plus className="h-4 w-4" aria-hidden />
-          Add project
-        </AdminPrimaryButton>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <span className="proj-header-badge inline-flex items-center gap-1.5 self-start rounded-full border border-indigo-400/25 bg-indigo-500/10 px-3 py-1 text-[11px] font-medium text-indigo-200 sm:self-auto">
+            <Rocket className="h-3.5 w-3.5" aria-hidden />
+            Portfolio OS
+          </span>
+          <AdminPrimaryButton disabled={!isSupabaseConfigured} onClick={openNew} className="self-start sm:self-auto">
+            <Plus className="h-4 w-4" aria-hidden />
+            Add project
+          </AdminPrimaryButton>
+        </div>
       </AdminPageHeader>
 
-      <DataTable
-        columns={columns}
-        rows={rows}
-        loading={loading}
-        error={error}
-        emptyMessage="No projects yet."
-        onEdit={isSupabaseConfigured ? openEdit : undefined}
-        onDelete={isSupabaseConfigured ? (row) => setConfirmId(row.id) : undefined}
-      />
+      {loading ? (
+        <ProjectsLoadingSkeleton />
+      ) : (
+        <ProjectsWorkspace
+          rows={rows}
+          loading={loading}
+          error={error}
+          canEdit={isSupabaseConfigured}
+          onEdit={openEdit}
+          onDelete={(row) => setConfirmId(row.id)}
+          onToggleFeatured={toggleFeatured}
+          onAdd={openNew}
+        />
+      )}
 
       <AdminModal
         open={modalOpen}
