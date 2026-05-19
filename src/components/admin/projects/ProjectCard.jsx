@@ -13,6 +13,7 @@ import ProjectExpandedPanel from './ProjectExpandedPanel'
 import ProjectSparkline from './ProjectSparkline'
 import ProjectStatusBadge from './ProjectStatusBadge'
 import ProjectTechStack from './ProjectTechStack'
+import { parseProjectBadge } from './projectBadge'
 import { projectMetrics } from './projectInsights'
 
 export default function ProjectCard({
@@ -27,7 +28,7 @@ export default function ProjectCard({
   const cardRef = useRef(null)
   const [hover, setHover] = useState(false)
   const metrics = projectMetrics(row)
-  const badgeLabel = row.badge != null && typeof row.badge === 'object' ? row.badge.label : row.badge
+  const badge = parseProjectBadge(row.badge)
 
   const onMove = useCallback((e) => {
     const el = cardRef.current
@@ -96,7 +97,12 @@ export default function ProjectCard({
               </span>
             ) : null}
           </div>
-          {badgeLabel ? <span className="absolute right-3 top-3 proj-badge-label">{badgeLabel}</span> : null}
+          {badge.label ? (
+            <span className={`absolute right-3 top-3 proj-badge-label bg-gradient-to-r ${badge.gradient}`}>
+              <i className={`${badge.icon} mr-1`} aria-hidden />
+              {badge.label}
+            </span>
+          ) : null}
           <AnimatePresence>
             {hover ? (
               <motion.div

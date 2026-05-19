@@ -14,13 +14,14 @@ import HolographicCard from '../../components/ui/holographic-card'
 import { useAdminCrud } from '../../hooks/useAdminCrud'
 import { projectSchema } from '../../schemas/project.schema'
 import { isSupabaseConfigured } from '../../lib/supabase'
+import { badgeLabel, serializeProjectBadge } from '../../components/admin/projects/projectBadge'
 
 function mapRowToForm(row) {
   return {
     title: row.title ?? '',
     description: row.description ?? '',
     icon_class: row.icon_class ?? '',
-    badge: row.badge != null && typeof row.badge === 'object' ? row.badge.label ?? '' : row.badge ?? '',
+    badge: badgeLabel(row.badge),
     features: row.features?.length ? row.features : [],
     tech_stack: row.tech_stack?.length ? row.tech_stack : [],
     categories: row.categories?.length ? row.categories : [],
@@ -125,12 +126,13 @@ export default function AdminProjects() {
   }
 
   const saveProject = async (values) => {
+    const existingRow = editing?.id ? rows.find((r) => r.id === editing.id) : null
     const payload = {
       ...values,
       features: values.features.filter(Boolean),
       tech_stack: values.tech_stack.filter(Boolean),
       categories: values.categories.map((c) => String(c).toLowerCase()).filter(Boolean),
-      badge: values.badge?.trim() || null,
+      badge: serializeProjectBadge(values.badge, existingRow?.badge),
     }
     if (editing?.id) await update(editing.id, payload)
     else await create(payload)

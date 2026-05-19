@@ -3,14 +3,14 @@ import { Code2, ExternalLink, Pencil, Star } from 'lucide-react'
 import ProjectSparkline from './ProjectSparkline'
 import ProjectStatusBadge from './ProjectStatusBadge'
 import ProjectTechStack from './ProjectTechStack'
+import { parseProjectBadge } from './projectBadge'
 import { projectMetrics } from './projectInsights'
 
 export default function ProjectsFeaturedSpotlight({ project, onEdit }) {
   if (!project) return null
 
   const metrics = projectMetrics(project)
-  const badgeLabel =
-    project.badge != null && typeof project.badge === 'object' ? project.badge.label : project.badge
+  const badge = parseProjectBadge(project.badge)
 
   return (
     <motion.section
@@ -39,7 +39,12 @@ export default function ProjectsFeaturedSpotlight({ project, onEdit }) {
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <ProjectStatusBadge row={project} size="lg" />
-              {badgeLabel ? <span className="proj-badge-label">{badgeLabel}</span> : null}
+              {badge.label ? (
+                <span className={`proj-badge-label inline-flex items-center bg-gradient-to-r ${badge.gradient}`}>
+                  <i className={`${badge.icon} mr-1`} aria-hidden />
+                  {badge.label}
+                </span>
+              ) : null}
             </div>
             <h3 className="mt-3 text-xl font-bold text-white md:text-2xl">{project.title}</h3>
             <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-400">{project.description}</p>

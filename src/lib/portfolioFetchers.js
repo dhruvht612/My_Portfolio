@@ -11,7 +11,7 @@ import {
  * @param {unknown} raw
  * @returns {{ label: string, icon: string, gradient: string }}
  */
-function normalizeBadge(raw) {
+export function normalizeBadge(raw) {
   if (raw == null || raw === '') {
     return { label: 'Project', icon: 'fas fa-code', gradient: 'from-slate-400 to-slate-600' }
   }

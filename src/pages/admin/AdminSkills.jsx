@@ -1,20 +1,19 @@
 import { useMemo, useState } from 'react'
-import { Plus } from 'lucide-react'
+import { Layers3, Plus, Sparkles } from 'lucide-react'
 import AdminFormWizard from '../../components/admin/AdminFormWizard'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 import AdminPrimaryButton from '../../components/admin/AdminPrimaryButton'
-import AdminSegmentedControl from '../../components/admin/AdminSegmentedControl'
 import AdminModal from '../../components/admin/AdminModal'
 import ConfirmDialog from '../../components/admin/ConfirmDialog'
-import DataTable from '../../components/admin/DataTable'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
+import SkillsLoadingSkeleton from '../../components/admin/skills/SkillsLoadingSkeleton'
+import SkillsWorkspace from '../../components/admin/skills/SkillsWorkspace'
 import { useAdminCrud } from '../../hooks/useAdminCrud'
 import { skillGroupSchema } from '../../schemas/skillGroup.schema'
 import { skillSchema } from '../../schemas/skill.schema'
 import { isSupabaseConfigured } from '../../lib/supabase'
 
 export default function AdminSkills() {
-  const [tab, setTab] = useState('groups')
   const groupsCrud = useAdminCrud('skill_groups', { column: 'display_order', ascending: true })
   const skillsCrud = useAdminCrud('skills', { column: 'display_order', ascending: true })
   const projectsCrud = useAdminCrud('projects', { column: 'title', ascending: true })
@@ -24,7 +23,8 @@ export default function AdminSkills() {
   const [skillModal, setSkillModal] = useState(false)
   const [skillEditing, setSkillEditing] = useState(null)
   const [deleteGroup, setDeleteGroup] = useState(null)
-  const [deleteSkillId, setDeleteSkillId] = useState(null)
+  const [deleteSkill, setDeleteSkill] = useState(null)
+  const [prefillGroupId, setPrefillGroupId] = useState(null)
 
   const childCountForGroup = useMemo(() => {
     const m = new Map()
@@ -50,8 +50,14 @@ export default function AdminSkills() {
     setGroupEditing({ id: null, group_name: '', icon_class: '', display_order: groupsCrud.rows.length })
     setGroupModal(true)
   }
+
   const openEditGroup = (row) => {
-    setGroupEditing({ id: row.id, group_name: row.group_name ?? '', icon_class: row.icon_class ?? '', display_order: row.display_order ?? 0 })
+    setGroupEditing({
+      id: row.id,
+      group_name: row.group_name ?? '',
+      icon_class: row.icon_class ?? '',
+      display_order: row.display_order ?? 0,
+    })
     setGroupModal(true)
   }
 
@@ -73,12 +79,15 @@ export default function AdminSkills() {
     display_order: row.display_order ?? 0,
   })
 
-  const openNewSkill = () => {
-    const firstG = groupsCrud.rows[0]?.id || ''
-    setSkillEditing({ id: null, ...mapSkillRow({ skill_group_id: firstG, details: [] }) })
+  const openNewSkill = (groupId = null) => {
+    const gid = groupId || groupsCrud.rows[0]?.id || ''
+    setPrefillGroupId(groupId)
+    setSkillEditing({ id: null, ...mapSkillRow({ skill_group_id: gid, details: [] }) })
     setSkillModal(true)
   }
+
   const openEditSkill = (row) => {
+    setPrefillGroupId(null)
     setSkillEditing({ id: row.id, ...mapSkillRow(row) })
     setSkillModal(true)
   }
@@ -93,99 +102,57 @@ export default function AdminSkills() {
     else await skillsCrud.create(payload)
     setSkillModal(false)
     setSkillEditing(null)
+    setPrefillGroupId(null)
   }
 
-  const groupColumns = [
-    { key: 'group_name', header: 'Group', sortable: true },
-    { key: 'icon_class', header: 'Icon', render: (r) => <span className="text-xs text-slate-500">{r.icon_class || '—'}</span> },
-    {
-      key: 'count',
-      header: 'Skills',
-      render: (r) => <span>{childCountForGroup.get(r.id) || 0}</span>,
-    },
-    { key: 'display_order', header: 'Order', sortable: true },
-  ]
-
-  const skillColumns = [
-    { key: 'name', header: 'Skill', sortable: true },
-    {
-      key: 'skill_group_id',
-      header: 'Group',
-      render: (r) => groupsCrud.rows.find((g) => g.id === r.skill_group_id)?.group_name || '—',
-    },
-    {
-      key: 'proficiency',
-      header: 'Proficiency',
-      render: (r) => `${r.proficiency ?? 0}%`,
-      sortable: true,
-    },
-    { key: 'display_order', header: 'Order', sortable: true },
-  ]
-
   const nChild = deleteGroup ? childCountForGroup.get(deleteGroup.id) || 0 : 0
-
-  const tabOptions = [
-    { value: 'groups', label: 'Skill groups' },
-    { value: 'skills', label: 'Skills' },
-  ]
+  const loading = groupsCrud.loading || skillsCrud.loading
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="mx-auto max-w-7xl space-y-5">
       <NotConfiguredBanner />
       <AdminPageHeader
         eyebrow="Capabilities"
         title="Skills"
-        description="Skill groups organize the grid on your site; skills belong to one group and can link to a project."
+        description="Engineering capability OS — orchestrate domains, proficiency signals, and project linkages for your public intelligence workspace."
       >
-        <AdminSegmentedControl
-          options={tabOptions}
-          value={tab}
-          onChange={setTab}
-          disabled={!isSupabaseConfigured}
-        />
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <span className="adm-sk-header-badge inline-flex items-center gap-1.5 self-start rounded-full border border-sky-400/25 bg-sky-500/10 px-3 py-1 text-[11px] font-medium text-sky-200 sm:self-auto">
+            <Sparkles className="h-3.5 w-3.5" aria-hidden />
+            Capability OS
+          </span>
+          <AdminPrimaryButton disabled={!isSupabaseConfigured} onClick={openNewGroup} className="self-start sm:self-auto">
+            <Layers3 className="h-4 w-4" aria-hidden />
+            Add domain
+          </AdminPrimaryButton>
+          <AdminPrimaryButton
+            disabled={!isSupabaseConfigured || !groupsCrud.rows.length}
+            onClick={() => openNewSkill()}
+            className="self-start sm:self-auto"
+          >
+            <Plus className="h-4 w-4" aria-hidden />
+            Add skill
+          </AdminPrimaryButton>
+        </div>
       </AdminPageHeader>
 
-      {tab === 'groups' ? (
-        <>
-          <div className="flex justify-end">
-            <AdminPrimaryButton disabled={!isSupabaseConfigured} onClick={openNewGroup}>
-              <Plus className="h-4 w-4" aria-hidden />
-              Add group
-            </AdminPrimaryButton>
-          </div>
-          <DataTable
-            columns={groupColumns}
-            rows={groupsCrud.rows}
-            loading={groupsCrud.loading}
-            error={groupsCrud.error}
-            emptyMessage="No skill groups."
-            onEdit={isSupabaseConfigured ? openEditGroup : undefined}
-            onDelete={isSupabaseConfigured ? (row) => setDeleteGroup(row) : undefined}
-          />
-        </>
+      {loading ? (
+        <SkillsLoadingSkeleton />
       ) : (
-        <>
-          <div className="flex justify-end">
-            <AdminPrimaryButton disabled={!isSupabaseConfigured || !groupsCrud.rows.length} onClick={openNewSkill}>
-              <Plus className="h-4 w-4" aria-hidden />
-              Add skill
-            </AdminPrimaryButton>
-          </div>
-          {!groupsCrud.rows.length ? (
-            <p className="rounded-xl border border-amber-500/35 bg-amber-500/[0.08] p-4 text-sm text-amber-100 shadow-lg shadow-black/20">
-              Create a skill group first.
-            </p>
-          ) : null}
-          <DataTable
-            columns={skillColumns}
-            rows={skillsCrud.rows}
-            loading={skillsCrud.loading}
-            error={skillsCrud.error}
-            emptyMessage="No skills yet."
-            onEdit={isSupabaseConfigured ? openEditSkill : undefined}
-            onDelete={isSupabaseConfigured ? (row) => setDeleteSkillId(row.id) : undefined}
-          />
-        </>
+        <SkillsWorkspace
+          groups={groupsCrud.rows}
+          skills={skillsCrud.rows}
+          projects={projectsCrud.rows}
+          loading={loading}
+          error={groupsCrud.error || skillsCrud.error}
+          canEdit={isSupabaseConfigured}
+          onEditGroup={openEditGroup}
+          onDeleteGroup={setDeleteGroup}
+          onEditSkill={openEditSkill}
+          onDeleteSkill={setDeleteSkill}
+          onAddGroup={openNewGroup}
+          onAddSkill={openNewSkill}
+        />
       )}
 
       <AdminModal open={groupModal} onClose={() => setGroupModal(false)} title={groupEditing?.id ? 'Edit skill group' : 'New skill group'}>
@@ -229,7 +196,7 @@ export default function AdminSkills() {
       <AdminModal open={skillModal} onClose={() => setSkillModal(false)} title={skillEditing?.id ? 'Edit skill' : 'New skill'} size="lg">
         {skillEditing ? (
           <AdminFormWizard
-            key={skillEditing.id || 'ns'}
+            key={`${skillEditing.id || 'ns'}-${prefillGroupId || ''}`}
             schema={skillSchema}
             defaultValues={{
               skill_group_id: skillEditing.skill_group_id,
@@ -299,15 +266,15 @@ export default function AdminSkills() {
       />
 
       <ConfirmDialog
-        open={!!deleteSkillId}
+        open={!!deleteSkill}
         title="Delete skill?"
         message="This cannot be undone."
         confirmLabel="Delete"
         danger
-        onClose={() => setDeleteSkillId(null)}
+        onClose={() => setDeleteSkill(null)}
         onConfirm={async () => {
-          if (deleteSkillId) await skillsCrud.remove(deleteSkillId)
-          setDeleteSkillId(null)
+          if (deleteSkill) await skillsCrud.remove(deleteSkill.id)
+          setDeleteSkill(null)
         }}
       />
     </div>

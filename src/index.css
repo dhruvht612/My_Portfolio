@@ -3544,3 +3544,89 @@ select {
     background-position: -200% 0;
   }
 }
+
+/* === Public Skills — Capability Intelligence OS === */
+.sk-workspace { --sk-mx: 50%; --sk-my: 40%; }
+.sk-ambient-root { --sk-mx: 50%; --sk-my: 40%; }
+.sk-ambient-orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+.sk-ambient-orb-a { width: 42%; height: 38%; top: -8%; right: -4%; background: radial-gradient(circle, rgba(56, 189, 248, 0.14), transparent 68%); animation: sk-orb-drift 22s ease-in-out infinite alternate; }
+.sk-ambient-orb-b { width: 36%; height: 34%; bottom: -6%; left: -2%; background: radial-gradient(circle, rgba(129, 140, 248, 0.12), transparent 70%); }
+@keyframes sk-orb-drift { from { transform: translate(0, 0); } to { transform: translate(-4%, 6%); } }
+.sk-ambient-particles { background-image: radial-gradient(circle at 22% 38%, rgba(56, 189, 248, 0.07) 0 1px, transparent 1px), radial-gradient(circle at 72% 62%, rgba(167, 139, 250, 0.06) 0 1px, transparent 1px); background-size: 140px 140px, 180px 180px; opacity: 0.35; animation: sk-particles-shift 28s linear infinite; }
+@keyframes sk-particles-shift { from { background-position: 0 0, 0 0; } to { background-position: 140px 80px, -120px 60px; } }
+.sk-ambient-scanline { opacity: 0.04; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.03) 2px, rgba(255, 255, 255, 0.03) 4px); mix-blend-mode: overlay; }
+.sk-ambient-radial { background: radial-gradient(680px circle at var(--sk-mx, 50%) var(--sk-my, 40%), rgba(56, 189, 248, 0.1), transparent 58%); }
+.sk-ambient-grid { background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black, transparent 75%); }
+.sk-hero-panel { background: linear-gradient(145deg, rgba(8, 14, 28, 0.92), rgba(15, 23, 42, 0.75)); box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+.sk-hero-banner { background: radial-gradient(ellipse 75% 55% at 85% 0%, rgba(56, 189, 248, 0.14), transparent 52%), radial-gradient(ellipse 55% 45% at 8% 100%, rgba(129, 140, 248, 0.12), transparent 50%); }
+.sk-hud-corner { position: absolute; width: 28px; height: 28px; pointer-events: none; border-color: rgba(56, 189, 248, 0.35); }
+.sk-hud-tl { top: 12px; left: 12px; border-top: 1px solid; border-left: 1px solid; }
+.sk-hud-tr { top: 12px; right: 12px; border-top: 1px solid; border-right: 1px solid; }
+.sk-hud-bl { bottom: 12px; left: 12px; border-bottom: 1px solid; border-left: 1px solid; }
+.sk-hud-br { bottom: 12px; right: 12px; border-bottom: 1px solid; border-right: 1px solid; }
+.sk-pill { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.04); padding: 0.25rem 0.65rem; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(226, 232, 240, 0.9); }
+.sk-pill-live { border-color: rgba(52, 211, 153, 0.25); background: rgba(52, 211, 153, 0.08); color: rgb(167, 243, 208); }
+.sk-pulse-dot { display: inline-block; height: 6px; width: 6px; border-radius: 50%; background: rgb(52, 211, 153); animation: sk-pulse 2s ease-in-out infinite; }
+@keyframes sk-pulse { 0%, 100% { opacity: 0.5; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 8px rgba(52, 211, 153, 0.6); } }
+.sk-status-chip, .sk-growth-chip { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.03); padding: 0.3rem 0.65rem; font-size: 10px; font-weight: 500; color: rgba(148, 163, 184, 0.95); }
+.sk-growth-chip { border-color: rgba(56, 189, 248, 0.2); color: rgb(125, 211, 252); }
+.sk-metric-pill { border-radius: 0.85rem; border: 1px solid rgba(255, 255, 255, 0.07); background: rgba(0, 0, 0, 0.22); padding: 0.65rem 0.75rem; transition: border-color 200ms ease, box-shadow 200ms ease; }
+.sk-metric-pill:hover { border-color: rgba(56, 189, 248, 0.25); box-shadow: 0 0 20px rgba(56, 189, 248, 0.08); }
+.sk-glass-card, .sk-glass-panel { position: relative; border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.08); background: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.012)); box-shadow: 0 14px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.sk-module-card { background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)); box-shadow: 0 16px 48px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.sk-skill-card { border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(8, 14, 28, 0.55); box-shadow: 0 10px 32px rgba(0, 0, 0, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: border-color 220ms ease, box-shadow 220ms ease; }
+.sk-skill-card:hover { border-color: rgba(56, 189, 248, 0.28); box-shadow: 0 16px 40px rgba(56, 189, 248, 0.1); }
+.sk-skill-card-glow { background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(56, 189, 248, 0.12), transparent 65%); }
+.sk-progress-fill { background: linear-gradient(90deg, #38bdf8, #818cf8, #22d3ee); box-shadow: 0 0 14px rgba(56, 189, 248, 0.35); }
+.sk-search-input { border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(8, 14, 28, 0.65); outline: none; transition: border-color 200ms ease, box-shadow 200ms ease; }
+.sk-search-input:focus { border-color: rgba(56, 189, 248, 0.35); box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.12), 0 0 28px rgba(56, 189, 248, 0.1); }
+.sk-sort-chip { display: inline-flex; align-items: center; gap: 0.25rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.07); background: rgba(255, 255, 255, 0.03); padding: 0.35rem 0.7rem; font-size: 11px; font-weight: 600; color: rgb(100, 116, 139); transition: all 200ms ease; }
+.sk-sort-chip:hover { color: rgb(203, 213, 225); border-color: rgba(255, 255, 255, 0.12); }
+.sk-sort-chip-active { border-color: rgba(56, 189, 248, 0.35); background: rgba(56, 189, 248, 0.1); color: rgb(125, 211, 252); box-shadow: 0 0 20px rgba(56, 189, 248, 0.12); }
+.sk-reset-btn { border-radius: 0.65rem; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.04); padding: 0.4rem 0.85rem; font-size: 12px; font-weight: 600; color: rgb(148, 163, 184); transition: border-color 180ms ease, color 180ms ease; }
+.sk-reset-btn:hover { border-color: rgba(56, 189, 248, 0.3); color: rgb(226, 232, 240); }
+.sk-insight-row { transition: border-color 200ms ease, background 200ms ease; }
+.sk-insight-row:hover { border-color: rgba(56, 189, 248, 0.15); background: rgba(56, 189, 248, 0.04); }
+.sk-heatmap-track { background: rgba(255, 255, 255, 0.06); }
+.sk-heatmap-fill { background: linear-gradient(90deg, rgba(56, 189, 248, 0.7), rgba(129, 140, 248, 0.8)); box-shadow: 0 0 12px rgba(56, 189, 248, 0.25); }
+.sk-ring-glow { filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.45)); }
+.sk-mini-stat { transition: border-color 200ms ease; }
+.sk-mini-stat:hover { border-color: rgba(56, 189, 248, 0.2); }
+.sk-modal-panel { border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(5, 10, 20, 0.92); box-shadow: 0 32px 90px rgba(0, 0, 0, 0.55); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+.sk-module-stat { transition: transform 200ms ease, border-color 200ms ease; }
+.sk-module-stat:hover { transform: translateY(-1px); border-color: rgba(56, 189, 248, 0.15); }
+
+/* === Admin Skills — Capability OS workspace === */
+.adm-sk-ambient-root { --adm-sk-mx: 50%; --adm-sk-my: 38%; }
+.adm-sk-ambient-orb { position: absolute; border-radius: 50%; filter: blur(72px); pointer-events: none; }
+.adm-sk-ambient-orb-a { width: 38%; height: 34%; top: -8%; right: -4%; background: radial-gradient(circle, rgba(56, 189, 248, 0.12), transparent 68%); animation: sk-orb-drift 22s ease-in-out infinite alternate; }
+.adm-sk-ambient-orb-b { width: 32%; height: 30%; bottom: -6%; left: -2%; background: radial-gradient(circle, rgba(129, 140, 248, 0.1), transparent 70%); }
+.adm-sk-ambient-scanline { opacity: 0.035; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.025) 2px, rgba(255, 255, 255, 0.025) 4px); }
+.adm-sk-ambient-particles { background-image: radial-gradient(circle at 22% 38%, rgba(56, 189, 248, 0.06) 0 1px, transparent 1px), radial-gradient(circle at 72% 62%, rgba(167, 139, 250, 0.05) 0 1px, transparent 1px); background-size: 130px 130px, 170px 170px; opacity: 0.35; animation: sk-particles-shift 28s linear infinite; }
+.adm-sk-hero-panel { background: linear-gradient(145deg, rgba(8, 14, 28, 0.92), rgba(15, 23, 42, 0.78)); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+.adm-sk-hero-banner { background: radial-gradient(ellipse 75% 55% at 85% 0%, rgba(56, 189, 248, 0.12), transparent 52%), radial-gradient(ellipse 55% 45% at 8% 100%, rgba(129, 140, 248, 0.1), transparent 50%); }
+.adm-sk-hud-corner { position: absolute; width: 24px; height: 24px; pointer-events: none; border-color: rgba(56, 189, 248, 0.3); }
+.adm-sk-hud-tl { top: 10px; left: 10px; border-top: 1px solid; border-left: 1px solid; }
+.adm-sk-hud-tr { top: 10px; right: 10px; border-top: 1px solid; border-right: 1px solid; }
+.adm-sk-pill { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.04); padding: 0.25rem 0.65rem; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(226, 232, 240, 0.9); }
+.adm-sk-status-chip { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.03); padding: 0.25rem 0.6rem; font-size: 10px; color: rgba(148, 163, 184, 0.95); }
+.adm-sk-pulse-dot { display: inline-block; height: 6px; width: 6px; border-radius: 50%; background: rgb(52, 211, 153); animation: sk-pulse 2s ease-in-out infinite; }
+.adm-sk-metric-pill { border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.07); background: rgba(0, 0, 0, 0.22); padding: 0.5rem 0.65rem; min-width: 4.5rem; transition: border-color 200ms ease, box-shadow 200ms ease; }
+.adm-sk-metric-pill:hover { border-color: rgba(56, 189, 248, 0.22); box-shadow: 0 0 16px rgba(56, 189, 248, 0.08); }
+.adm-sk-header-badge { box-shadow: 0 0 20px rgba(56, 189, 248, 0.1); }
+.adm-sk-glass-card { position: relative; border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.08); background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)); box-shadow: 0 12px 38px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.04); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.adm-sk-module { background: linear-gradient(165deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.008)); box-shadow: 0 14px 44px rgba(0, 0, 0, 0.3); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.adm-sk-skill-card { background: rgba(8, 14, 28, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: border-color 200ms ease, box-shadow 200ms ease; }
+.adm-sk-skill-card:hover { border-color: rgba(56, 189, 248, 0.22); box-shadow: 0 8px 28px rgba(56, 189, 248, 0.08); }
+.adm-sk-progress-fill { background: linear-gradient(90deg, #38bdf8, #818cf8); box-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
+.adm-sk-search-input { border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(8, 14, 28, 0.55); outline: none; transition: border-color 200ms ease, box-shadow 200ms ease; }
+.adm-sk-search-input:focus { border-color: rgba(56, 189, 248, 0.35); box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.1), 0 0 24px rgba(56, 189, 248, 0.08); }
+.adm-sk-select { border-radius: 0.65rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(8, 14, 28, 0.55); padding: 0.4rem 0.65rem; font-size: 12px; color: rgb(226, 232, 240); outline: none; }
+.adm-sk-select:focus { border-color: rgba(56, 189, 248, 0.3); }
+.adm-sk-filter-pill { display: inline-flex; align-items: center; gap: 0.3rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.03); padding: 0.3rem 0.65rem; font-size: 11px; font-weight: 600; color: rgb(100, 116, 139); transition: all 200ms ease; }
+.adm-sk-filter-pill:hover { color: rgb(203, 213, 225); }
+.adm-sk-filter-pill-active { border-color: rgba(56, 189, 248, 0.35); background: rgba(56, 189, 248, 0.1); color: rgb(125, 211, 252); box-shadow: 0 0 18px rgba(56, 189, 248, 0.1); }
+.adm-sk-icon-btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 0.65rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.03); padding: 0.4rem; color: rgb(148, 163, 184); transition: border-color 180ms ease, color 180ms ease, background 180ms ease; }
+.adm-sk-icon-btn:hover { border-color: rgba(56, 189, 248, 0.25); background: rgba(56, 189, 248, 0.08); color: rgb(226, 232, 240); }
+.adm-sk-shimmer { background: linear-gradient(110deg, rgba(56, 189, 248, 0.06) 25%, rgba(56, 189, 248, 0.14) 50%, rgba(56, 189, 248, 0.06) 75%); background-size: 200% 100%; animation: adm-sk-shimmer 1.2s ease-in-out infinite; }
+@keyframes adm-sk-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
