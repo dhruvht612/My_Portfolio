@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import AdminFormWizard from '../../components/admin/AdminFormWizard'
+import { motion } from 'framer-motion'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 import NotConfiguredBanner from '../../components/admin/NotConfiguredBanner'
+import ProfileWorkspace from '../../components/admin/profile/ProfileWorkspace'
 import { useSupabaseRow } from '../../hooks/useSupabaseRow'
-import { profileSchema } from '../../schemas/profile.schema'
 import { isSupabaseConfigured } from '../../lib/supabase'
 
 const empty = {
@@ -39,109 +39,34 @@ export default function AdminProfile() {
     }
   }, [data])
 
-  const steps = [
-    {
-      id: 'core',
-      label: 'Core information',
-      fields: [{ section: 'Basic info', fields: [{ type: 'text', name: 'full_name', label: 'Full name' }, { type: 'array', name: 'typed_roles', label: 'Typed roles (hero)', itemLabel: 'Role' }] }],
-    },
-    {
-      id: 'story',
-      label: 'Story',
-      fields: [{ section: 'Bio / story', fields: [{ type: 'array', name: 'bio_story', label: 'Paragraphs', multiline: true, itemLabel: 'Paragraph' }] }],
-    },
-    {
-      id: 'meta',
-      label: 'Metadata',
-      fields: [
-        {
-          section: 'Interests & fun facts',
-          fields: [
-            {
-              type: 'arrayOfObjects',
-              name: 'interests',
-              label: 'Interest cards',
-              itemFields: [
-                { name: 'icon', label: 'Icon class (e.g. fas fa-code)', type: 'text' },
-                { name: 'title', label: 'Title', type: 'text' },
-                { name: 'copy', label: 'Copy', type: 'textarea' },
-              ],
-            },
-            {
-              type: 'arrayOfObjects',
-              name: 'fun_facts',
-              label: 'Facts',
-              itemFields: [
-                { name: 'emoji', label: 'Emoji', type: 'text' },
-                { name: 'title', label: 'Title', type: 'text' },
-                { name: 'copy', label: 'Copy', type: 'textarea' },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'links',
-      label: 'Links & assets',
-      fields: [
-        {
-          section: 'Social links',
-          fields: [
-            { type: 'text', name: 'social_links.github', label: 'GitHub URL' },
-            { type: 'text', name: 'social_links.linkedin', label: 'LinkedIn URL' },
-            { type: 'text', name: 'social_links.instagram', label: 'Instagram URL' },
-            { type: 'email', name: 'social_links.email', label: 'Email' },
-          ],
-        },
-        {
-          section: 'Assets',
-          fields: [
-            { type: 'image', name: 'resume_url', label: 'Resume PDF', bucket: 'resumes', accept: 'application/pdf' },
-            { type: 'array', name: 'footer_badges', label: 'Footer badge image URLs', itemLabel: 'URL' },
-          ],
-        },
-      ],
-    },
-  ]
-
   if (loading) {
     return (
-      <div className="mx-auto flex max-w-6xl min-h-[240px] items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-sky-400/30 border-t-sky-400" />
+      <div className="mx-auto flex max-w-6xl min-h-[min(88vh,520px)] items-center justify-center">
+        <motion.div
+          animate={{ opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 1.4, repeat: Infinity }}
+          className="idf-loading-shimmer h-12 w-12 rounded-2xl border border-violet-400/30"
+        />
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="mx-auto max-w-6xl space-y-6">
       <NotConfiguredBanner />
       <AdminPageHeader
-        eyebrow="Identity"
+        eyebrow="Identity orchestration"
         title="Profile"
-        description="Single-row upsert for the public About / hero: name, roles, bio, socials, resume, and footer badges."
+        description="Configure your public persona, narrative, and digital presence in an AI-powered identity workspace."
       />
-      <div className="admin-card-premium p-5 md:p-8">
-        <div className="h-[min(80vh,780px)]">
-          <AdminFormWizard
-            key={data?.id || 'new'}
-            schema={profileSchema}
-            defaultValues={defaultValues}
-            steps={steps}
-            disabled={!isSupabaseConfigured}
-            submitLabel="Save"
-            onSubmit={async (values) => {
-              const payload = {
-                ...values,
-                typed_roles: values.typed_roles.filter(Boolean),
-                bio_story: values.bio_story.filter(Boolean),
-                footer_badges: values.footer_badges.filter(Boolean),
-              }
-              await save(payload)
-            }}
-          />
-        </div>
-      </div>
+      <ProfileWorkspace
+        key={data?.id || 'new'}
+        defaultValues={defaultValues}
+        disabled={!isSupabaseConfigured}
+        onSubmit={async (values) => {
+          await save(values)
+        }}
+      />
     </div>
   )
 }

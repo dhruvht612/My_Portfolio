@@ -3057,3 +3057,490 @@ select {
 .notif-empty-state {
   background: linear-gradient(160deg, rgba(16, 185, 129, 0.06), rgba(15, 23, 42, 0.5));
 }
+
+/* === Admin Profile — Identity orchestration workspace === */
+.idf-ambient-root {
+  --idf-mx: 50%;
+  --idf-my: 38%;
+  background: linear-gradient(165deg, rgba(15, 23, 42, 0.55), rgba(30, 27, 75, 0.35));
+}
+
+.idf-ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  pointer-events: none;
+}
+
+.idf-ambient-orb-a {
+  width: 44%;
+  height: 40%;
+  top: -14%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.16), transparent 68%);
+}
+
+.idf-ambient-orb-b {
+  width: 38%;
+  height: 36%;
+  bottom: -12%;
+  right: -8%;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.12), transparent 70%);
+}
+
+.idf-ambient-orb-c {
+  width: 28%;
+  height: 26%;
+  top: 40%;
+  right: 20%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 65%);
+}
+
+.idf-ambient-particles {
+  background-image: radial-gradient(circle at 18% 28%, rgba(167, 139, 250, 0.09) 0 1px, transparent 1px),
+    radial-gradient(circle at 74% 62%, rgba(34, 211, 238, 0.07) 0 1px, transparent 1px);
+  background-size: 130px 130px, 170px 170px;
+  opacity: 0.32;
+  animation: idf-particles-shift 26s linear infinite;
+}
+
+@keyframes idf-particles-shift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-20px, -14px, 0);
+  }
+}
+
+.idf-workspace {
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.idf-glass-card {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.012));
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.idf-glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(167, 139, 250, 0.08), transparent 55%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+.idf-glass-card:hover::after {
+  opacity: 1;
+}
+
+.idf-hero-panel {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.78), rgba(49, 46, 129, 0.42));
+}
+
+.idf-hero-banner {
+  background: radial-gradient(ellipse 90% 70% at 10% 0%, rgba(167, 139, 250, 0.18), transparent 52%),
+    radial-gradient(ellipse 70% 55% at 90% 100%, rgba(34, 211, 238, 0.1), transparent 50%);
+}
+
+.idf-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.2rem 0.55rem;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(226, 232, 240, 0.85);
+}
+
+.idf-pill-emerald {
+  border-color: rgba(52, 211, 153, 0.35);
+  background: rgba(16, 185, 129, 0.1);
+  color: rgb(167, 243, 208);
+}
+
+.idf-pill-sky {
+  border-color: rgba(56, 189, 248, 0.35);
+  background: rgba(56, 189, 248, 0.08);
+  color: rgb(186, 230, 253);
+}
+
+.idf-pill-amber {
+  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.08);
+  color: rgb(253, 230, 138);
+}
+
+.idf-pill-ai {
+  border-color: rgba(167, 139, 250, 0.35);
+  background: rgba(139, 92, 246, 0.12);
+  color: rgb(221, 214, 254);
+}
+
+.idf-hero-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.5);
+  padding: 0.5rem 0.75rem;
+  min-width: 5.5rem;
+}
+
+.idf-insight-snippet {
+  backdrop-filter: blur(8px);
+}
+
+.idf-metric-card {
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(15, 23, 42, 0.55);
+  padding: 0.65rem 0.75rem;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.idf-metric-card:hover {
+  border-color: rgba(167, 139, 250, 0.25);
+  box-shadow: 0 0 24px rgba(167, 139, 250, 0.1);
+}
+
+.idf-ring-glow {
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.4));
+}
+
+.idf-glass-field-wrap {
+  position: relative;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.idf-glass-field-focus {
+  border-color: rgba(167, 139, 250, 0.45);
+  box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.12), 0 0 28px rgba(167, 139, 250, 0.12);
+}
+
+.idf-glass-field-error {
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+.idf-glass-input {
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.idf-glass-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.idf-floating-label {
+  color: rgb(100, 116, 139);
+}
+
+.idf-floating-label-up {
+  top: 0.45rem;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.9);
+}
+
+.idf-field-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.14), transparent);
+  opacity: 0.6;
+}
+
+.idf-stepper {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.idf-stepper-list {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.idf-stepper-btn {
+  display: block;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.5rem 0.65rem;
+  transition: all 220ms ease;
+}
+
+.idf-stepper-btn-active {
+  border-color: rgba(167, 139, 250, 0.38);
+  background: linear-gradient(160deg, rgba(167, 139, 250, 0.14), rgba(34, 211, 238, 0.06));
+  box-shadow: 0 8px 28px rgba(167, 139, 250, 0.14);
+}
+
+.idf-stepper-btn-done:not(:disabled):hover {
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+.idf-stepper-connector-wrap {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 0 0.15rem;
+}
+
+.idf-stepper-connector {
+  width: 2rem;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media (min-width: 640px) {
+  .idf-stepper-connector {
+    width: 2.5rem;
+  }
+}
+
+.idf-stepper-connector-fill {
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(167, 139, 250, 0.85), rgba(34, 211, 238, 0.75), rgba(139, 92, 246, 0.8));
+}
+
+.idf-role-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  background: rgba(139, 92, 246, 0.12);
+  padding: 0.25rem 0.65rem;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgb(221, 214, 254);
+  box-shadow: 0 0 16px rgba(167, 139, 250, 0.08);
+}
+
+.idf-role-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.5);
+  padding: 0.35rem 0.5rem;
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.idf-role-row:hover {
+  border-color: rgba(167, 139, 250, 0.25);
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.1);
+}
+
+.idf-role-violet {
+  border-left: 2px solid rgba(167, 139, 250, 0.5);
+}
+
+.idf-role-cyan {
+  border-left: 2px solid rgba(34, 211, 238, 0.5);
+}
+
+.idf-role-emerald {
+  border-left: 2px solid rgba(52, 211, 153, 0.5);
+}
+
+.idf-role-amber {
+  border-left: 2px solid rgba(251, 191, 36, 0.5);
+}
+
+.idf-role-sky {
+  border-left: 2px solid rgba(56, 189, 248, 0.5);
+}
+
+.idf-chip-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  background: rgba(139, 92, 246, 0.15);
+  padding: 0.5rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgb(221, 214, 254);
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.idf-chip-add:hover:not(:disabled) {
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.2);
+  transform: translateY(-1px);
+}
+
+.idf-chip-add-muted {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgb(148, 163, 184);
+}
+
+.idf-object-card {
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.idf-add-card-btn {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.85rem;
+  border: 1px dashed rgba(167, 139, 250, 0.3);
+  padding: 0.65rem;
+  font-size: 0.75rem;
+  color: rgb(196, 181, 253);
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.idf-add-card-btn:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.08);
+  border-color: rgba(167, 139, 250, 0.45);
+}
+
+.idf-preview-stage {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.6), rgba(30, 27, 75, 0.35));
+}
+
+.idf-preview-glow {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167, 139, 250, 0.12), transparent 60%);
+}
+
+.idf-preview-role-pill {
+  border-radius: 9999px;
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  background: rgba(34, 211, 238, 0.08);
+  padding: 0.15rem 0.5rem;
+  font-size: 10px;
+  color: rgb(165, 243, 252);
+}
+
+.idf-preview-link-icon {
+  display: inline-flex;
+  height: 1.75rem;
+  width: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgb(196, 181, 253);
+}
+
+.idf-command-palette {
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(20px);
+}
+
+.idf-sticky-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(2, 6, 23, 0.94);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35), 0 0 40px rgba(167, 139, 250, 0.06);
+}
+
+.idf-footer-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(167, 139, 250, 0.45);
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.4), rgba(34, 211, 238, 0.25));
+  padding: 0.5rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 0 24px rgba(167, 139, 250, 0.22);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.idf-footer-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 0 32px rgba(167, 139, 250, 0.35);
+}
+
+.idf-footer-btn-primary:disabled {
+  opacity: 0.5;
+}
+
+.idf-footer-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8125rem;
+  color: rgb(203, 213, 225);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.idf-footer-btn-secondary:hover:not(:disabled) {
+  border-color: rgba(167, 139, 250, 0.28);
+  box-shadow: 0 0 16px rgba(167, 139, 250, 0.1);
+}
+
+.idf-footer-btn-secondary:disabled {
+  opacity: 0.45;
+}
+
+.idf-loading-shimmer {
+  background: linear-gradient(110deg, rgba(167, 139, 250, 0.08) 25%, rgba(167, 139, 250, 0.22) 50%, rgba(167, 139, 250, 0.08) 75%);
+  background-size: 200% 100%;
+  animation: idf-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes idf-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
