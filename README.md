@@ -6,6 +6,8 @@
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-thakardhruv.me-14b8a6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.thakardhruv.me/)
 [![Repository](https://img.shields.io/badge/Source-GitHub-0f172a?style=for-the-badge&logo=github)](https://github.com/dhruvht612/My_Portfolio)
+[![GitHub stars](https://img.shields.io/github/stars/dhruvht612/My_Portfolio?style=social)](https://github.com/dhruvht612/My_Portfolio/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/dhruvht612/My_Portfolio?style=social)](https://github.com/dhruvht612/My_Portfolio/forks)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com/)
@@ -19,13 +21,19 @@
 
 ## Table of contents
 
+- [Screenshots](#screenshots)
+- [Why I built this](#why-i-built-this)
 - [Overview](#overview)
 - [Live demo & routes](#live-demo--routes)
 - [Featured projects](#featured-projects)
 - [UI & UX](#ui--ux)
 - [Tech stack](#tech-stack)
+- [Architecture](#architecture)
+- [Roadmap](#roadmap)
 - [Reusable building blocks](#reusable-building-blocks)
 - [Open-source value](#open-source-value)
+- [Contributing](#contributing)
+- [GitHub profile](#github-profile)
 - [Quick start](#quick-start)
 - [Environment variables](#environment-variables)
 - [Scripts](#scripts)
@@ -35,6 +43,28 @@
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
+
+---
+
+## Screenshots
+
+| Homepage | Mobile |
+| :---: | :---: |
+| [![Homepage](docs/screenshots/homepage.png)](https://www.thakardhruv.me/) | [![Mobile](docs/screenshots/mobile.png)](https://www.thakardhruv.me/) |
+
+| Admin dashboard | Analytics |
+| :---: | :---: |
+| [![Admin dashboard](docs/screenshots/admin-dashboard.png)](https://www.thakardhruv.me/admin) | [![Analytics](docs/screenshots/admin-analytics.png)](https://www.thakardhruv.me/admin/analytics) |
+
+*Live at [thakardhruv.me](https://www.thakardhruv.me/). Admin views require sign-in.*
+
+---
+
+## Why I built this
+
+Most portfolio templates felt static and difficult to maintain at scale. I wanted a system where portfolio content could be managed like a lightweight CMS while still feeling modern, animated, and developer-focused.
+
+This project became both my portfolio and an experiment in reusable frontend/admin architecture using React, Supabase, and modular UI systems.
 
 ---
 
@@ -137,11 +167,66 @@ Designed for clarity, motion, and keyboard-friendly use—not a generic template
 | **Analytics** | Recharts, `date-fns`, page-view tracking |
 | **Quality** | ESLint, static fallback data in `src/data/` |
 
-```text
-Browser (Vite SPA)  →  Supabase client  →  Postgres + Auth + Storage
-                              ↓
-                    Static fallback (src/data/*) when unconfigured
+---
+
+## Architecture
+
+High-level data flow for the portfolio + admin CMS.
+
+<!-- When ready, add: ![Architecture diagram](docs/architecture.png) -->
+*Optional: add a polished diagram at `docs/architecture.png`. Mermaid below renders on GitHub today.*
+
+```mermaid
+flowchart TB
+  subgraph Client["Browser (Vite + React)"]
+    Public["Public pages\n/ · /projects · /contact …"]
+    Admin["Admin CMS\n/admin · CRUD workspaces"]
+  end
+
+  subgraph Supabase["Supabase"]
+    Auth["Auth"]
+    DB["Postgres + RLS"]
+    Storage["Storage"]
+    Analytics["page_views"]
+  end
+
+  Fallback["Static fallback\nsrc/data/*"]
+
+  Public --> Admin
+  Public --> DB
+  Admin --> Auth
+  Admin --> DB
+  Admin --> Storage
+  Public --> Analytics
+  DB -.->|env missing| Fallback
+  Public -.-> Fallback
 ```
+
+| Layer | Responsibility |
+| --- | --- |
+| **Public SPA** | Routed pages, animations, project filters, contact form |
+| **Admin SPA** | Auth-gated CRUD, wizards, markdown, uploads, charts |
+| **Supabase** | Source of truth for portfolio content, messages, analytics |
+| **Fallback** | Local JSON modules when Supabase is not configured |
+
+---
+
+## Roadmap
+
+Planned improvements (issues and PRs welcome):
+
+| Status | Feature |
+| --- | --- |
+| 🔲 | **Public blog** — `/blog` and `/blog/:slug` on the portfolio site |
+| 🔲 | **Real-time admin** — Supabase subscriptions for live list updates |
+| 🔲 | **SEO per post** — Open Graph tags, descriptions, `og:image` from storage |
+| 🔲 | **Scheduled publishing** — future `published_at` for blog/content |
+| 🔲 | **Admin audit log** — who changed what and when |
+| 🔲 | **Role-based access** — limited admin roles for collaborators |
+| 🔲 | **Advanced analytics** — geography, sessions, bounce rate, export CSV/PDF |
+| 🔲 | **Image transforms** — Supabase Image Transformation for uploads |
+| 🔲 | **Contact webhooks** — Edge Function sync for notifications |
+| 🔲 | **Architecture diagram asset** — `docs/architecture.png` for README |
 
 ---
 
@@ -199,6 +284,33 @@ Use this repo as a **starter for portfolio + CMS**, not only a résumé site.
 - **Vercel-ready build** — Production build fails fast if Supabase env is missing on Vercel (see `vite.config.js`)
 
 **Good fits for forking:** developer portfolios, student project hubs, small team “about + work” sites with an internal admin.
+
+---
+
+## Contributing
+
+Suggestions, issues, and forks are welcome. If you build on top of this project, feel free to open a PR or share your version.
+
+1. Fork the repo and create a branch (`git checkout -b feature/your-idea`)
+2. Make your changes and run `npm run lint`
+3. Open a pull request with a short description of what you changed
+
+---
+
+## GitHub profile
+
+If this repo represents your work, **pin it on your GitHub profile** so visitors see it first:
+
+**Settings → Profile → Pin repositories**
+
+Suggested pins:
+
+- **Portfolio CMS** (this repo)
+- **Trail**
+- **Wisely**
+- **Connectly** (if public)
+
+Your profile presentation matters almost as much as the repo itself.
 
 ---
 
@@ -289,7 +401,9 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key   # scripts only — never expos
 │   ├── scripts/            # Seed, migrate, verify
 │   ├── constants/          # Routes, nav, UI tokens
 │   └── data/               # Static fallback content
-├── docs/                   # Architecture and deployment guides
+├── docs/
+│   ├── screenshots/        # README screenshots
+│   └── architecture.png    # optional diagram (README)
 ├── public/                 # Static assets
 └── package.json
 ```
@@ -352,7 +466,7 @@ Details: [`docs/deployment.md`](docs/deployment.md)
 
 ## License
 
-MIT — use, fork, and adapt with attribution. Add a `LICENSE` file in the repo root if you publish formally.
+[MIT](LICENSE) — use, fork, and adapt with attribution.
 
 ---
 
