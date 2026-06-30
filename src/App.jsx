@@ -1,10 +1,12 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom'
 import { PortfolioProvider } from './context/PortfolioContext'
+import { ThemeProvider } from './context/ThemeContext'
 import { useAuth } from './hooks/useAuth'
 import ParticlesBackground from './components/ui/particles-bg'
 import ShaderGridBackground from './components/ui/shader-grid-background'
 import SkipLink from './components/SkipLink'
+import ErrorBoundary from './components/ErrorBoundary'
 import Landing from './components/Landing'
 import Layout from './components/Layout'
 import './index.css'
@@ -20,6 +22,7 @@ const CertificationsPage = lazy(() => import('./pages/CertificationsPage'))
 const SkillsPage = lazy(() => import('./pages/SkillsPage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
 const DevSupabaseStatus = import.meta.env.DEV ? lazy(() => import('./pages/DevSupabaseStatus')) : null
+const StyleGuide = import.meta.env.DEV ? lazy(() => import('./pages/StyleGuide')) : null
 
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'))
@@ -141,15 +144,20 @@ function NotFoundPage() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ThemeProvider>
       <div className="min-h-screen text-[var(--color-text)]" style={{ position: 'relative', background: 'transparent' }}>
         <AmbientLayers />
         <div style={{ position: 'relative', zIndex: 1, background: 'transparent' }}>
           <PortfolioProvider>
+            <ErrorBoundary>
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<LandingRoute />} />
                 {import.meta.env.DEV && DevSupabaseStatus ? (
                   <Route path="dev/supabase" element={<DevSupabaseStatus />} />
+                ) : null}
+                {import.meta.env.DEV && StyleGuide ? (
+                  <Route path="styleguide" element={<StyleGuide />} />
                 ) : null}
                 <Route path="admin/login" element={<AdminLogin />} />
                 <Route
@@ -193,9 +201,11 @@ export default function App() {
                 <Route path="*" element={<Navigate to="/404" replace />} />
               </Routes>
             </Suspense>
+            </ErrorBoundary>
           </PortfolioProvider>
         </div>
       </div>
+      </ThemeProvider>
     </BrowserRouter>
   )
 }

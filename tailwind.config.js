@@ -1,13 +1,34 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: ['selector', '[data-theme="dark"]'],
   theme: {
     extend: {
       fontFamily: {
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'monospace'],
       },
       colors: {
+        // --- Orbital semantic tokens (preferred for new markup) ---
+        void: 'var(--void)',
+        'void-2': 'var(--void-2)',
+        surface: 'var(--surface)',
+        'surface-hi': 'var(--surface-hi)',
+        signal: 'var(--signal)',
+        'signal-2': 'var(--signal-2)',
+        ember: 'var(--ember)',
+        ink: 'var(--ink)',
+        'ink-muted': 'var(--ink-muted)',
+        'ink-faint': 'var(--ink-faint)',
+        line: 'var(--line)',
+        'line-hi': 'var(--line-hi)',
+        // Material 3 role aliases
+        primary: 'var(--md-primary)',
+        'on-primary': 'var(--md-on-primary)',
+        'surface-container': 'var(--md-surface-container)',
+        outline: 'var(--md-outline)',
+        // --- Legacy aliases (kept during migration) ---
         'royal-blue': '#4169E1',
         'royal-blue-light': '#5b7cf5',
         background: 'var(--background)',

@@ -1,0 +1,154 @@
+/* ============================================================================
+   Orbital Design System — Tokens (single source of truth)
+   Dark is the default theme (:root). Light overrides live in [data-theme="light"].
+   Legacy --color-* names are remapped onto the new palette so existing markup
+   adopts the new look and gains light-mode support without edits.
+   ============================================================================ */
+
+:root,
+[data-theme='dark'] {
+  /* --- Canvas ------------------------------------------------------------ */
+  --void: #07080d; /* base background */
+  --void-2: #0c0e16; /* elevated surface */
+  --surface: #12151f; /* card */
+  --surface-hi: #1a1e2b; /* hover / raised card */
+
+  /* --- Dual-signal accents ---------------------------------------------- */
+  --signal: #5eead4; /* teal-mint, primary accent */
+  --signal-dim: #2dd4bf;
+  --signal-glow: rgba(94, 234, 212, 0.35);
+  --signal-2: #818cf8; /* cool secondary (indigo) */
+  --signal-2-dim: #6366f1;
+  --ember: #ff7849; /* warm CTA accent */
+  --ember-dim: #f4622e;
+
+  /* --- Ink --------------------------------------------------------------- */
+  --ink: #f4f6fb;
+  --ink-muted: #9aa3b8;
+  --ink-faint: #5a6275;
+
+  /* --- Lines & states ---------------------------------------------------- */
+  --line: rgba(255, 255, 255, 0.08);
+  --line-hi: rgba(255, 255, 255, 0.16);
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --err: #fb7185;
+
+  /* --- Material 3 semantic role aliases (point at the literals above) ---- */
+  --md-primary: var(--signal);
+  --md-on-primary: var(--void);
+  --md-secondary: var(--signal-2);
+  --md-surface: var(--void);
+  --md-surface-container: var(--surface);
+  --md-surface-container-high: var(--surface-hi);
+  --md-on-surface: var(--ink);
+  --md-on-surface-variant: var(--ink-muted);
+  --md-outline: var(--line-hi);
+  --md-error: var(--err);
+  /* M3 tonal elevation — apply as background tints, not drop shadows */
+  --md-elevation-1: rgba(255, 255, 255, 0.03);
+  --md-elevation-2: rgba(255, 255, 255, 0.05);
+  --md-elevation-3: rgba(255, 255, 255, 0.08);
+  /* M3 state layers — overlay these opacities for hover/focus/press */
+  --md-state-hover: 0.08;
+  --md-state-focus: 0.12;
+  --md-state-press: 0.12;
+
+  /* --- Typography -------------------------------------------------------- */
+  --font-display: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Fluid type scale */
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.94rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.13rem);
+  --step-1: clamp(1.33rem, 1.2rem + 0.6vw, 1.8rem);
+  --step-2: clamp(1.78rem, 1.5rem + 1.4vw, 2.8rem);
+  --step-3: clamp(2.37rem, 1.8rem + 2.8vw, 4.5rem);
+  --step-4: clamp(3.16rem, 2rem + 5.8vw, 7rem);
+
+  /* --- Spacing, shape, motion ------------------------------------------- */
+  --space: 4px;
+  --radius: 10px;
+  --radius-lg: 18px;
+  --radius-xl: 28px;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-standard: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur: 320ms;
+  --dur-slow: 600ms;
+
+  /* --- Glassmorphism (token-based) -------------------------------------- */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg-strong: rgba(255, 255, 255, 0.1);
+  --glass-border: var(--line);
+  --glass-border-strong: var(--line-hi);
+  --glass-shadow: var(--shadow);
+  --glass-blur: blur(16px);
+  --glass-blur-strong: blur(24px);
+
+  /* ======================================================================
+     Legacy compatibility — remap old --color-* names onto the new palette.
+     Existing components keep working and re-theme automatically.
+     ====================================================================== */
+  --color-bg: var(--void);
+  --color-bg-elevated: var(--void-2);
+  --color-bg-card: var(--surface);
+  --color-blue: var(--signal-2);
+  --color-blue-soft: rgba(129, 140, 248, 0.15);
+  --color-blue-medium: rgba(129, 140, 248, 0.25);
+  --color-blue-strong: rgba(129, 140, 248, 0.4);
+  --color-accent: var(--signal);
+  --color-accent-hover: var(--signal-dim);
+  --color-orange: var(--signal); /* was misnamed blue; now the signal accent */
+  --color-orange-hover: var(--signal-dim);
+  --color-text: var(--ink);
+  --color-text-muted: var(--ink-muted);
+  --color-border: var(--line);
+  --color-success: var(--ok);
+  --color-warning: var(--warn);
+  --color-error: var(--err);
+  --color-admin-canvas: var(--void);
+  --color-admin-surface: var(--md-elevation-1);
+  --color-admin-surface-hover: var(--md-elevation-2);
+  --color-admin-border: var(--line);
+}
+
+/* ============================================================================
+   Light theme — re-point roles + canvas/ink. Legacy names follow automatically.
+   ============================================================================ */
+[data-theme='light'] {
+  --void: #f7f8fc;
+  --void-2: #ffffff;
+  --surface: #ffffff;
+  --surface-hi: #eef1f8;
+
+  --signal: #0d9488; /* deeper teal for contrast on light */
+  --signal-dim: #0f766e;
+  --signal-glow: rgba(13, 148, 136, 0.25);
+  --signal-2: #4f46e5;
+  --signal-2-dim: #4338ca;
+  --ember: #ea580c;
+  --ember-dim: #c2410c;
+
+  --ink: #0f1320;
+  --ink-muted: #4b5366;
+  --ink-faint: #8b93a7;
+
+  --line: rgba(15, 19, 32, 0.1);
+  --line-hi: rgba(15, 19, 32, 0.18);
+
+  --md-on-primary: #ffffff;
+  --md-elevation-1: rgba(15, 19, 32, 0.02);
+  --md-elevation-2: rgba(15, 19, 32, 0.04);
+  --md-elevation-3: rgba(15, 19, 32, 0.07);
+
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-strong: rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 8px 32px rgba(15, 19, 32, 0.1);
+
+  --color-blue-soft: rgba(79, 70, 229, 0.12);
+  --color-blue-medium: rgba(79, 70, 229, 0.18);
+  --color-blue-strong: rgba(79, 70, 229, 0.32);
+}

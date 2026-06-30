@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Command, Keyboard, LogOut, Menu } from 'lucide-react'
+import { Command, Keyboard, LogOut, Menu, Moon, Sun } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
+import { useTheme } from '../../context/ThemeContext'
 import { ADMIN_NAV } from '../../constants/adminNav'
 
 function titleFromPath(pathname) {
@@ -31,6 +32,7 @@ export default function AdminHeader({ onMenuClick, onOpenCommandPalette, onOpenS
   const location = useLocation()
   const navigate = useNavigate()
   const { session, signOut } = useAuth()
+  const { theme, toggleTheme } = useTheme()
 
   const pathname = location.pathname
   const isDashboardHome = pathname === '/admin' || pathname === '/admin/'
@@ -93,6 +95,14 @@ export default function AdminHeader({ onMenuClick, onOpenCommandPalette, onOpenS
           aria-label="Keyboard shortcuts"
         >
           <Keyboard className="h-3.5 w-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2 text-xs text-slate-300 transition hover:bg-white/[0.09] hover:text-white"
+          aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+        >
+          {theme === 'dark' ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
         </button>
         {email ? (
           <>

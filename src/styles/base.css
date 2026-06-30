@@ -1,0 +1,95 @@
+/* ============================================================================
+   Orbital Design System — Base layer
+   Resets, base typography, token-based glass + focus utilities, motion guard.
+   Loaded after tokens.css, before index.css.
+   ============================================================================ */
+
+/* --- Typography defaults --------------------------------------------------- */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  color: var(--ink);
+  background: var(--void);
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+/* --- Token-based glass (overrides legacy .glass to follow the theme) ------- */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur-strong);
+  -webkit-backdrop-filter: var(--glass-blur-strong);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: var(--glass-shadow);
+}
+
+/* --- Accessible focus rings ------------------------------------------------ */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+/* --- M3 state-layer helper ------------------------------------------------- */
+/* Apply to an interactive element; a ::after overlay tints on hover/active. */
+.state-layer {
+  position: relative;
+  isolation: isolate;
+}
+.state-layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+  pointer-events: none;
+  z-index: 0;
+}
+.state-layer:hover::after {
+  opacity: var(--md-state-hover);
+}
+.state-layer:active::after {
+  opacity: var(--md-state-press);
+}
+
+/* --- Smooth, theme-aware color transitions on theme switch ----------------- */
+html[data-theme] body {
+  transition: background-color var(--dur) var(--ease-standard),
+    color var(--dur) var(--ease-standard);
+}
+
+/* --- Reduced motion guard (global) ---------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,91 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Design tokens + base layer now live in src/styles/tokens.css and base.css
+   (imported first in main.jsx). Legacy --color-* names are remapped there. */
 
 :root {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  /* === Dark blue base === */
-  --color-bg: #0a0e17;
-  --color-bg-elevated: #111827;
-  --color-bg-card: #1a2234;
-
-  /* === Blue palette (royal blue #4169e1) === */
-  --color-blue: #4169e1;
-  --color-blue-soft: rgba(65, 105, 225, 0.15);
-  --color-blue-medium: rgba(65, 105, 225, 0.25);
-  --color-blue-strong: rgba(65, 105, 225, 0.4);
-
-  /* === Accent (sky blue for links, highlights) === */
-  --color-accent: #7dd3fc;
-  --color-accent-hover: #38bdf8;
-
-  /* === CTA (blue-cyan gradient, particle-aligned) === */
-  --color-orange: #3b82f6;
-  --color-orange-hover: #06b6d4;
-
-  /* === Text === */
-  --color-text: #f1f5f9;
-  --color-text-muted: #94a3b8;
-
-  /* === UI === */
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-success: #34d399;
-  --color-warning: #fbbf24;
-  --color-error: #f87171;
-
-  /* === Admin shell (portfolio admin only) === */
-  --color-admin-canvas: #0b0f17;
-  --color-admin-surface: rgba(255, 255, 255, 0.04);
-  --color-admin-surface-hover: rgba(255, 255, 255, 0.07);
-  --color-admin-border: rgba(255, 255, 255, 0.1);
-
-  /* === Typography === */
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-
-  /* === Spacing & shape === */
-  --radius: 0.5rem;
-  --radius-lg: 0.75rem;
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px rgb(0 0 0 / 0.06);
-
-  /* === Glassmorphism === */
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-bg-strong: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-border-strong: rgba(255, 255, 255, 0.2);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --glass-blur: blur(16px);
-  --glass-blur-strong: blur(24px);
 }
 
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
-  background: #0a0f1e !important;
+  background: var(--void);
   overflow-x: hidden;
-}
-
-/* Reusable glass panels */
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
-
-.glass-strong {
-  background: var(--glass-bg-strong);
-  backdrop-filter: var(--glass-blur-strong);
-  -webkit-backdrop-filter: var(--glass-blur-strong);
-  border: 1px solid var(--glass-border-strong);
-  box-shadow: var(--glass-shadow);
 }
 
 .glass-card {

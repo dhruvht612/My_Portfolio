@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import { MEDIA } from '../constants/media'
+import { useTheme } from '../context/ThemeContext'
 
 /**
  * Reusable global navigation bar.
@@ -17,6 +18,7 @@ function Header({
   fixed = false,
 }) {
   const location = useLocation()
+  const { theme, toggleTheme } = useTheme()
   const isOnHome = location.pathname === '/home' || location.pathname === '/'
   const mainNavLinks = navLinks.filter((link) => link.id !== 'contact')
 
@@ -105,6 +107,15 @@ function Header({
 
         {/* CTA + hamburger (mobile) */}
         <div className="relative z-[2] flex shrink-0 items-center gap-2 pl-1 sm:gap-2 sm:pl-2">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[var(--color-border)]/80 bg-[var(--color-bg-card)]/40 text-[var(--color-text-muted)] transition-all hover:border-[var(--nav-accent)]/50 hover:text-[var(--nav-accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nav-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
+            aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+          >
+            <i className={theme === 'dark' ? 'fas fa-sun text-xs' : 'fas fa-moon text-xs'} aria-hidden="true" />
+          </button>
           <NavLink
             to="/admin/login"
             className="hidden h-9 shrink-0 items-center gap-1.5 rounded-xl border border-[var(--color-border)]/80 bg-[var(--color-bg-card)]/40 px-2.5 text-xs font-semibold text-[var(--color-text-muted)] transition-all hover:border-[var(--nav-accent)]/50 hover:bg-[var(--color-bg-card)]/70 hover:text-[var(--nav-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--nav-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-bg)] sm:inline-flex"
