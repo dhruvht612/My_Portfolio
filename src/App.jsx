@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom'
 import { PortfolioProvider } from './context/PortfolioContext'
 import { ThemeProvider } from './context/ThemeContext'
@@ -77,9 +77,22 @@ function LandingRoute() {
 /** Public site: shader + particles + glass. Authenticated admin (`/admin/*` except login): shader only. */
 function AmbientLayers() {
   const { pathname } = useLocation()
+  // Decorative layers mount after the browser is idle so first paint is content, not canvases.
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    const start = () => setReady(true)
+    if ('requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(start, { timeout: 1500 })
+      return () => window.cancelIdleCallback(id)
+    }
+    const id = window.setTimeout(start, 350)
+    return () => window.clearTimeout(id)
+  }, [])
+
+  if (!ready) return null
   const adminApp = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')
   return (
-    <>
+    <div className="ambient-fade-in">
       <ShaderGridBackground />
       {!adminApp ? (
         <>
@@ -87,7 +100,7 @@ function AmbientLayers() {
           <div className="liquid-glass-overlay" aria-hidden="true" />
         </>
       ) : null}
-    </>
+    </div>
   )
 }
 

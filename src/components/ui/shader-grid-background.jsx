@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /* ========= Fragment shader ========= */
 const SHADER_SRC = `#version 300 es
@@ -220,7 +220,8 @@ function ShaderCanvas({ fragSource, pixelRatio }) {
 
     const getDpr = () => {
       const sys = window.devicePixelRatio || 1
-      return Math.max(1, Math.min(2, pixelRatio ?? sys))
+      // a full-viewport per-pixel shader doesn't need retina resolution
+      return Math.max(1, Math.min(1.5, pixelRatio ?? sys))
     }
 
     function cleanup() {
@@ -363,8 +364,8 @@ function ShaderCanvas({ fragSource, pixelRatio }) {
     startRef.current = performance.now()
     frameRef.current = 0
 
-    const reduceMotion =
-      typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let reduceMotion = reduceMq.matches
 
     function tick(now) {
       if (disposed) return
@@ -400,8 +401,22 @@ function ShaderCanvas({ fragSource, pixelRatio }) {
 
       if (!reduceMotion) {
         rafRef.current = requestAnimationFrame(tick)
+      } else {
+        rafRef.current = null
       }
     }
+
+    const onReduceChange = () => {
+      reduceMotion = reduceMq.matches
+      if (rafRef.current != null) {
+        cancelAnimationFrame(rafRef.current)
+        rafRef.current = null
+      }
+      startRef.current = performance.now()
+      if (reduceMotion) tick(performance.now())
+      else rafRef.current = requestAnimationFrame(tick)
+    }
+    reduceMq.addEventListener('change', onReduceChange)
 
     if (!reduceMotion) {
       rafRef.current = requestAnimationFrame(tick)
@@ -409,7 +424,10 @@ function ShaderCanvas({ fragSource, pixelRatio }) {
       tick(performance.now())
     }
 
-    return cleanup
+    return () => {
+      reduceMq.removeEventListener('change', onReduceChange)
+      cleanup()
+    }
   }, [fragSource, pixelRatio])
 
   return (
@@ -424,14 +442,28 @@ function ShaderCanvas({ fragSource, pixelRatio }) {
  * @param {{ className?: string, pixelRatio?: number }} [props]
  */
 export default function ShaderGridBackground({ className = '', pixelRatio }) {
+  // The per-pixel shader is desktop-only; small screens keep the static
+  // gradient backdrop below, which reads the same at that size.
+  const [enabled, setEnabled] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches,
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)')
+    const update = () => setEnabled(mq.matches)
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
   return (
     <div
       className={`pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#070b14] ${className}`}
       aria-hidden
     >
-      <div className="absolute inset-0 opacity-[0.55] mix-blend-soft-light">
-        <ShaderCanvas fragSource={SHADER_SRC} pixelRatio={pixelRatio} />
-      </div>
+      {enabled ? (
+        <div className="absolute inset-0 opacity-[0.55] mix-blend-soft-light">
+          <ShaderCanvas fragSource={SHADER_SRC} pixelRatio={pixelRatio} />
+        </div>
+      ) : null}
       <div
         className="absolute inset-0 bg-gradient-to-b from-[#0a0f1e]/80 via-transparent to-[#050810]/90"
         aria-hidden
