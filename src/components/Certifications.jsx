@@ -81,15 +81,15 @@ function Certifications({ certifications }) {
                 <motion.article
                   key={key}
                   variants={{ hidden: { opacity: 0, y: 20, scale: 0.98 }, visible: { opacity: 1, y: 0, scale: 1 } }}
-                  className="group glass rounded-2xl border border-white/10 p-5 hover:-translate-y-1 hover:border-[var(--color-accent)]/45 hover:shadow-[0_0_30px_rgba(125,211,252,0.14)] transition-all"
+                  className="group glass rounded-2xl border border-[var(--line)] p-5 hover:-translate-y-1 hover:border-[var(--color-accent)]/45 hover:shadow-[0_0_30px_rgba(125,211,252,0.14)] transition-all"
                 >
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div className="flex items-center gap-3">
-                      <motion.div whileHover={{ rotate: [0, -8, 8, 0] }} transition={{ duration: 0.45 }} className="h-11 w-11 rounded-xl border border-white/15 bg-white/[0.06] flex items-center justify-center">
+                      <motion.div whileHover={{ rotate: [0, -8, 8, 0] }} transition={{ duration: 0.45 }} className="h-11 w-11 rounded-xl border border-[var(--line-hi)] bg-[var(--md-elevation-2)] flex items-center justify-center">
                         <CategoryIcon className="h-5 w-5 text-[var(--color-accent)]" />
                       </motion.div>
                       <div>
-                        <p className={`inline-flex px-2.5 py-1 rounded-full text-[11px] border ${issuerPill[cert.issuer] || 'border-white/20 text-white/80'}`}>
+                        <p className={`inline-flex px-2.5 py-1 rounded-full text-[11px] border ${issuerPill[cert.issuer] || 'border-[var(--line-hi)] text-[var(--color-text-muted)]'}`}>
                           {cert.issuer}
                         </p>
                         <p className="text-xs text-[var(--color-text-muted)] mt-1">Issued {cert.issued}</p>
@@ -106,7 +106,7 @@ function Certifications({ certifications }) {
 
                   <div className="mt-4 flex flex-wrap gap-2">
                     {(cert.tags || []).slice(0, 2).map((tag) => (
-                      <span key={tag} className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-white/[0.05] border border-white/10 text-[var(--color-text-muted)]">
+                      <span key={tag} className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--md-elevation-2)] border border-[var(--line)] text-[var(--color-text-muted)]">
                         {tag}
                       </span>
                     ))}
@@ -134,7 +134,7 @@ function Certifications({ certifications }) {
                         transition={{ duration: 0.22 }}
                         className="overflow-hidden"
                       >
-                        <div className="mt-4 pt-4 border-t border-white/10 space-y-2 text-sm text-[var(--color-text-muted)]">
+                        <div className="mt-4 pt-4 border-t border-[var(--line)] space-y-2 text-sm text-[var(--color-text-muted)]">
                           {cert.credentialId && <p><span className="text-[var(--color-text)] font-semibold">Credential ID:</span> {cert.credentialId}</p>}
                           {cert.appliedProject && <p><span className="text-[var(--color-text)] font-semibold">Applied in:</span> {cert.appliedProject}</p>}
                         </div>
@@ -153,7 +153,7 @@ function Certifications({ certifications }) {
             {Object.entries(groupedAdditional).map(([category, certs]) => {
               const CategoryIcon = categoryIcon[category] || categoryIcon.Additional
               return (
-                <div key={category} className="rounded-2xl border border-white/10 bg-[var(--color-bg-card)]/35 backdrop-blur-md p-5">
+                <div key={category} className="rounded-2xl border border-[var(--line)] bg-[var(--color-bg-card)]/35 backdrop-blur-md p-5">
                   <div className="flex items-center gap-2 mb-4">
                     <CategoryIcon className="h-4 w-4 text-[var(--color-accent)]" />
                     <h4 className="font-semibold text-[var(--color-text)]">{category}</h4>
@@ -163,11 +163,11 @@ function Certifications({ certifications }) {
                       <motion.article
                         key={`${cert.title}-additional-${idx}`}
                         whileHover={{ y: -4, scale: 1.01 }}
-                        className="rounded-xl border border-white/10 bg-[var(--color-bg)]/45 p-4 transition-all hover:border-[var(--color-accent)]/35 hover:shadow-[0_0_20px_rgba(125,211,252,0.12)]"
+                        className="rounded-xl border border-[var(--line)] bg-[var(--color-bg)]/45 p-4 transition-all hover:border-[var(--color-accent)]/35 hover:shadow-[0_0_20px_rgba(125,211,252,0.12)]"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <p className="text-sm font-bold text-[var(--color-text)] leading-snug">{cert.title}</p>
-                          <span className={`inline-flex px-2 py-1 rounded-md text-[10px] border ${issuerPill[cert.issuer] || 'border-white/20 text-white/80'}`}>{cert.issuer}</span>
+                          <span className={`inline-flex px-2 py-1 rounded-md text-[10px] border ${issuerPill[cert.issuer] || 'border-[var(--line-hi)] text-[var(--color-text-muted)]'}`}>{cert.issuer}</span>
                         </div>
                         <p className="text-xs text-[var(--color-text-muted)] mt-2">{cert.learned}</p>
                         <p className="text-xs text-[var(--color-accent)] mt-2">Applied in: {cert.appliedProject || 'Portfolio workflow'}</p>

@@ -241,7 +241,7 @@ function Projects({
               type="button"
               className={`filter-btn px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--color-bg)] cursor-pointer ${
                 projectFilter === filter.id
-                  ? 'theme-btn theme-btn-primary text-white focus:ring-[var(--color-orange)] shadow-[0_0_24px_rgba(249,115,22,0.25)]'
+                  ? 'theme-btn theme-btn-primary text-[var(--md-on-primary)] focus:ring-[var(--color-orange)] shadow-[0_0_24px_rgba(249,115,22,0.25)]'
                   : 'text-[var(--color-text)] bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]'
               }`}
               data-filter={filter.id}
@@ -320,7 +320,7 @@ function Projects({
                   {featuredImages.map((iconClass, idx) => (
                     <motion.div
                       key={`${iconClass}-${idx}`}
-                      className="h-20 w-20 rounded-2xl border border-white/10 bg-white/[0.05] flex items-center justify-center text-[var(--color-accent)]"
+                      className="h-20 w-20 rounded-2xl border border-[var(--line)] bg-[var(--md-elevation-2)] flex items-center justify-center text-[var(--color-accent)]"
                       animate={reduced ? { y: 0 } : { y: [0, -6, 0] }}
                       transition={reduced ? { duration: 0 } : { duration: 3 + idx, repeat: Infinity, ease: 'easeInOut' }}
                     >
@@ -427,7 +427,7 @@ function Projects({
                 </div>
               )}
               {project.features?.length > 0 && (
-                <div className="mb-4 rounded-xl border border-white/10 bg-white/[0.02] p-3">
+                <div className="mb-4 rounded-xl border border-[var(--line)] bg-[var(--md-elevation-1)] p-3">
                   <p className="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)] mb-2">Highlights</p>
                   <ul className="space-y-1 text-xs text-[var(--color-text-muted)]">
                     {project.features.slice(0, 2).map((feature) => (

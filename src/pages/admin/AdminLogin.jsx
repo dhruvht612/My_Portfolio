@@ -51,7 +51,7 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12" style={{ background: 'transparent' }}>
+    <div className="admin-scope flex min-h-screen flex-col items-center justify-center px-4 py-12" style={{ background: 'transparent' }}>
       <SkipLink />
       <main id="main-content" className="w-full max-w-sm">
         <div className="glass-card rounded-2xl border border-[var(--color-border)] p-8 shadow-xl">

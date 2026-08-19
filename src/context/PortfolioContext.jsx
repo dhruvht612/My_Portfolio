@@ -37,17 +37,24 @@ const STATIC_PORTFOLIO_SLICE = {
   goals,
 }
 
+/* `footerGroup` names the footer column a link belongs to; FOOTER_GROUPS below fixes
+   the column order. A link with no `footerGroup` is deliberately absent from the
+   footer columns — Contact is promoted to the footer's CTA button instead of being
+   listed. Add the field when adding a nav link, or it silently will not appear there. */
 export const navLinks = [
-  { id: 'home', path: '/home', label: 'Home' },
-  { id: 'about', path: '/about', label: 'About' },
-  { id: 'projects', path: '/projects', label: 'Projects' },
-  { id: 'beyond', path: '/beyond', label: 'Beyond' },
-  { id: 'experience', path: '/experience', label: 'Experience' },
-  { id: 'skills', path: '/skills', label: 'Skills' },
-  { id: 'education', path: '/education', label: 'Education' },
-  { id: 'certifications', path: '/certifications', label: 'Certifications' },
+  { id: 'home', path: '/home', label: 'Home', footerGroup: 'Portfolio' },
+  { id: 'about', path: '/about', label: 'About', footerGroup: 'Portfolio' },
+  { id: 'projects', path: '/projects', label: 'Projects', footerGroup: 'Portfolio' },
+  { id: 'beyond', path: '/beyond', label: 'Beyond', footerGroup: 'Portfolio' },
+  { id: 'experience', path: '/experience', label: 'Experience', footerGroup: 'Background' },
+  { id: 'skills', path: '/skills', label: 'Skills', footerGroup: 'Background' },
+  { id: 'education', path: '/education', label: 'Education', footerGroup: 'Background' },
+  { id: 'certifications', path: '/certifications', label: 'Certifications', footerGroup: 'Background' },
   { id: 'contact', path: '/contact', label: 'Contact' },
 ]
+
+/** Footer column order. Titles must match `navLinks[].footerGroup` exactly. */
+export const FOOTER_GROUPS = ['Portfolio', 'Background']
 
 export const typedRoles = [
   'Computer Science Student',
@@ -134,6 +141,7 @@ export const altContactLinks = [
   },
 ]
 
+/** Static fallback for the footer tech strip. Supabase `profile.footer_badges` wins when present. */
 export const footerBadges = [
   'https://img.shields.io/badge/HTML5-%23E34F26.svg?&style=flat&logo=html5&logoColor=white',
   'https://img.shields.io/badge/Tailwind-%2306B6D4.svg?&style=flat&logo=tailwind-css&logoColor=white',
@@ -169,6 +177,7 @@ export function PortfolioProvider({ children }) {
   const value = useMemo(
     () => ({
       navLinks,
+      FOOTER_GROUPS,
       typedRoles,
       heroRoles,
       currentlyBuilding,
@@ -180,7 +189,9 @@ export function PortfolioProvider({ children }) {
       goals: slice.goals,
       contactCards,
       altContactLinks,
-      footerBadges,
+      /* Supabase-backed when the remote slice loads; the module const is the static
+         fallback used before/without Supabase. */
+      footerBadges: slice.footerBadges ?? footerBadges,
       focusAreas: slice.focusAreas,
       educationHighlights: slice.educationHighlights,
       initialChatMessages,

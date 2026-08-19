@@ -119,7 +119,7 @@ function LogRow({ log, expanded, onToggle }) {
       <motion.button
         type="button"
         onClick={onToggle}
-        className="w-full p-4 text-left transition-colors hover:bg-white/[0.04] active:bg-white/[0.07]"
+        className="w-full p-4 text-left transition-colors hover:bg-[var(--md-elevation-1)] active:bg-[var(--md-elevation-2)]"
       >
         <div className="flex items-center gap-4">
           <motion.div
@@ -156,12 +156,12 @@ function LogRow({ log, expanded, onToggle }) {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden border-t border-white/10 bg-slate-900/50"
+            className="overflow-hidden border-t border-[var(--line)] bg-slate-900/50"
           >
             <div className="space-y-4 p-4">
               <div>
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Message</p>
-                <p className="rounded border border-white/10 bg-[#0b0f17] p-3 font-mono text-sm text-slate-100">{log.message}</p>
+                <p className="rounded border border-[var(--line)] bg-[#0b0f17] p-3 font-mono text-sm text-slate-100">{log.message}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4 text-sm">
@@ -216,7 +216,7 @@ function FilterPanel({ filters, onChange, logs }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ delay: 0.05 }}
-      className="flex h-full flex-col space-y-6 overflow-y-auto border-white/10 bg-slate-900/90 p-4"
+      className="flex h-full flex-col space-y-6 overflow-y-auto border-[var(--line)] bg-slate-900/90 p-4"
     >
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-100">Filters</h3>
@@ -242,7 +242,7 @@ function FilterPanel({ filters, onChange, logs }) {
                 className={`flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm transition-colors ${
                   selected
                     ? 'border-sky-400/60 bg-sky-500/10 text-sky-300'
-                    : 'border-white/10 text-slate-400 hover:border-sky-400/40 hover:bg-white/[0.05]'
+                    : 'border-[var(--line)] text-slate-400 hover:border-sky-400/40 hover:bg-[var(--md-elevation-2)]'
                 }`}
               >
                 <span className="capitalize">{level}</span>
@@ -268,7 +268,7 @@ function FilterPanel({ filters, onChange, logs }) {
                 className={`flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm transition-colors ${
                   selected
                     ? 'border-sky-400/60 bg-sky-500/10 text-sky-300'
-                    : 'border-white/10 text-slate-400 hover:border-sky-400/40 hover:bg-white/[0.05]'
+                    : 'border-[var(--line)] text-slate-400 hover:border-sky-400/40 hover:bg-[var(--md-elevation-2)]'
                 }`}
               >
                 <span>{service}</span>
@@ -294,7 +294,7 @@ function FilterPanel({ filters, onChange, logs }) {
                 className={`flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm transition-colors ${
                   selected
                     ? 'border-sky-400/60 bg-sky-500/10 text-sky-300'
-                    : 'border-white/10 text-slate-400 hover:border-sky-400/40 hover:bg-white/[0.05]'
+                    : 'border-[var(--line)] text-slate-400 hover:border-sky-400/40 hover:bg-[var(--md-elevation-2)]'
                 }`}
               >
                 <span>{status}</span>
@@ -387,7 +387,7 @@ export function InteractiveLogsTable({ logs: logsProp, embedded = false, title =
                 animate={{ width: 280, opacity: 1 }}
                 exit={{ width: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="shrink-0 overflow-hidden border-r border-white/10"
+                className="shrink-0 overflow-hidden border-r border-[var(--line)]"
               >
                 <FilterPanel filters={filters} onChange={setFilters} logs={sourceLogs} />
               </motion.div>

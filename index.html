@@ -32,14 +32,25 @@
 
     <meta name="theme-color" content="#07080d" />
     <script>
-      // Apply persisted theme before paint to avoid a flash.
+      // Apply the theme before paint to avoid a flash of the wrong scheme.
+      // An explicit stored choice always wins; otherwise fall back to the OS
+      // preference rather than forcing dark on someone whose system is light.
+      // Keep this in sync with src/context/ThemeContext.jsx.
       (function () {
+        var theme = 'dark';
         try {
-          var t = localStorage.getItem('theme') || 'dark';
-          document.documentElement.setAttribute('data-theme', t);
+          var stored = localStorage.getItem('theme');
+          if (stored === 'light' || stored === 'dark') {
+            theme = stored;
+          } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+            theme = 'light';
+          }
         } catch (e) {
-          document.documentElement.setAttribute('data-theme', 'dark');
+          /* private mode / storage disabled — fall through to dark */
         }
+        document.documentElement.setAttribute('data-theme', theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', theme === 'light' ? '#f7f8fc' : '#07080d');
       })();
     </script>
     <meta name="apple-mobile-web-app-capable" content="yes" />

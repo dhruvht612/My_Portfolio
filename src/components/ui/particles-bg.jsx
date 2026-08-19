@@ -12,8 +12,28 @@ import { useEffect, useRef } from 'react'
  * prefers-reduced-motion, paused while the tab is hidden, DPR clamped.
  */
 
-const NODE_COLOR = '34, 211, 238' // #22d3ee
-const FRONT_COLOR = '103, 232, 249' // #67e8f9
+/* Particle colours are read from CSS custom properties rather than hardcoded, so the
+   field re-tints with the theme. They are "R, G, B" triplets; the draw loop composes
+   its own alpha per node and link. Fallbacks match the original cyan network. */
+const PARTICLE_VARS = {
+  node: { prop: '--particle-node', fallback: '34, 211, 238' },
+  front: { prop: '--particle-front', fallback: '103, 232, 249' },
+  alpha: { prop: '--particle-alpha', fallback: '1' },
+}
+
+function readPalette() {
+  if (typeof window === 'undefined') {
+    return { node: PARTICLE_VARS.node.fallback, front: PARTICLE_VARS.front.fallback, alpha: 1 }
+  }
+  const styles = getComputedStyle(document.documentElement)
+  const read = (entry) => styles.getPropertyValue(entry.prop).trim() || entry.fallback
+  const alpha = Number.parseFloat(read(PARTICLE_VARS.alpha))
+  return {
+    node: read(PARTICLE_VARS.node),
+    front: read(PARTICLE_VARS.front),
+    alpha: Number.isFinite(alpha) ? alpha : 1,
+  }
+}
 const LINK_DIST = 170
 const GRAB_DIST = 160
 
@@ -81,6 +101,10 @@ export default function ParticlesBackground() {
     let particles = []
     let raf = 0
     let running = false
+    /* Re-read on theme change so the field re-tints with the toggle. Reading the
+       computed value once per theme flip (not per frame) keeps the draw loop free of
+       getComputedStyle, which forces style recalc. */
+    let palette = readPalette()
     const pointer = { x: -1e4, y: -1e4, px: 0, py: 0 }
     // 0..1 page scroll. Written by the existing scroll handler, eased in the draw
     // loop — no second listener, no second rAF.
@@ -181,7 +205,7 @@ export default function ParticlesBackground() {
           const d2 = dx * dx + dy * dy
           if (d2 < LINK_DIST * LINK_DIST) {
             const t = 1 - Math.sqrt(d2) / LINK_DIST
-            ctx.strokeStyle = `rgba(${NODE_COLOR}, ${(0.22 * t * (a.depth + b.depth)) / 2})`
+            ctx.strokeStyle = `rgba(${palette.node}, ${(0.22 * t * (a.depth + b.depth) * palette.alpha) / 2})`
             ctx.beginPath()
             ctx.moveTo(a.dx, a.dy)
             ctx.lineTo(b.dx, b.dy)
@@ -191,13 +215,13 @@ export default function ParticlesBackground() {
         // grab lines toward the cursor — distance already measured above
         if (a.cd >= 0) {
           const t = 1 - a.cd / GRAB_DIST
-          ctx.strokeStyle = `rgba(${FRONT_COLOR}, ${0.4 * t})`
+          ctx.strokeStyle = `rgba(${palette.front}, ${0.4 * t * palette.alpha})`
           ctx.beginPath()
           ctx.moveTo(a.dx, a.dy)
           ctx.lineTo(pointer.px, pointer.py)
           ctx.stroke()
         }
-        ctx.fillStyle = `rgba(${a.depth > 0.75 ? FRONT_COLOR : NODE_COLOR}, ${a.alpha})`
+        ctx.fillStyle = `rgba(${a.depth > 0.75 ? palette.front : palette.node}, ${a.alpha * palette.alpha})`
         ctx.beginPath()
         ctx.arc(a.dx, a.dy, a.r, 0, Math.PI * 2)
         ctx.fill()
@@ -277,6 +301,15 @@ export default function ParticlesBackground() {
       })
     }
 
+    /* ThemeProvider flips data-theme on <html>; watch it so the canvas repaints in
+       the new palette. Under reduced motion only one static frame is drawn, so the
+       theme flip has to force that frame to be redrawn. */
+    const themeObserver = new MutationObserver(() => {
+      palette = readPalette()
+      if (!running) restart()
+    })
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+
     restart()
     onScroll()
 
@@ -292,6 +325,7 @@ export default function ParticlesBackground() {
 
     return () => {
       stop()
+      themeObserver.disconnect()
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
       document.removeEventListener('visibilitychange', onVisibility)
@@ -305,7 +339,8 @@ export default function ParticlesBackground() {
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-0 bg-[#0a0f1e]/40 pointer-events-none"
+      className="fixed inset-0 z-0 pointer-events-none"
+      style={{ backgroundColor: 'var(--particle-tint)' }}
       aria-hidden="true"
     >
       <div className="bg-scroll-shift absolute inset-0" />

@@ -44,7 +44,8 @@ function Header({
   fixed = false,
 }) {
   const location = useLocation()
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme, followSystemTheme, isSystem } = useTheme()
+  const themeLabel = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
   const reduced = useReducedMotion()
   const isOnHome = location.pathname === '/home' || location.pathname === '/'
   const mainNavLinks = navLinks.filter((link) => link.id !== 'contact')
@@ -141,9 +142,14 @@ function Header({
                             )}
                             <span
                               className="relative z-[1]"
+                              /* Token-driven: the literal #38bdf8 + cyan glow was
+                                 off-palette and unreadable on the light canvas. */
                               style={
                                 active
-                                  ? { color: '#38bdf8', textShadow: '0 0 10px rgba(56, 189, 248, 0.35)' }
+                                  ? {
+                                      color: 'var(--color-accent)',
+                                      textShadow: '0 0 10px var(--signal-glow)',
+                                    }
                                   : undefined
                               }
                             >
@@ -163,14 +169,24 @@ function Header({
 
         {/* CTA + hamburger (mobile) */}
         <div className="relative z-[2] flex shrink-0 items-center gap-2 pl-1 sm:gap-2 sm:pl-2">
+          {/* aria-pressed exposes the current state to assistive tech: the label alone
+              only said what the button would do, never which theme was active. The
+              icon shows the theme you would switch TO, so it stays paired with the
+              label. Long-press / right-click hands control back to the OS. */}
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[var(--color-border)]/80 bg-[var(--color-bg-card)]/40 text-[var(--color-text-muted)] transition-all hover:border-[var(--nav-accent)]/50 hover:text-[var(--nav-accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nav-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
-            aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-            title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            onContextMenu={(event) => {
+              event.preventDefault()
+              followSystemTheme()
+            }}
+            className="theme-toggle"
+            aria-label={themeLabel}
+            aria-pressed={theme === 'light'}
+            title={isSystem ? `${themeLabel} (following your system)` : `${themeLabel} (right-click to follow system)`}
           >
-            <i className={theme === 'dark' ? 'fas fa-sun text-xs' : 'fas fa-moon text-xs'} aria-hidden="true" />
+            <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'} aria-hidden="true" />
+            {isSystem && <span className="theme-toggle-system-dot" aria-hidden="true" />}
           </button>
           <NavLink
             to="/admin/login"

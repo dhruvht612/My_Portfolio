@@ -84,7 +84,7 @@ function getProjectsForSkill(projects, skillName) {
 
 function ProgressBar({ value }) {
   return (
-    <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
+    <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-[var(--md-elevation-3)]">
       <motion.div
         initial={{ width: 0 }}
         whileInView={{ width: `${value}%` }}
@@ -143,7 +143,7 @@ function Skills({ skillGroups, projects = [] }) {
         >
           <div className="mb-4 inline-flex items-center gap-3">
             <div className="h-px w-10 bg-gradient-to-r from-transparent to-[var(--color-accent)] md:w-14" />
-            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)]">
+            <span className="rounded-full border border-[var(--line)] bg-[var(--md-elevation-1)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)]">
               Product-grade craftsmanship
             </span>
             <div className="h-px w-10 bg-gradient-to-l from-transparent to-[var(--color-blue)] md:w-14" />
@@ -153,7 +153,7 @@ function Skills({ skillGroups, projects = [] }) {
               Technical Skills
             </span>
           </h2>
-          <p className="mx-auto max-w-2xl text-base leading-relaxed text-[#bcc9db] md:text-lg">
+          <p className="mx-auto max-w-2xl text-base leading-relaxed text-[var(--color-text-muted)] md:text-lg">
             Click any skill to explore where it ships in real projects, with stack details and links.
           </p>
         </motion.div>
@@ -162,7 +162,7 @@ function Skills({ skillGroups, projects = [] }) {
           variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
           className="mb-10 flex justify-center md:mb-12"
         >
-          <div className="relative grid w-full max-w-2xl grid-cols-5 gap-1 rounded-2xl border border-white/10 bg-[var(--color-bg-card)]/45 p-1.5 backdrop-blur-xl">
+          <div className="relative grid w-full max-w-2xl grid-cols-5 gap-1 rounded-2xl border border-[var(--line)] bg-[var(--color-bg-card)]/45 p-1.5 backdrop-blur-xl">
             <motion.div
               layout
               transition={{ type: 'spring', stiffness: 350, damping: 28 }}
@@ -199,8 +199,8 @@ function Skills({ skillGroups, projects = [] }) {
             {filteredGroups.map((group) => {
               const GroupIcon = GROUP_ICON[group.title] || Sparkles
               return (
-                <section key={group.title} className="rounded-2xl border border-white/10 bg-[var(--color-bg-card)]/35 p-4 backdrop-blur-xl md:p-6">
-                  <div className="mb-5 flex items-center gap-3 border-b border-white/10 pb-4">
+                <section key={group.title} className="rounded-2xl border border-[var(--line)] bg-[var(--color-bg-card)]/35 p-4 backdrop-blur-xl md:p-6">
+                  <div className="mb-5 flex items-center gap-3 border-b border-[var(--line)] pb-4">
                     <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
                       <GroupIcon className="h-5 w-5" aria-hidden />
                     </span>
@@ -226,11 +226,11 @@ function Skills({ skillGroups, projects = [] }) {
                           variants={{ hidden: { opacity: 0, y: 20, scale: 0.98 }, visible: { opacity: 1, y: 0, scale: 1 } }}
                         >
                           <Tilt tiltMaxAngleX={8} tiltMaxAngleY={8} perspective={900} scale={1.02} transitionSpeed={350}>
-                            <article className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[var(--color-bg)]/45 p-5 shadow-[0_16px_40px_rgba(0,0,0,0.28)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-accent)]/40 hover:shadow-[0_20px_55px_rgba(65,105,225,0.2)]">
+                            <article className="group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--color-bg)]/45 p-5 shadow-[0_16px_40px_rgba(0,0,0,0.28)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-accent)]/40 hover:shadow-[0_20px_55px_rgba(65,105,225,0.2)]">
                               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/80 to-transparent" />
                               <div className="mb-4 flex items-start justify-between gap-2">
                                 <div className="flex items-center gap-2">
-                                  <motion.span whileHover={{ rotate: [0, -6, 6, 0] }} transition={{ duration: 0.45 }} className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06] text-[var(--color-accent)]">
+                                  <motion.span whileHover={{ rotate: [0, -6, 6, 0] }} transition={{ duration: 0.45 }} className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--line)] bg-[var(--md-elevation-2)] text-[var(--color-accent)]">
                                     <Icon className="h-5 w-5" aria-hidden />
                                   </motion.span>
                                   <div>
@@ -245,7 +245,7 @@ function Skills({ skillGroups, projects = [] }) {
 
                               <div className="mb-3 flex flex-wrap gap-1.5">
                                 {tags.map((tag) => (
-                                  <span key={`${skill.name}-${tag}`} className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] font-medium text-[var(--color-text-muted)]">
+                                  <span key={`${skill.name}-${tag}`} className="rounded-md border border-[var(--line)] bg-[var(--md-elevation-1)] px-2 py-1 text-[10px] font-medium text-[var(--color-text-muted)]">
                                     {tag}
                                   </span>
                                 ))}
@@ -295,11 +295,11 @@ function Skills({ skillGroups, projects = [] }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 14, scale: 0.98 }}
               transition={{ duration: 0.22 }}
-              className="relative w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-[var(--color-bg-elevated)]/90 shadow-[0_30px_90px_rgba(0,0,0,0.55)]"
+              className="relative w-full max-w-3xl overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--color-bg-elevated)]/90 shadow-[0_30px_90px_rgba(0,0,0,0.55)]"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)] to-transparent" />
-              <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 md:px-6">
+              <div className="flex items-center justify-between border-b border-[var(--line)] px-5 py-4 md:px-6">
                 <div>
                   <h3 id="skills-modal-title" className="text-xl font-bold text-[var(--color-text)] md:text-2xl">
                     {selectedSkill.name} in Real Projects
@@ -320,12 +320,12 @@ function Skills({ skillGroups, projects = [] }) {
 
               <div className="max-h-[70vh] space-y-4 overflow-y-auto p-5 md:p-6">
                 {projectsForSkill.length === 0 ? (
-                  <p className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-[var(--color-text-muted)]">
+                  <p className="rounded-xl border border-[var(--line)] bg-[var(--md-elevation-1)] p-4 text-[var(--color-text-muted)]">
                     No linked projects yet for this skill. Add one in your project data and it will appear here automatically.
                   </p>
                 ) : (
                   projectsForSkill.map((project) => (
-                    <article key={project.id ?? project.title} className="rounded-2xl border border-white/10 bg-[var(--color-bg)]/50 p-4 md:p-5">
+                    <article key={project.id ?? project.title} className="rounded-2xl border border-[var(--line)] bg-[var(--color-bg)]/50 p-4 md:p-5">
                       <h4 className="text-lg font-bold text-[var(--color-text)]">{project.title}</h4>
                       <p className="mt-1 text-sm leading-relaxed text-[var(--color-text-muted)]">{project.description}</p>
                       <div className="mt-3 flex flex-wrap gap-1.5">

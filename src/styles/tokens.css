@@ -5,8 +5,18 @@
    adopts the new look and gains light-mode support without edits.
    ============================================================================ */
 
+/* `.admin-scope` opts a subtree into the dark palette regardless of the page theme.
+   The admin console is dark-only by design (AdminLayout already sets
+   [color-scheme:dark]) and ~50 of its rules hardcode dark panels, so letting the
+   public light theme leak into it produced light text on dark cards. */
 :root,
-[data-theme='dark'] {
+[data-theme='dark'],
+.admin-scope {
+  /* Tells the browser to render native UI — scrollbars, form controls, the
+     <select> popup, spinners — in the matching scheme. Without this, light mode
+     kept dark scrollbars and dark date/select popups. */
+  color-scheme: dark;
+
   /* --- Canvas ------------------------------------------------------------ */
   --void: #07080d; /* base background */
   --void-2: #0c0e16; /* elevated surface */
@@ -79,6 +89,33 @@
   --dur: 320ms;
   --dur-slow: 600ms;
 
+  /* --- Ambient background stack -----------------------------------------
+     The fixed backdrop, particle field and liquid-glass wash used to hardcode
+     #070b14 / #0a0f1e / cyan, so they stayed dark in light mode and the theme
+     toggle appeared to do nothing. They read these tokens now.
+     --particle-* are "R, G, B" triplets: the canvas composes its own alphas. */
+  --backdrop-base: #070b14;
+  --backdrop-top: rgba(10, 15, 30, 0.8);
+  --backdrop-bottom: rgba(5, 8, 16, 0.9);
+  --particle-tint: rgba(10, 15, 30, 0.4);
+  --particle-node: 34, 211, 238;
+  --particle-front: 103, 232, 249;
+  --particle-alpha: 1;
+  /* `screen` lifts the wash off a dark canvas; on a light canvas it blows out to
+     white, so the light theme swaps the blend mode and opacity below. */
+  --ambient-blend: screen;
+  --ambient-opacity: 0.48;
+  --ambient-warm: rgba(255, 255, 255, 0.1);
+  --ambient-cool: rgba(125, 211, 252, 0.14);
+
+  /* --- Nav / header glass ------------------------------------------------ */
+  --nav-surface: rgba(15, 23, 42, 0.6);
+  --nav-hairline: rgba(255, 255, 255, 0.08);
+  --nav-sheen: rgba(255, 255, 255, 0.04);
+  --nav-shadow: 0 10px 35px rgba(10, 14, 23, 0.35);
+  --nav-surface-scrolled: rgba(2, 6, 23, 0.85);
+  --nav-surface-hero: rgba(15, 23, 42, 0.38);
+
   /* --- Glassmorphism (token-based) -------------------------------------- */
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-bg-strong: rgba(255, 255, 255, 0.1);
@@ -119,6 +156,8 @@
    Light theme — re-point roles + canvas/ink. Legacy names follow automatically.
    ============================================================================ */
 [data-theme='light'] {
+  color-scheme: light;
+
   --void: #f7f8fc;
   --void-2: #ffffff;
   --surface: #ffffff;
@@ -151,4 +190,29 @@
   --color-blue-soft: rgba(79, 70, 229, 0.12);
   --color-blue-medium: rgba(79, 70, 229, 0.18);
   --color-blue-strong: rgba(79, 70, 229, 0.32);
+
+  /* --- Ambient background stack (light) ---------------------------------
+     A pale canvas with a cool wash instead of a glowing dark field. `multiply`
+     replaces `screen` so the overlay deepens the page rather than washing it out,
+     and the particle network switches to the deeper teal/indigo signals so the
+     nodes stay visible against white. */
+  --backdrop-base: #f7f8fc;
+  --backdrop-top: rgba(224, 231, 245, 0.75);
+  --backdrop-bottom: rgba(238, 241, 248, 0.9);
+  --particle-tint: rgba(255, 255, 255, 0.35);
+  --particle-node: 13, 148, 136;
+  --particle-front: 79, 70, 229;
+  --particle-alpha: 0.55;
+  --ambient-blend: multiply;
+  --ambient-opacity: 0.3;
+  --ambient-warm: rgba(13, 148, 136, 0.06);
+  --ambient-cool: rgba(79, 70, 229, 0.07);
+
+  /* --- Nav / header glass (light) ---------------------------------------- */
+  --nav-surface: rgba(255, 255, 255, 0.72);
+  --nav-hairline: rgba(15, 19, 32, 0.1);
+  --nav-sheen: rgba(255, 255, 255, 0.9);
+  --nav-shadow: 0 10px 30px rgba(15, 19, 32, 0.08);
+  --nav-surface-scrolled: rgba(255, 255, 255, 0.88);
+  --nav-surface-hero: rgba(255, 255, 255, 0.5);
 }

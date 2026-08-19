@@ -91,10 +91,18 @@ function AmbientLayers() {
 
   if (!ready) return null
   const adminApp = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')
+  /* The admin console is dark-only (see .admin-scope in styles/tokens.css). The
+     backdrop renders outside that subtree, so it has to opt in separately or a light
+     public theme would show a pale canvas behind the dark admin panels. */
+  const isAdminRoute = pathname.startsWith('/admin')
   return (
-    <div className="ambient-fade-in">
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#070b14]" aria-hidden>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1e]/80 via-transparent to-[#050810]/90" />
+    <div className={`ambient-fade-in${isAdminRoute ? ' admin-scope' : ''}`}>
+      {/* Fixed canvas behind everything. This hardcoded #070b14 was why the theme
+          toggle looked broken: every page sets background:transparent, so this layer
+          — not <body> — is what the visitor actually sees, and it stayed near-black
+          in light mode. It reads --backdrop-* tokens now. */}
+      <div className="ambient-backdrop" aria-hidden>
+        <div className="ambient-backdrop-gradient" />
       </div>
       {!adminApp ? (
         <>
@@ -109,13 +117,13 @@ function AmbientLayers() {
 
 function NotFoundPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: 'transparent', color: '#f1f5f9' }}>
+    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: 'transparent', color: 'var(--color-text)' }}>
       <div className="text-center max-w-lg">
         {/* Large 404 with gradient */}
         <h1
           className="text-[8rem] md:text-[10rem] font-extrabold leading-none mb-2"
           style={{
-            background: 'linear-gradient(135deg, #7dd3fc 0%, #4169e1 50%, #3b82f6 100%)',
+            background: 'linear-gradient(135deg, var(--color-accent) 0%, var(--color-blue) 50%, var(--color-blue) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             filter: 'drop-shadow(0 0 40px rgba(125, 211, 252, 0.25))',

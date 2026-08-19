@@ -98,7 +98,7 @@ export default function Layout() {
             </motion.div>
           </AnimatePresence>
         </main>
-        <Footer navLinks={portfolio.navLinks} heroSocials={portfolio.heroSocials} footerBadges={portfolio.footerBadges} />
+        <Footer />
         <ScrollToTop />
       </div>
     </div>

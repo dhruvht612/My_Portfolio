@@ -77,7 +77,7 @@ function Landing() {
         justifyContent: 'center',
         padding: '2rem 1.5rem',
         background: 'transparent',
-        color: '#f1f5f9',
+        color: 'var(--color-text)',
         textAlign: 'center',
       }}
     >
@@ -101,16 +101,16 @@ function Landing() {
               width: '3rem',
               height: '2px',
               borderRadius: '2px',
-              background: 'linear-gradient(90deg, transparent, #7dd3fc)',
+              background: 'linear-gradient(90deg, transparent, var(--color-accent))',
             }}
           />
-          <i className="fas fa-rocket" style={{ fontSize: '1.25rem', color: '#7dd3fc' }} aria-hidden />
+          <i className="fas fa-rocket" style={{ fontSize: '1.25rem', color: 'var(--color-accent)' }} aria-hidden />
           <span
             style={{
               width: '3rem',
               height: '2px',
               borderRadius: '2px',
-              background: 'linear-gradient(90deg, #4169e1, transparent)',
+              background: 'linear-gradient(90deg, var(--color-blue), transparent)',
             }}
           />
         </motion.div>
@@ -125,7 +125,7 @@ function Landing() {
             letterSpacing: '0.3em',
             textTransform: 'uppercase',
             marginBottom: '1rem',
-            color: '#7dd3fc',
+            color: 'var(--color-accent)',
           }}
         >
           Portfolio
@@ -139,7 +139,7 @@ function Landing() {
             fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
             fontWeight: 800,
             marginBottom: '1rem',
-            color: '#f1f5f9',
+            color: 'var(--color-text)',
             lineHeight: 1.1,
             letterSpacing: '-0.02em',
           }}
@@ -157,7 +157,7 @@ function Landing() {
             fontSize: '1.125rem',
             lineHeight: 1.6,
             marginBottom: '1.5rem',
-            color: '#94a3b8',
+            color: 'var(--color-text-muted)',
             minHeight: '1.8em',
           }}
           aria-live="polite"
@@ -168,7 +168,7 @@ function Landing() {
               display: 'inline-block',
               width: '2px',
               height: '1.15em',
-              background: '#7dd3fc',
+              background: 'var(--color-accent)',
               marginLeft: '2px',
               verticalAlign: 'text-bottom',
               animation: 'blink-cursor 0.75s step-end infinite',
@@ -207,7 +207,7 @@ function Landing() {
                 borderRadius: '9999px',
                 border: '1px solid rgba(125, 211, 252, 0.25)',
                 background: 'rgba(125, 211, 252, 0.08)',
-                color: '#7dd3fc',
+                color: 'var(--color-accent)',
                 backdropFilter: 'blur(8px)',
               }}
             >
@@ -229,11 +229,11 @@ function Landing() {
               padding: '1rem 2rem',
               fontSize: '1rem',
               fontWeight: 700,
-              color: '#0a0e17',
+              color: 'var(--md-on-primary)',
               border: 'none',
               borderRadius: '0.75rem',
               cursor: 'pointer',
-              background: 'linear-gradient(135deg, #7dd3fc 0%, #4169e1 100%)',
+              background: 'linear-gradient(135deg, var(--color-accent) 0%, var(--color-blue) 100%)',
               boxShadow: '0 4px 20px rgba(125, 211, 252, 0.25)',
             }}
           >
@@ -252,7 +252,7 @@ function Landing() {
           left: '50%',
           transform: 'translateX(-50%)',
           fontSize: '0.75rem',
-          color: '#94a3b8',
+          color: 'var(--color-text-muted)',
           zIndex: 10,
           textDecoration: 'none',
           animationDelay: '0.4s',

@@ -17,7 +17,7 @@ function ChatWidget({ chatOpen, toggleChat, chatMessages, chatInput, onChatInput
               <div
                 key={message.id}
                 className={`px-3 py-2 rounded-lg max-w-[80%] ${
-                  message.from === 'bot' ? 'bg-[var(--color-bg-elevated)] text-[var(--color-text)] self-start' : 'bg-[var(--color-orange)] text-white self-end ml-auto'
+                  message.from === 'bot' ? 'bg-[var(--color-bg-elevated)] text-[var(--color-text)] self-start' : 'bg-[var(--color-orange)] text-[var(--md-on-primary)] self-end ml-auto'
                 }`}
               >
                 {message.text}
@@ -29,7 +29,7 @@ function ChatWidget({ chatOpen, toggleChat, chatMessages, chatInput, onChatInput
               id="chat-input"
               type="text"
               placeholder="Type..."
-              className="flex-1 p-2 bg-gray-800 text-white outline-none"
+              className="flex-1 p-2 bg-[var(--color-bg-elevated)] text-[var(--color-text)] border border-[var(--color-border)] outline-none"
               value={chatInput}
               onChange={onChatInputChange}
               onKeyDown={(event) => {
