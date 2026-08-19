@@ -9,6 +9,13 @@ import Header from './Header'
 import Footer from './Footer'
 import ScrollToTop from './ScrollToTop'
 
+/* Hysteresis band for the nav shell. The pill compacts only after passing
+   COMPACT_ENTER and expands only after falling back below COMPACT_EXIT, so
+   hovering the threshold (or a rubber-band scroll) can never flicker it the way a
+   single 50px trip point did. */
+const COMPACT_ENTER = 64
+const COMPACT_EXIT = 40
+
 const pageVariants = {
   initial: { opacity: 0, y: 18 },
   enter: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] } },
@@ -26,6 +33,10 @@ export default function Layout() {
   const pathSection = pathname.slice(1) || 'home'
   const activeSection = useActiveSection(pathSection)
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
+  /* Mirrors isHeaderScrolled for the rAF callback: the scroll effect is recreated on
+     every route change, so the current side of the hysteresis band has to live
+     outside it. Kept in sync only where setIsHeaderScrolled is called. */
+  const isCompactRef = useRef(false)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -39,7 +50,13 @@ export default function Layout() {
           const scrollableHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
           const scrolled = scrollableHeight > 0 ? (window.scrollY / scrollableHeight) * 100 : 0
           if (scrollProgressRef.current) scrollProgressRef.current.style.width = `${scrolled}%`
-          setIsHeaderScrolled(window.scrollY > 50)
+          // Only crosses the band edge -> only one setState per actual change.
+          const y = window.scrollY
+          const shouldFlip = isCompactRef.current ? y < COMPACT_EXIT : y > COMPACT_ENTER
+          if (shouldFlip) {
+            isCompactRef.current = !isCompactRef.current
+            setIsHeaderScrolled(isCompactRef.current)
+          }
           ticking = false
         })
         ticking = true
