@@ -31,7 +31,9 @@ export default function SettingsWorkspace() {
   const [saveState, setSaveState] = useState('idle')
   const [syncState, setSyncState] = useState('live')
   const [saving, setSaving] = useState(false)
-  const [activity, setActivity] = useState([
+  /* Lazy initialiser: Date.now() ran on every render before, which made the "boot"
+     timestamp drift and tripped react-hooks/purity. The value is only ever needed once. */
+  const [activity, setActivity] = useState(() => [
     { id: 'boot', type: 'sync', label: 'Workspace boot', detail: 'Configuration store initialized', at: Date.now() - 180_000 },
   ])
 

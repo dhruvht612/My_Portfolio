@@ -11,7 +11,6 @@ export default function EducationStickyFooter({
   saveState,
   onBack,
   onNext,
-  onSave,
 }) {
   return (
     <motion.footer

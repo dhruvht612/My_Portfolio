@@ -135,7 +135,6 @@ function Projects({
 }) {
   const reduced = useReducedMotion()
   const [selectedProject, setSelectedProject] = useState(null)
-  const [modalImageIndex, setModalImageIndex] = useState(0)
   const featuredProject = projects[0]
   const gridProjects = projects.slice(1)
   const featuredImages = useMemo(
@@ -187,7 +186,6 @@ function Projects({
 
   const openProjectModal = (project) => {
     setSelectedProject(project)
-    setModalImageIndex(0)
   }
 
   return (
