@@ -51,8 +51,17 @@ jobs:
           VITE_APP_VERSION: ${{ github.sha }}
 
       # Also scans dist/ for a leaked service-role key and fails hard if one is found.
+      # --print-seed logs the baseline this build would set, so accepting a size change is
+      # a copy out of this log rather than a re-run somewhere else.
+      #
+      # Without the Supabase env the build is a different artifact, not a smaller one:
+      # createClient becomes unreachable, @supabase/supabase-js tree-shakes out, and the
+      # chunk graph reshuffles around the ~70 kB gap. Those sizes cannot be held against a
+      # baseline seeded from a configured build, so report instead of failing when the
+      # secret is absent — as it is on fork PRs, and on this repo until it is set. The
+      # service-role key scan still hard-fails either way.
       - name: Bundle budget and secret scan
-        run: npm run size
+        run: npm run size -- --print-seed ${{ secrets.VITE_SUPABASE_URL == '' && '--report-only' || '' }}
 
       - name: Upload build output
         uses: actions/upload-artifact@v4
