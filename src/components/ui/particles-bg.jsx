@@ -17,6 +17,23 @@ const FRONT_COLOR = '103, 232, 249' // #67e8f9
 const LINK_DIST = 170
 const GRAB_DIST = 160
 
+/* Per-node cursor response: max px of push at depth 1, and the per-frame ease
+   fraction used both on the way out and on the way back to rest. */
+const PUSH_MAX = 6
+const PUSH_EASE = 0.09
+
+/* Scroll parallax: total px the field drifts across the ENTIRE page at depth 1,
+   scaled down by depth so the far layer trails the near one. Deliberately tiny
+   next to the page's own scroll distance — the background must always move less
+   than the content in front of it. */
+const SCROLL_DRIFT = 30
+const SCROLL_EASE = 0.08
+
+/* Off-screen wrap margin. Sized to swallow the pointer parallax (18px), the
+   scroll drift and the cursor push so a wrapping node still crosses the edge out
+   of sight instead of popping in inside the viewport. */
+const WRAP = 24
+
 function createParticles(count, w, h) {
   const parts = new Array(count)
   for (let i = 0; i < count; i++) {
@@ -30,6 +47,13 @@ function createParticles(count, w, h) {
       r: 0.8 + Math.random() * 1.8 * depth,
       alpha: 0.16 + 0.55 * depth * Math.random(),
       depth,
+      // draw-space scratch: eased cursor push, resolved draw position, and the
+      // cached cursor distance (-1 = out of range) shared with the link pass.
+      rx: 0,
+      ry: 0,
+      dx: 0,
+      dy: 0,
+      cd: -1,
     }
   }
   return parts
@@ -58,6 +82,15 @@ export default function ParticlesBackground() {
     let raf = 0
     let running = false
     const pointer = { x: -1e4, y: -1e4, px: 0, py: 0 }
+    // 0..1 page scroll. Written by the existing scroll handler, eased in the draw
+    // loop — no second listener, no second rAF.
+    let scrollTarget = 0
+    let scrollEased = 0
+
+    const readProgress = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight
+      return scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0
+    }
 
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 1.5)
@@ -77,21 +110,65 @@ export default function ParticlesBackground() {
       // ease the parallax origin toward the pointer
       pointer.px += (pointer.x - pointer.px) * 0.06
       pointer.py += (pointer.y - pointer.py) * 0.06
-      const ox = pointer.px >= -5000 ? (pointer.px / w - 0.5) * 18 : 0
-      const oy = pointer.py >= -5000 ? (pointer.py / h - 0.5) * 18 : 0
+      const live = pointer.px >= -5000
+      const ox = live ? (pointer.px / w - 0.5) * 18 : 0
+      const oy = live ? (pointer.py / h - 0.5) * 18 : 0
+
+      // Scroll component of the depth parallax. Frozen at 0 on the static
+      // reduced-motion frame; bounded to SCROLL_DRIFT px over the whole page.
+      if (animate) scrollEased += (scrollTarget - scrollEased) * SCROLL_EASE
+      const sy = -scrollEased * SCROLL_DRIFT
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i]
         if (animate) {
           p.x += p.vx
           p.y += p.vy
-          if (p.x < -10) p.x = w + 10
-          else if (p.x > w + 10) p.x = -10
-          if (p.y < -10) p.y = h + 10
-          else if (p.y > h + 10) p.y = -10
+          if (p.x < -WRAP) p.x = w + WRAP
+          else if (p.x > w + WRAP) p.x = -WRAP
+          if (p.y < -WRAP) p.y = h + WRAP
+          else if (p.y > h + WRAP) p.y = -WRAP
         }
-        p.dx = p.x + ox * p.depth
-        p.dy = p.y + oy * p.depth
+
+        // Every offset below lands in DRAW space only. p.x/p.y stay untouched, so
+        // the wrap above keeps working exactly as before and the cursor can never
+        // drag a node permanently out of the field.
+        const bx = p.x + ox * p.depth
+        const by = p.y + (oy + sy) * p.depth
+
+        // Per-node cursor repulsion — O(n), one sqrt, reused by the grab line so
+        // the frame cost is unchanged. Nodes lean a few px away from the cursor
+        // and ease back to rest once it leaves.
+        let tx = 0
+        let ty = 0
+        p.cd = -1
+        if (live) {
+          const cdx = bx - pointer.px
+          const cdy = by - pointer.py
+          const cd2 = cdx * cdx + cdy * cdy
+          if (cd2 < GRAB_DIST * GRAB_DIST) {
+            const cd = Math.sqrt(cd2)
+            p.cd = cd
+            if (animate && cd > 0.01) {
+              // squared falloff so nodes drift in smoothly instead of stepping
+              // at the GRAB_DIST boundary
+              const falloff = 1 - cd / GRAB_DIST
+              const push = (PUSH_MAX * falloff * falloff * p.depth) / cd
+              tx = cdx * push
+              ty = cdy * push
+            }
+          }
+        }
+        if (animate) {
+          p.rx += (tx - p.rx) * PUSH_EASE
+          p.ry += (ty - p.ry) * PUSH_EASE
+        } else {
+          p.rx = 0
+          p.ry = 0
+        }
+
+        p.dx = bx + p.rx
+        p.dy = by + p.ry
       }
 
       ctx.lineWidth = 1
@@ -111,12 +188,9 @@ export default function ParticlesBackground() {
             ctx.stroke()
           }
         }
-        // grab lines toward the cursor
-        const cdx = a.dx - pointer.px
-        const cdy = a.dy - pointer.py
-        const cd2 = cdx * cdx + cdy * cdy
-        if (cd2 < GRAB_DIST * GRAB_DIST) {
-          const t = 1 - Math.sqrt(cd2) / GRAB_DIST
+        // grab lines toward the cursor — distance already measured above
+        if (a.cd >= 0) {
+          const t = 1 - a.cd / GRAB_DIST
           ctx.strokeStyle = `rgba(${FRONT_COLOR}, ${0.4 * t})`
           ctx.beginPath()
           ctx.moveTo(a.dx, a.dy)
@@ -149,6 +223,10 @@ export default function ParticlesBackground() {
     const restart = () => {
       stop()
       resize()
+      scrollTarget = readProgress()
+      // Seed so a reload part-way down the page (or a resize) doesn't animate the
+      // drift in from zero. Reduced motion keeps its single frame at neutral.
+      scrollEased = reducedMq.matches ? 0 : scrollTarget
       if (reducedMq.matches) drawFrame(false)
       else start()
     }
@@ -162,8 +240,10 @@ export default function ParticlesBackground() {
       if (ticking) return
       ticking = true
       requestAnimationFrame(() => {
-        const scrollable = document.documentElement.scrollHeight - window.innerHeight
-        const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0
+        const progress = readProgress()
+        // unquantised for the canvas parallax (the draw loop eases it); the CSS
+        // var below stays quantised so the fixed gradient layers repaint rarely
+        scrollTarget = progress
         const q = (Math.round(progress * 50) / 50).toFixed(2)
         if (q !== lastProgress) {
           lastProgress = q

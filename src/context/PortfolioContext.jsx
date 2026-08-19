@@ -56,6 +56,22 @@ export const typedRoles = [
   'Community Builder',
 ]
 
+/** Rotating hero roles (RoleCarousel). Kept short so the line never wraps on desktop. */
+export const heroRoles = [
+  'AI Builder',
+  'Full-Stack Developer',
+  'Data Science Student',
+  'Community Builder',
+]
+
+/** The "Currently Building" hero card. */
+export const currentlyBuilding = {
+  label: 'Currently Building',
+  name: 'Disputr',
+  description: 'Autonomous AI chargeback automation',
+  tags: ['React', 'AI', 'Full Stack'],
+}
+
 export const heroSocials = [
   { href: 'https://github.com/dhruvht612', label: "Visit Dhruv's GitHub profile (opens in new tab)", icon: 'fab fa-github', ring: 'focus:ring-[#5b7cf5]', tooltip: 'GitHub' },
   { href: 'https://linkedin.com/in/dhruv-thakar-ba46aa296', label: "Visit Dhruv's LinkedIn profile (opens in new tab)", icon: 'fab fa-linkedin', ring: 'focus:ring-[#4169E1]', tooltip: 'LinkedIn' },
@@ -63,10 +79,13 @@ export const heroSocials = [
   { href: 'https://www.instagram.com/dhruv_200612/?hl=en', label: "Visit Dhruv's Instagram profile (opens in new tab)", icon: 'fab fa-instagram', ring: 'focus:ring-[#ec4899]', tooltip: 'Instagram' },
 ]
 
+/* `detail` is revealed on stat-card hover/focus. Each string is derived from
+   real repo content: src/data/projects.js (9 entries and their tech), the
+   Programming group in src/data/skills.js, and the Education section. */
 export const quickStats = [
-  { value: '9', label: 'Projects', accent: 'text-theme-accent' },
-  { value: '5+', label: 'Technologies', accent: 'text-theme-accent-hover' },
-  { value: '2028', label: 'Graduation', accent: 'text-theme-accent' },
+  { value: '9', label: 'Projects', detail: 'React, Node, Python and Java builds', accent: 'text-theme-accent' },
+  { value: '5+', label: 'Technologies', detail: 'Python, Java, C++, JavaScript, SQL', accent: 'text-theme-accent-hover' },
+  { value: '2028', label: 'Graduation', detail: 'BSc Computer Science, Ontario Tech', accent: 'text-theme-accent' },
 ]
 
 export const aboutCounters = [
@@ -151,6 +170,8 @@ export function PortfolioProvider({ children }) {
     () => ({
       navLinks,
       typedRoles,
+      heroRoles,
+      currentlyBuilding,
       heroSocials,
       quickStats,
       aboutCounters,

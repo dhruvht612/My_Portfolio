@@ -4,7 +4,7 @@ import { PortfolioProvider } from './context/PortfolioContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { useAuth } from './hooks/useAuth'
 import ParticlesBackground from './components/ui/particles-bg'
-import ShaderGridBackground from './components/ui/shader-grid-background'
+import CursorGlow from './components/ui/cursor-glow'
 import SkipLink from './components/SkipLink'
 import ErrorBoundary from './components/ErrorBoundary'
 import Landing from './components/Landing'
@@ -74,7 +74,7 @@ function LandingRoute() {
   )
 }
 
-/** Public site: shader + particles + glass. Authenticated admin (`/admin/*` except login): shader only. */
+/** Public site: static backdrop + particles + glass. Authenticated admin (`/admin/*` except login): backdrop only. */
 function AmbientLayers() {
   const { pathname } = useLocation()
   // Decorative layers mount after the browser is idle so first paint is content, not canvases.
@@ -93,10 +93,13 @@ function AmbientLayers() {
   const adminApp = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')
   return (
     <div className="ambient-fade-in">
-      <ShaderGridBackground />
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#070b14]" aria-hidden>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1e]/80 via-transparent to-[#050810]/90" />
+      </div>
       {!adminApp ? (
         <>
           <ParticlesBackground />
+          <CursorGlow />
           <div className="liquid-glass-overlay" aria-hidden="true" />
         </>
       ) : null}
