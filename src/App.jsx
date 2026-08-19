@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import { PortfolioProvider } from './context/PortfolioContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { useAuth } from './hooks/useAuth'
@@ -230,6 +231,10 @@ export default function App() {
         </div>
       </div>
       </ThemeProvider>
+      {/* Vercel Web Analytics. The `/react` entrypoint, not `/next` — that one pulls in
+          next/navigation, which does not exist here. Inside BrowserRouter so client-side
+          route changes are counted; it stays inert off Vercel. */}
+      <Analytics />
     </BrowserRouter>
   )
 }
