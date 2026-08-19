@@ -49,14 +49,37 @@ above 10 kB get their own entry — below that the build emits ~100 per-icon chu
 hundred bytes and every added icon would churn the file. `__total__` covers everything in
 aggregate. A 5% tolerance absorbs dependency bumps.
 
-When growth is intentional:
+**The baseline describes a build made with the Supabase env set**, because that is what
+ships. Without it the build is a different artifact, not a smaller one: `isSupabaseConfigured`
+folds to a compile-time `false`, `createClient` becomes unreachable, `@supabase/supabase-js`
+tree-shakes out, and the chunk graph reshuffles around the gap. Measured on `ee1a19b`:
+
+| | with `.env` | without |
+|---|---|---|
+| `__total__` | 668,179 B | 597,460 B (−12%) |
+| emitted js/css files | 129 | 125 |
+| `AdminSystemHealth.js` | 21,374 B | 22,762 B (**+6.5%**) |
+
+So a Supabase-less build reports chunks both under *and over* the baseline, and the ones
+over it are not regressions. CI passes `--report-only` when `VITE_SUPABASE_URL` is not
+set — true on fork PRs, and on this repo until the secret is added — which downgrades the
+budget verdict to a report. The service-role key scan is never advisory and exits 1 either
+way. **Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the repo secrets** to have
+CI measure, and guard, the artifact that actually ships.
+
+Chunks are keyed by the name Rollup emits before the content hash, and several files can
+share one key — the entry chunk and a lazy `index` module both map to `index.js`, as do
+lucide's `chevron-down`/`-left`/`-right`. Their sizes are summed.
+
+When growth is intentional, accept the build as the new baseline. Every CI run prints the
+block under *Baseline for this build*; copy it into `bundle-budget.json` and commit, or
+re-seed locally from a build made with your `.env` present:
 
 ```bash
 npm run build
-npm run size -- --update   # re-seed, then commit bundle-budget.json
+npm run size -- --print-seed   # print the block without rewriting anything
+npm run size -- --update       # rewrite bundle-budget.json from this build
 ```
-
-`npm run size` also greps `dist/` for a service-role key and exits 1 if it finds one.
 
 ## Secrets
 
