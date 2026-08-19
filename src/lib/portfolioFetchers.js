@@ -394,6 +394,11 @@ export async function fetchPortfolioFromSupabase(client) {
   const { focusAreas, educationHighlights } = mapEducationSlice(educationRes.data)
   const beyondStats = mapBeyondStatsFromDb(beyondRes.data)
   const goals = mapGoalsFromDb(goalsRes.data)
+  /* Public footer tech badges. The admin Profile form writes `profile.footer_badges`;
+     without reading it here those edits would never reach the public site. */
+  const footerBadges = Array.isArray(profileRes.data.footer_badges)
+    ? profileRes.data.footer_badges.filter(Boolean).map(String)
+    : []
 
   return {
     aboutTabs,
@@ -406,5 +411,6 @@ export async function fetchPortfolioFromSupabase(client) {
     educationHighlights,
     beyondStats,
     goals,
+    footerBadges,
   }
 }

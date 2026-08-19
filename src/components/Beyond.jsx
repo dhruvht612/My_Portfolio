@@ -64,10 +64,10 @@ function BeyondStatCard({ stat, index }) {
         className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${stat.gradient} opacity-60 blur-xl transition-opacity duration-500 group-hover:opacity-100`}
         aria-hidden
       />
-      <div className="relative glass rounded-2xl border border-white/[0.08] bg-[var(--color-bg-card)]/45 px-4 py-6 text-center backdrop-blur-xl transition-all duration-300 hover:border-[var(--color-accent)]/35 hover:shadow-[0_20px_50px_rgba(65,105,225,0.18)] md:px-5 md:py-7">
+      <div className="relative glass rounded-2xl border border-[var(--line)] bg-[var(--color-bg-card)]/45 px-4 py-6 text-center backdrop-blur-xl transition-all duration-300 hover:border-[var(--color-accent)]/35 hover:shadow-[0_20px_50px_rgba(65,105,225,0.18)] md:px-5 md:py-7">
         <div className="mb-3 flex justify-center">
           <motion.span
-            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06] text-[var(--color-accent)] shadow-inner transition-transform duration-300 group-hover:scale-110 group-hover:border-[var(--color-accent)]/40"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--line)] bg-[var(--md-elevation-2)] text-[var(--color-accent)] shadow-inner transition-transform duration-300 group-hover:scale-110 group-hover:border-[var(--color-accent)]/40"
             whileHover={{ rotate: [0, -6, 6, 0] }}
             transition={{ duration: 0.45 }}
           >
@@ -98,12 +98,12 @@ function GoalProgress({ progress, label }) {
   const isInView = useInView(ref, { once: true, amount: 0.35 })
 
   return (
-    <div ref={ref} className="mt-8 border-t border-white/10 pt-6">
+    <div ref={ref} className="mt-8 border-t border-[var(--line)] pt-6">
       <div className="mb-2 flex justify-between text-xs text-[var(--color-text-muted)] md:text-sm">
         <span>{label}</span>
         <span className="bg-gradient-to-r from-rose-400 to-amber-400 bg-clip-text font-semibold text-transparent">{progress}%</span>
       </div>
-      <div className="relative h-2.5 overflow-hidden rounded-full bg-white/[0.08]">
+      <div className="relative h-2.5 overflow-hidden rounded-full bg-[var(--md-elevation-3)]">
         <motion.div
           className="relative h-full rounded-full bg-gradient-to-r from-rose-500 via-amber-400 to-orange-400"
           initial={{ width: 0 }}
@@ -145,7 +145,7 @@ function GoalCard({ goal, index }) {
         transitionSpeed={400}
         className="h-full w-full"
       >
-        <article className="beyond-goal-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-[var(--color-bg-card)]/40 p-6 shadow-[0_24px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-[var(--color-accent)]/45 hover:shadow-[0_32px_80px_rgba(65,105,225,0.28)] md:p-8">
+        <article className="beyond-goal-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--color-bg-card)]/40 p-6 shadow-[0_24px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-[var(--color-accent)]/45 hover:shadow-[0_32px_80px_rgba(65,105,225,0.28)] md:p-8">
           <div
             className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)] to-transparent opacity-90`}
             aria-hidden
@@ -160,7 +160,7 @@ function GoalCard({ goal, index }) {
 
           <div className="relative mb-6 flex items-center gap-4">
             <motion.span
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/15 bg-white/[0.07] text-[var(--color-text)] shadow-lg"
+              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-[var(--line-hi)] bg-[var(--md-elevation-2)] text-[var(--color-text)] shadow-lg"
               whileHover={{ scale: 1.08, rotate: -3 }}
               transition={{ type: 'spring', stiffness: 400, damping: 18 }}
             >
@@ -173,7 +173,7 @@ function GoalCard({ goal, index }) {
             {goal.bullets.map((bullet) => (
               <motion.li
                 key={bullet}
-                className="group/li flex gap-3 text-sm leading-relaxed text-[#c8d4e4] transition-colors duration-200 hover:text-[var(--color-text)] md:text-base"
+                className="group/li flex gap-3 text-sm leading-relaxed text-[var(--color-text-muted)] transition-colors duration-200 hover:text-[var(--color-text)] md:text-base"
                 whileHover={{ x: 4 }}
                 transition={{ type: 'spring', stiffness: 380, damping: 28 }}
               >
@@ -188,7 +188,7 @@ function GoalCard({ goal, index }) {
           {typeof goal.progress === 'number' && <GoalProgress progress={goal.progress} label={goal.progressLabel} />}
 
           {goal.vision && (
-            <div className="relative mt-6 border-t border-white/10 pt-5">
+            <div className="relative mt-6 border-t border-[var(--line)] pt-5">
               <p className="flex flex-wrap items-center gap-2 text-sm text-[var(--color-text-muted)]">
                 <Sparkles className="h-4 w-4 text-amber-300" aria-hidden />
                 <span>Vision:</span>
@@ -218,7 +218,7 @@ function Beyond({ beyondStats, goals }) {
       aria-labelledby="beyond-heading"
     >
       <motion.div style={{ y: blobY }} className="pointer-events-none absolute inset-0" aria-hidden>
-        <div className="absolute -left-20 top-1/4 h-[min(28rem,70vw)] w-[min(28rem,70vw)] rounded-full bg-[#4169e1]/25 blur-[100px]" />
+        <div className="absolute -left-20 top-1/4 h-[min(28rem,70vw)] w-[min(28rem,70vw)] rounded-full bg-[var(--color-blue)]/25 blur-[100px]" />
         <div className="absolute right-[-10%] top-[15%] h-[min(22rem,55vw)] w-[min(22rem,55vw)] rounded-full bg-fuchsia-500/20 blur-[90px]" />
         <div className="absolute bottom-[10%] left-1/3 h-[min(20rem,50vw)] w-[min(20rem,50vw)] rounded-full bg-amber-400/15 blur-[80px]" />
         <motion.div
@@ -252,7 +252,7 @@ function Beyond({ beyondStats, goals }) {
         >
           <div className="mb-5 inline-flex items-center gap-3">
             <div className="h-px w-10 bg-gradient-to-r from-transparent to-[var(--color-accent)] md:w-14" />
-            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--color-accent)]">
+            <span className="rounded-full border border-[var(--line)] bg-[var(--md-elevation-1)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--color-accent)]">
               Leadership & impact
             </span>
             <div className="h-px w-10 bg-gradient-to-l from-transparent to-[var(--color-blue)] md:w-14" />
@@ -262,7 +262,7 @@ function Beyond({ beyondStats, goals }) {
               Beyond the Classroom
             </span>
           </h2>
-          <p className="mx-auto max-w-2xl text-base leading-relaxed text-[#b8c5d8] md:text-lg">
+          <p className="mx-auto max-w-2xl text-base leading-relaxed text-[var(--color-text-muted)] md:text-lg">
             I lead, organize, and show up for the community—turning campus energy into real initiatives, stronger teams, and measurable reach.
           </p>
         </motion.div>
@@ -321,7 +321,7 @@ function Beyond({ beyondStats, goals }) {
           }}
           className="relative mt-16 text-center md:mt-20"
         >
-          <div className="mx-auto max-w-3xl rounded-2xl border border-white/[0.08] bg-[var(--color-bg-card)]/35 px-6 py-5 backdrop-blur-md md:px-10 md:py-6">
+          <div className="mx-auto max-w-3xl rounded-2xl border border-[var(--line)] bg-[var(--color-bg-card)]/35 px-6 py-5 backdrop-blur-md md:px-10 md:py-6">
             <p className="text-lg font-semibold tracking-tight text-[var(--color-text)] md:text-xl">
               <span className="mr-2 inline-block" aria-hidden>
                 ⚡

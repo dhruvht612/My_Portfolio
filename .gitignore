@@ -25,3 +25,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# `docs/*` rather than `docs` so a single file can be re-included below — git cannot
+# un-ignore anything inside a directory that is itself excluded.
+docs/*
+# The CI/CD runbook has to be committed or it cannot do its job: it documents the
+# one-time GitHub and Vercel setup that is not reproducible from the repo. Remove this
+# line if you would rather keep the whole folder local.
+!docs/ci-cd.md
+.impeccable
+# Test coverage
+coverage

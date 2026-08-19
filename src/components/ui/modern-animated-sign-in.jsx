@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, useState, useRef, useEffect, forwardRef } from 'react'
-import { motion, useAnimation, useInView, useMotionTemplate, useMotionValue } from 'motion/react'
+import { motion, useAnimation, useInView, useMotionTemplate, useMotionValue } from 'framer-motion'
 import { Eye, EyeOff, Mail, User, MessageSquare, Code2, Database, Globe, Cpu, Braces, Layers3 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
@@ -22,10 +22,10 @@ const Input = memo(
     const actualType = type === 'password' ? (showPassword ? 'text' : 'password') : type
     /** Outer chrome; value is typed in the inner area below the label strip (no overlap). */
     const fieldChrome =
-      'overflow-hidden rounded-md border border-slate-200/80 bg-white/95 shadow-sm transition duration-300 focus-within:ring-2 focus-within:ring-sky-500/45'
+      'overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-bg-card)] shadow-sm transition duration-300 focus-within:ring-2 focus-within:ring-sky-500/45'
 
     const valueClasses =
-      'w-full border-0 bg-transparent px-3 text-sm text-slate-900 caret-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0'
+      'w-full border-0 bg-transparent px-3 text-sm text-[var(--color-text)] caret-[var(--color-text)] placeholder:text-[var(--ink-faint)] focus:outline-none focus:ring-0'
 
     return (
       <motion.div
@@ -44,8 +44,8 @@ const Input = memo(
         className="group/input rounded-lg p-[2px] transition duration-300"
       >
         <div className={cn('relative', fieldChrome)}>
-          <div className="flex items-center gap-2 border-b border-slate-200/70 bg-slate-50/95 px-3 py-2">
-            {Icon && <Icon size={16} className="shrink-0 text-slate-500" aria-hidden />}
+          <div className="flex items-center gap-2 border-b border-[var(--color-border)] bg-[var(--md-elevation-1)] px-3 py-2">
+            {Icon && <Icon size={16} className="shrink-0 text-[var(--color-text-muted)]" aria-hidden />}
             {label}
           </div>
           {type === 'textarea' ? (
@@ -66,7 +66,7 @@ const Input = memo(
                 <button
                   type="button"
                   onClick={() => setShowPassword((p) => !p)}
-                  className="absolute inset-y-0 right-2 flex items-center text-slate-500 hover:text-slate-700"
+                  className="absolute inset-y-0 right-2 flex items-center text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
@@ -192,7 +192,7 @@ export const AnimatedForm = memo(function AnimatedForm({
                   icon={iconMap[field.name]}
                   required={field.required}
                   label={
-                    <label htmlFor={field.name} className="min-w-0 text-xs font-semibold uppercase tracking-wide text-slate-700">
+                    <label htmlFor={field.name} className="min-w-0 text-xs font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
                       {field.label}
                       {field.required && <span className="text-red-500"> *</span>}
                     </label>
@@ -211,7 +211,7 @@ export const AnimatedForm = memo(function AnimatedForm({
 
         <BoxReveal width="100%" boxColor="rgba(249,115,22,0.7)" overflow="visible">
           <button
-            className="bg-gradient-to-br relative group/btn from-zinc-200 to-zinc-200 dark:from-zinc-900 dark:to-zinc-900 block w-full text-black dark:text-white rounded-md h-11 font-medium outline-hidden"
+            className="bg-gradient-to-br relative group/btn from-[var(--signal)] to-[var(--signal-dim)] block w-full text-[var(--md-on-primary)] rounded-md h-11 font-medium outline-hidden"
             type="submit"
             disabled={isSubmitting || isSuccess || submitDisabled}
           >

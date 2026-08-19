@@ -82,6 +82,21 @@ html[data-theme] body {
     color var(--dur) var(--ease-standard);
 }
 
+/* Cross-fade the surfaces and hairlines that actually change between themes, so a
+   toggle reads as one motion instead of a hard cut. Deliberately a narrow property
+   list — a blanket `transition: all` here would animate every hover on the page.
+   `.theme-switching` is set on <html> by ThemeContext only for the duration of a
+   flip, so these transitions never interfere with normal interaction. */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: background-color var(--dur) var(--ease-standard),
+    border-color var(--dur) var(--ease-standard), color var(--dur) var(--ease-standard),
+    fill var(--dur) var(--ease-standard), stroke var(--dur) var(--ease-standard),
+    box-shadow var(--dur) var(--ease-standard) !important;
+}
+
 /* --- Reduced motion guard (global) ---------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -35,10 +35,10 @@ function Education({ focusAreas, highlightCards }) {
           <Tilt tiltMaxAngleX={6} tiltMaxAngleY={6} perspective={900} scale={1.01} transitionSpeed={350}>
             <article className="glass-card group relative p-8 md:p-12 rounded-2xl shadow-2xl hover:border-[var(--color-accent)]/45 hover:shadow-[0_0_45px_rgba(125,211,252,0.22)] transition-all duration-500">
               <div className="absolute -top-4 left-8">
-                <span className="bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-blue)] text-[var(--color-bg)] px-5 py-2 rounded-full text-sm font-bold shadow-lg flex items-center gap-2 border border-white/30">
+                <span className="bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-blue)] text-[var(--color-bg)] px-5 py-2 rounded-full text-sm font-bold shadow-lg flex items-center gap-2 border border-[var(--line-hi)]">
                   <span className="relative flex h-2.5 w-2.5">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-white/70 opacity-75 animate-ping" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--md-on-primary)]/70 opacity-75 animate-ping" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--md-on-primary)]" />
                   </span>
                   Currently Enrolled
                 </span>
@@ -69,7 +69,7 @@ function Education({ focusAreas, highlightCards }) {
                       <span className="text-[var(--color-accent)] font-semibold">Year 2 of 4 · You are here</span>
                     </div>
                     <div className="relative pt-4">
-                      <div className="h-3 bg-[var(--color-bg)]/80 rounded-full overflow-hidden border border-white/10">
+                      <div className="h-3 bg-[var(--color-bg)]/80 rounded-full overflow-hidden border border-[var(--line)]">
                         <motion.div
                           initial={{ width: 0 }}
                           whileInView={{ width: `${PROGRESS}%` }}
@@ -135,13 +135,13 @@ function Education({ focusAreas, highlightCards }) {
             <motion.article
               key={card.title}
               variants={{ hidden: { opacity: 0, y: 22, scale: 0.98 }, visible: { opacity: 1, y: 0, scale: 1 } }}
-              className={`group bg-gradient-to-br ${card.accent} p-6 rounded-2xl border border-white/10 hover:border-white/30 hover:shadow-[0_0_26px_rgba(255,255,255,0.12)] transition-all duration-300 hover:-translate-y-1`}
+              className={`group bg-gradient-to-br ${card.accent} p-6 rounded-2xl border border-[var(--line)] hover:border-[var(--line-hi)] hover:shadow-[0_0_26px_rgba(255,255,255,0.12)] transition-all duration-300 hover:-translate-y-1`}
             >
               <div className="flex items-center gap-4 mb-4">
                 <motion.div
                   whileHover={{ rotate: [0, -6, 6, 0] }}
                   transition={{ duration: 0.45 }}
-                  className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center border border-white/20 text-[var(--color-text)]"
+                  className="w-14 h-14 bg-[var(--md-elevation-3)] rounded-xl flex items-center justify-center border border-[var(--line-hi)] text-[var(--color-text)]"
                 >
                   {card.title === 'Foundations' && <GraduationCap className="h-7 w-7" />}
                   {card.title === 'Hands-On Learning' && <Briefcase className="h-7 w-7" />}
@@ -163,7 +163,7 @@ function Education({ focusAreas, highlightCards }) {
 
         <motion.section
           variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
-          className="rounded-2xl border border-white/10 bg-[var(--color-bg-card)]/40 backdrop-blur-md p-6 md:p-8 mb-8"
+          className="rounded-2xl border border-[var(--line)] bg-[var(--color-bg-card)]/40 backdrop-blur-md p-6 md:p-8 mb-8"
         >
           <h3 className="text-2xl font-bold mb-4 text-[var(--color-text)] flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-[var(--color-accent)]" />

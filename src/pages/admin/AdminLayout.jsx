@@ -48,7 +48,7 @@ export default function AdminLayout() {
 
   return (
     <ToastProvider>
-      <div className="admin-shell-bg relative flex min-h-screen text-[var(--color-text)] [color-scheme:dark]">
+      <div className="admin-scope admin-shell-bg relative flex min-h-screen text-[var(--color-text)] [color-scheme:dark]">
         <div className="admin-shell-noise pointer-events-none absolute inset-0" aria-hidden />
         <AdminSidebar
           open={sidebarOpen}

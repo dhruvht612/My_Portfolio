@@ -129,7 +129,7 @@ function Experience({ experienceByOrg = [] }) {
 
         <motion.div variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }} className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           {QUICK_HIGHLIGHTS.map((item) => (
-            <div key={item.label} className="rounded-2xl border border-white/10 bg-[var(--color-bg-card)]/45 backdrop-blur-md p-4 text-center hover:-translate-y-0.5 hover:border-[var(--color-accent)]/40 transition-all">
+            <div key={item.label} className="rounded-2xl border border-[var(--line)] bg-[var(--color-bg-card)]/45 backdrop-blur-md p-4 text-center hover:-translate-y-0.5 hover:border-[var(--color-accent)]/40 transition-all">
               <item.icon className="h-4 w-4 text-[var(--color-accent)] mx-auto mb-2" />
               <p className="text-lg font-extrabold text-[var(--color-text)]">{item.value}</p>
               <p className="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">{item.label}</p>
@@ -148,7 +148,7 @@ function Experience({ experienceByOrg = [] }) {
                 <span className="inline-flex items-center gap-1 rounded-full border border-[var(--color-accent)]/35 bg-[var(--color-accent)]/15 px-3 py-1 text-xs font-semibold text-[var(--color-accent)]">
                   <Sparkles className="h-3.5 w-3.5" /> Featured Role
                 </span>
-                <span className="inline-flex rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-xs text-[var(--color-text-muted)]">
+                <span className="inline-flex rounded-full border border-[var(--line-hi)] bg-[var(--md-elevation-1)] px-3 py-1 text-xs text-[var(--color-text-muted)]">
                   {featuredRole.org}
                 </span>
               </div>
@@ -194,7 +194,7 @@ function Experience({ experienceByOrg = [] }) {
                   viewport={{ once: true, amount: 0.12 }}
                   transition={{ duration: 0.4, delay: index * 0.04 }}
                   className={`relative rounded-2xl border bg-[var(--color-bg-card)]/45 backdrop-blur-md p-5 md:p-6 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(125,211,252,0.12)] ${
-                    isCurrent ? 'border-[var(--color-accent)]/45' : 'border-white/10'
+                    isCurrent ? 'border-[var(--color-accent)]/45' : 'border-[var(--line)]'
                   }`}
                   style={{ marginLeft: index % 2 === 0 ? '2rem' : undefined, marginRight: index % 2 !== 0 ? '2rem' : undefined }}
                 >
@@ -206,7 +206,7 @@ function Experience({ experienceByOrg = [] }) {
                     transition={{ duration: 2.2, repeat: Infinity }}
                   />
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="h-10 w-10 rounded-xl border border-white/15 bg-white/[0.05] flex items-center justify-center text-[var(--color-accent)]">
+                    <div className="h-10 w-10 rounded-xl border border-[var(--line-hi)] bg-[var(--md-elevation-2)] flex items-center justify-center text-[var(--color-accent)]">
                       <Icon className="h-5 w-5" />
                     </div>
                     <div className="flex-1">

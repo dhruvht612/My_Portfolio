@@ -2,8 +2,8 @@ import { cn } from '@/lib/utils'
 
 const variants = {
   default: 'bg-sky-500 text-slate-950 hover:bg-sky-400 shadow-sm',
-  outline: 'border border-white/15 bg-transparent text-slate-100 hover:bg-white/[0.06]',
-  ghost: 'text-slate-200 hover:bg-white/[0.06]',
+  outline: 'border border-[var(--line-hi)] bg-transparent text-slate-100 hover:bg-[var(--md-elevation-2)]',
+  ghost: 'text-slate-200 hover:bg-[var(--md-elevation-2)]',
 }
 
 const sizes = {

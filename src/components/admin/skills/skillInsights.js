@@ -71,7 +71,9 @@ export function groupStats(group) {
   return { density: items.length, avg, expert, coverage }
 }
 
-export function generateAdminInsights(groups, skills, projects = []) {
+/* `_projects` is accepted but unused — SkillsWorkspace passes it positionally and the
+   signature is kept so the call site does not have to change. */
+export function generateAdminInsights(groups, skills, _projects = []) {
   const lines = []
   const bundled = groupsWithSkills(groups, skills)
   const sorted = [...bundled].sort((a, b) => {

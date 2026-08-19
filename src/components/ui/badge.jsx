@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 
 const variants = {
   secondary: 'border-transparent bg-slate-700/50 text-slate-200 hover:bg-slate-700/70',
-  outline: 'border border-white/15 text-slate-200 bg-transparent',
+  outline: 'border border-[var(--line-hi)] text-slate-200 bg-transparent',
 }
 
 export function Badge({ className, variant = 'secondary', ...props }) {

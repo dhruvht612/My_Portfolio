@@ -1,0 +1,28 @@
+version: 2
+
+updates:
+  # Grouped so a week's patches arrive as one reviewable PR rather than a dozen.
+  # Major bumps stay separate — those deserve to be read on their own.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      production:
+        dependency-type: production
+        update-types: [minor, patch]
+      development:
+        dependency-type: development
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns: ['*']

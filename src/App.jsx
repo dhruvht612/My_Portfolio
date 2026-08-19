@@ -1,10 +1,10 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom'
 import { PortfolioProvider } from './context/PortfolioContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { useAuth } from './hooks/useAuth'
 import ParticlesBackground from './components/ui/particles-bg'
-import ShaderGridBackground from './components/ui/shader-grid-background'
+import CursorGlow from './components/ui/cursor-glow'
 import SkipLink from './components/SkipLink'
 import ErrorBoundary from './components/ErrorBoundary'
 import Landing from './components/Landing'
@@ -74,32 +74,56 @@ function LandingRoute() {
   )
 }
 
-/** Public site: shader + particles + glass. Authenticated admin (`/admin/*` except login): shader only. */
+/** Public site: static backdrop + particles + glass. Authenticated admin (`/admin/*` except login): backdrop only. */
 function AmbientLayers() {
   const { pathname } = useLocation()
+  // Decorative layers mount after the browser is idle so first paint is content, not canvases.
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    const start = () => setReady(true)
+    if ('requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(start, { timeout: 1500 })
+      return () => window.cancelIdleCallback(id)
+    }
+    const id = window.setTimeout(start, 350)
+    return () => window.clearTimeout(id)
+  }, [])
+
+  if (!ready) return null
   const adminApp = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')
+  /* The admin console is dark-only (see .admin-scope in styles/tokens.css). The
+     backdrop renders outside that subtree, so it has to opt in separately or a light
+     public theme would show a pale canvas behind the dark admin panels. */
+  const isAdminRoute = pathname.startsWith('/admin')
   return (
-    <>
-      <ShaderGridBackground />
+    <div className={`ambient-fade-in${isAdminRoute ? ' admin-scope' : ''}`}>
+      {/* Fixed canvas behind everything. This hardcoded #070b14 was why the theme
+          toggle looked broken: every page sets background:transparent, so this layer
+          — not <body> — is what the visitor actually sees, and it stayed near-black
+          in light mode. It reads --backdrop-* tokens now. */}
+      <div className="ambient-backdrop" aria-hidden>
+        <div className="ambient-backdrop-gradient" />
+      </div>
       {!adminApp ? (
         <>
           <ParticlesBackground />
+          <CursorGlow />
           <div className="liquid-glass-overlay" aria-hidden="true" />
         </>
       ) : null}
-    </>
+    </div>
   )
 }
 
 function NotFoundPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: 'transparent', color: '#f1f5f9' }}>
+    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: 'transparent', color: 'var(--color-text)' }}>
       <div className="text-center max-w-lg">
         {/* Large 404 with gradient */}
         <h1
           className="text-[8rem] md:text-[10rem] font-extrabold leading-none mb-2"
           style={{
-            background: 'linear-gradient(135deg, #7dd3fc 0%, #4169e1 50%, #3b82f6 100%)',
+            background: 'linear-gradient(135deg, var(--color-accent) 0%, var(--color-blue) 50%, var(--color-blue) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             filter: 'drop-shadow(0 0 40px rgba(125, 211, 252, 0.25))',

@@ -265,7 +265,7 @@ Fork or copy these patterns into other React projects.
 | --- | --- |
 | `button` / `input` / `badge` | Base controls |
 | `glowing-shadow` / `holographic-card` | Card emphasis |
-| `particles-bg` / `shader-grid-background` | Background effects |
+| `particles-bg` | Background effects |
 | `modern-animated-sign-in` | Auth screen polish |
 | `interactive-logs-table-shadcnui` | Dense data tables |
 

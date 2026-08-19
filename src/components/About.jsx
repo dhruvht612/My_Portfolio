@@ -105,7 +105,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                 <img
                   src={MEDIA.profile}
                   alt="Dhruv Thakar standing near Niagara Falls"
-                  className="relative mx-auto w-64 h-64 rounded-2xl object-cover shadow-2xl transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-[0_0_42px_rgba(125,211,252,0.3)] border border-white/10"
+                  className="relative mx-auto w-64 h-64 rounded-2xl object-cover shadow-2xl transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-[0_0_42px_rgba(125,211,252,0.3)] border border-[var(--line)]"
                   loading="lazy"
                 />
                 <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 text-xs rounded-full bg-[var(--color-bg)]/75 text-[var(--color-text)] border border-[var(--color-border)] backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
@@ -233,7 +233,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                   <p className="text-xl md:text-2xl font-bold leading-tight bg-gradient-to-r from-[var(--color-accent)] via-blue-300 to-purple-300 bg-clip-text text-transparent">
                     I build technology that feels intuitive, useful, and impossible to ignore.
                   </p>
-                  <div className="space-y-3 text-[#c0cde0]">
+                  <div className="space-y-3 text-[var(--color-text-muted)]">
                     <p><span className="text-[var(--color-text)] font-semibold">Who I am:</span> Dhruv Thakar, a Computer Science student and community-first builder focused on real outcomes.</p>
                     <p><span className="text-[var(--color-text)] font-semibold">What I build:</span> Full-stack, AI-enhanced products that blend strong engineering with clean UX.</p>
                     <p><span className="text-[var(--color-text)] font-semibold">What I’m aiming for:</span> To lead teams shipping impactful software at the intersection of product, AI, and accessibility.</p>
@@ -256,7 +256,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                       <div className="flex items-start gap-3">
                         <interest.icon className="h-7 w-7 text-[var(--color-accent)] mt-0.5" />
                         <div>
-                          <h4 className="font-bold text-white mb-2">{interest.title}</h4>
+                          <h4 className="font-bold text-[var(--color-text)] mb-2">{interest.title}</h4>
                           <p className="text-sm text-[var(--color-text-muted)]">{interest.copy}</p>
                         </div>
                       </div>
@@ -279,7 +279,7 @@ function About({ aboutTab, setAboutTab, aboutTabs, aboutCounters }) {
                     <div key={fact.title} className="flex items-start gap-4 bg-[var(--color-bg-card)]/50 backdrop-blur-sm p-5 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all">
                       <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-blue)] rounded-full flex items-center justify-center text-2xl">{fact.emoji}</div>
                       <div>
-                        <h4 className="font-bold text-white mb-1">{fact.title}</h4>
+                        <h4 className="font-bold text-[var(--color-text)] mb-1">{fact.title}</h4>
                         <p className="text-sm text-[var(--color-text-muted)]">{fact.copy}</p>
                       </div>
                     </div>
