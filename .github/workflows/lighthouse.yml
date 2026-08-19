@@ -1,0 +1,51 @@
+name: Lighthouse
+
+# Not a required check, so nothing here can block a merge.
+#
+# Performance and the timing metrics assert at `warn` on purpose: the baseline is a
+# score of 26 and an active overhaul is moving it, so a hard gate would either block
+# work or get lowered until it means nothing. Accessibility (baseline 100) and CLS
+# (baseline 0.003) assert at `error` — there is enormous margin there, so a failure
+# means a real regression and the job turns red to say so.
+#
+# Once the overhaul settles, tighten the numbers in lighthouserc.json and add this
+# workflow to the required checks in branch protection.
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  audit:
+    name: Performance audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true

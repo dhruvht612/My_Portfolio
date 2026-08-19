@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, redesign]
+
+# A new push to a branch cancels the run still in flight for it. Without this,
+# a burst of commits queues a full run each.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Lint, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # lint:ci pins --max-warnings so the known backlog cannot grow. Errors are
+      # already zero; see the rule notes in eslint.config.js.
+      - name: Lint
+        run: npm run lint:ci
+
+      - name: Test
+        run: npm run test:run
+
+      # Fork pull requests do not receive secrets. The build still succeeds —
+      # PortfolioContext falls back to the bundled static slice — it just exercises
+      # a different path than production. Do not switch to pull_request_target to
+      # work around this; that hands repo secrets to unreviewed code.
+      - name: Build
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_APP_VERSION: ${{ github.sha }}
+
+      # Also scans dist/ for a leaked service-role key and fails hard if one is found.
+      - name: Bundle budget and secret scan
+        run: npm run size
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.sha }}
+          path: dist/
+          retention-days: 7

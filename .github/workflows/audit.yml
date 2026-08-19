@@ -1,0 +1,66 @@
+name: Security audit
+
+# Deliberately scheduled rather than run on every pull request. Transitive advisories
+# land at random times and have nothing to do with the change under review; failing
+# an unrelated PR on one trains people to merge past a red check. This opens an issue
+# instead, on a cadence that matches Dependabot's.
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    name: npm audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Audit
+        id: audit
+        run: |
+          set +e
+          npm audit --audit-level=high > audit.txt 2>&1
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+          cat audit.txt
+
+      - name: Open an issue when high-severity advisories are found
+        if: steps.audit.outputs.status != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs')
+            const body = fs.readFileSync('audit.txt', 'utf8').slice(0, 60000)
+            const title = 'npm audit: high-severity advisories'
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'security',
+            })
+            const open = existing.data.find((i) => i.title === title)
+            const text = `Found by the weekly audit on \`${context.sha.slice(0, 7)}\`.\n\n\`\`\`\n${body}\n\`\`\``
+            if (open) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: open.number, body: text,
+              })
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body: text, labels: ['security'],
+              })
+            }

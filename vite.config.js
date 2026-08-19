@@ -49,5 +49,24 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    test: {
+      environment: 'jsdom',
+      globals: true,
+      setupFiles: ['./src/test/setup.js'],
+      /* The smoke test mounts the whole app shell — providers, router, header, footer —
+         under jsdom. That legitimately costs seconds, and a shared CI runner is slower
+         than a dev machine, so the 5s default produced flaky timeouts rather than real
+         failures. Raised deliberately; a genuinely hung test still fails, just later. */
+      testTimeout: 20000,
+      hookTimeout: 20000,
+      /* Only source is measured. `dist` and the Node-only Supabase scripts would
+         otherwise sit in the report at 0% and hide the real numbers. */
+      coverage: {
+        provider: 'v8',
+        reporter: ['text-summary', 'lcov'],
+        include: ['src/**/*.{js,jsx}'],
+        exclude: ['src/scripts/**', 'src/test/**', 'src/**/*.{test,spec}.{js,jsx}', 'src/main.jsx'],
+      },
+    },
   }
 })
