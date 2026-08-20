@@ -311,15 +311,27 @@ function Header({ navLinks, isHeaderScrolled, scrollProgressRef, scrollProgressT
         ref={panelRef}
         aria-label="Mobile navigation"
         inert={!isMenuOpen}
-        /* Overflow is set per axis rather than leaning on utility order: x always
-           clipped so the collapse animation cannot bulge sideways, y scrollable only
-           while open so a long link list stays reachable on a short screen. */
-        className={`global-nav-mobile lg:hidden mt-2 mx-3 overflow-x-hidden ${
-          isMenuOpen ? 'max-h-[80vh] overflow-y-auto opacity-100 translate-y-0' : 'max-h-0 overflow-y-hidden opacity-0 -translate-y-2'
+        /* Height animates via grid-template-rows 0fr -> 1fr, not max-height. A
+           max-height transition interpolates toward the *cap* (80vh), not the content
+           height, so the panel was fully revealed at ~3/4 of the duration and the
+           close appeared to hang for the first ~65ms before anything moved. 1fr
+           resolves to the real content height, so the motion matches what you see. */
+        className={`global-nav-mobile lg:hidden mt-2 mx-3 grid ${
+          isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
         }`}
-        style={{ transition: 'max-height var(--nav-transition), opacity var(--nav-transition), transform var(--nav-transition)' }}
+        style={{
+          gridTemplateRows: isMenuOpen ? '1fr' : '0fr',
+          transition: 'grid-template-rows var(--nav-transition), opacity var(--nav-transition), transform var(--nav-transition)',
+        }}
       >
-        <div className="px-4 py-4 space-y-4">
+        {/* min-h-0 + clipped overflow is what lets the 0fr row actually collapse —
+            without it the row floors at the content's min-content height. Overflow is
+            set per axis: x always clipped so the collapse cannot bulge sideways, y
+            scrollable only while open so a long list stays reachable on a short screen. */}
+        <div
+          className={`min-h-0 overflow-x-hidden ${isMenuOpen ? 'max-h-[80vh] overflow-y-auto' : 'overflow-y-hidden'}`}
+        >
+          <div className="px-4 py-4 space-y-4">
           {drawerGroups.map((group) => (
             <div key={group.title ?? 'other'}>
               {group.title && (
@@ -360,6 +372,7 @@ function Header({ navLinks, isHeaderScrolled, scrollProgressRef, scrollProgressT
             <ArrowRight size={13} strokeWidth={2.5} aria-hidden="true" />
             Contact
           </NavLink>
+          </div>
         </div>
       </nav>
       </MotionHeader>

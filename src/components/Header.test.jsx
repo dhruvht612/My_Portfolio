@@ -97,7 +97,7 @@ describe('mobile drawer', () => {
   it('starts closed and collapsed', () => {
     renderAt('/home')
     expect(hamburger()).toHaveAttribute('aria-expanded', 'false')
-    expect(drawer()).toHaveClass('max-h-0')
+    expect(drawer().style.gridTemplateRows).toBe('0fr')
   })
 
   /* The real defect this covers: the drawer used to collapse with max-height and
@@ -112,7 +112,7 @@ describe('mobile drawer', () => {
     renderAt('/home')
     fireEvent.click(hamburger())
     expect(drawer()).not.toHaveAttribute('inert')
-    expect(drawer()).toHaveClass('max-h-[80vh]')
+    expect(drawer().style.gridTemplateRows).toBe('1fr')
   })
 
   it('flips the trigger label and expanded state', () => {
