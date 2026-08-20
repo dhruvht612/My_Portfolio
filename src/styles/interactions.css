@@ -284,6 +284,20 @@
   padding-bottom: 0.35rem;
 }
 
+/* Clearance for the fixed header, derived from the same token as the pill geometry.
+   `main` used to carry a hardcoded pt-88px, short of the real 108px expanded height,
+   which tucked the top of every page under the glass. scroll-margin-top gives in-page
+   anchors the same clearance so a jumped-to heading is never hidden behind the pill. */
+.nav-offset-top {
+  padding-top: var(--nav-height);
+}
+
+/* Scoped to the public shell's main: the admin console has its own layout with no
+   fixed public nav, so its anchors must not inherit this clearance. */
+.nav-offset-top [id]:target {
+  scroll-margin-top: calc(var(--nav-height) + 0.5rem);
+}
+
 /* Sliding active-section pill. Sits behind the link content: .global-nav is
    isolation: isolate, so z-index:-1 lands above the nav surface and below the
    link text. No transition here — framer-motion layoutId drives the movement. */

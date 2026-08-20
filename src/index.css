@@ -51,11 +51,12 @@ html {
     radial-gradient(ellipse 60% 40% at 80% 20%, rgba(249, 115, 22, 0.12), transparent 50%),
     linear-gradient(to bottom, rgba(10, 14, 23, 0.4) 0%, transparent 40%);
 
-  /* Global nav (pill glass) – derived from theme */
-  --nav-bg: var(--nav-surface);
-  --nav-bg-scrolled: var(--nav-surface-scrolled);
-  --nav-border: var(--glass-border);
-  --nav-border-accent: var(--color-blue-strong);
+  /* Global nav (pill glass) – derived from theme.
+     Surfaces, hairlines, blur, shadow and geometry all live in styles/tokens.css so
+     they can vary per theme; only these theme-independent derivations belong here.
+     --nav-shadow and --nav-blur used to be redeclared in this block, which silently
+     overrode the theme-aware values from tokens.css in dark mode only (the light
+     block outranks :root, the dark one does not) — hence the stray blue nav shadow. */
   --nav-pill-radius: var(--radius);
   --nav-pill-radius-lg: var(--radius-lg);
   --nav-accent: var(--color-accent);
@@ -63,8 +64,6 @@ html {
   --nav-cta-gradient-start: var(--color-orange);
   --nav-cta-gradient-end: var(--color-orange-hover);
   --nav-cta-text: #fff;
-  --nav-blur: 24px;
-  --nav-shadow: 0 10px 40px rgba(65, 105, 225, 0.15);
   --nav-transition: 300ms ease;
 }
 
@@ -533,19 +532,11 @@ select {
   pointer-events: none;
 }
 
-/* Nav link active state – pill style for clear visibility */
-.nav-link.active-link {
-  background: color-mix(in srgb, var(--signal) 18%, transparent);
-  color: var(--color-accent);
-}
-
-.nav-link .active-underline {
-  width: 0;
-}
-
-.nav-link.active-link .active-underline {
-  width: 100%;
-}
+/* The active nav link is drawn by exactly one thing: the framer-motion pill
+   (.nav-indicator in styles/interactions.css). Three further mechanisms used to live
+   here — an .active-link background overridden ~400 lines below, a ::after underline
+   keyed off a class that was never applied, and an .active-underline span that CSS
+   set to display:none. All three are gone; .active-link now only carries colour. */
 
 /* Theme toggle. 44px hit area (was 36px, under the touch-target minimum) with the
    visual chip kept at 36px so the nav geometry is unchanged. */
@@ -591,7 +582,10 @@ select {
 
 /* Global nav pill glass */
 .global-nav {
-  max-width: min(1400px, calc(100vw - 1.5rem));
+  /* 100% of the padded header, not 100vw: vw includes the classic scrollbar, so the
+     old calc double-guttered against the header's px-3 and produced a sliver of
+     horizontal page scroll on Windows. */
+  max-width: min(1400px, 100%);
   margin: 20px auto;
   min-height: 72px;
   position: relative;
@@ -601,8 +595,8 @@ select {
   /* Was rgba(15, 23, 42, 0.6) + white hairlines — a dark-only glass that stayed dark
      over the light canvas. --nav-* are defined per theme in tokens.css. */
   background-color: var(--nav-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(var(--nav-blur));
+  -webkit-backdrop-filter: blur(var(--nav-blur));
   border: 1px solid var(--nav-hairline);
   border-radius: 16px;
   box-shadow: var(--nav-shadow), inset 0 1px 0 var(--nav-sheen);
@@ -614,12 +608,14 @@ select {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  /* Tokenised so the light theme can swap both the wash colours and the blend mode.
+     Hardcoded white + `screen` blew out to a solid white slab over the pale canvas. */
   background:
-    radial-gradient(circle at 15% 10%, rgba(255, 255, 255, 0.16), transparent 36%),
-    radial-gradient(circle at 88% 18%, rgba(125, 211, 252, 0.14), transparent 34%),
-    linear-gradient(120deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 28%, rgba(255, 255, 255, 0) 48%);
-  mix-blend-mode: screen;
-  opacity: 0.55;
+    radial-gradient(circle at 15% 10%, var(--nav-wash-warm), transparent 36%),
+    radial-gradient(circle at 88% 18%, var(--nav-wash-cool), transparent 34%),
+    linear-gradient(120deg, var(--nav-wash-sweep) 0%, transparent 48%);
+  mix-blend-mode: var(--nav-wash-blend);
+  opacity: var(--nav-wash-opacity);
   animation: liquid-surface-shift 14s ease-in-out infinite alternate;
   z-index: 0;
 }
@@ -899,37 +895,62 @@ select {
   height: 36px;
   position: relative;
   border-radius: var(--radius);
-  transition: color var(--nav-transition), background-color var(--nav-transition), transform var(--nav-transition);
-}
-
-.global-nav .nav-link::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -6px;
-  width: 0%;
-  height: 2px;
-  background: linear-gradient(135deg, #3b82f6, #06b6d4);
-  transition: width 0.3s ease;
-}
-
-.global-nav .nav-link .active-underline {
-  display: none;
-}
-
-.global-nav .nav-link:hover::after,
-.global-nav .nav-link.active::after {
-  width: 100%;
+  /* No transform here on purpose: a translateY on hover shifted the link while the
+     framer indicator (inset: 0 on a child) was measuring its layout box, which made
+     the pill visibly lag on hover-then-click. */
+  transition: color var(--nav-transition), background-color var(--nav-transition);
 }
 
 .global-nav .nav-link:hover {
-  color: #38bdf8;
-  transform: translateY(-1px);
+  /* Was #38bdf8 — sky-400, off-palette and weak against the light canvas. */
+  color: var(--nav-accent);
 }
 
 .global-nav .nav-link.active-link {
   background: transparent;
   color: var(--nav-accent);
+}
+
+/* Horizontal link strip. The links only outrun the pill at narrow lg widths; when
+   they do, these masks fade the clipped edge so hidden links are advertised rather
+   than silently cut off (the scrollbar itself is hidden). Header toggles the data
+   attributes from the measured scroll position. */
+.nav-strip {
+  --nav-strip-fade: 28px;
+  scroll-behavior: smooth;
+}
+
+.nav-strip[data-overflow-start='true'] {
+  mask-image: linear-gradient(to right, transparent 0, black var(--nav-strip-fade));
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black var(--nav-strip-fade));
+}
+
+.nav-strip[data-overflow-end='true'] {
+  mask-image: linear-gradient(to left, transparent 0, black var(--nav-strip-fade));
+  -webkit-mask-image: linear-gradient(to left, transparent 0, black var(--nav-strip-fade));
+}
+
+.nav-strip[data-overflow-start='true'][data-overflow-end='true'] {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--nav-strip-fade),
+    black calc(100% - var(--nav-strip-fade)),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--nav-strip-fade),
+    black calc(100% - var(--nav-strip-fade)),
+    transparent 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-strip {
+    scroll-behavior: auto;
+  }
 }
 
 .global-nav-cta {
@@ -938,11 +959,20 @@ select {
   overflow: hidden;
   background: linear-gradient(135deg, var(--nav-cta-gradient-start), var(--nav-cta-gradient-end));
   color: var(--nav-cta-text);
-  border: 1px solid rgba(125, 211, 252, 0.28);
+  border: 1px solid color-mix(in srgb, var(--signal) 28%, transparent);
   border-radius: 10px;
-  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.16);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--signal) 18%, transparent);
   line-height: 1;
   transition: opacity var(--nav-transition), transform var(--nav-transition), box-shadow var(--nav-transition);
+}
+
+/* Contact is the one nav destination with no link in the strip (it is promoted to
+   this CTA), so visiting /contact used to highlight nothing at all. The ring reads as
+   "you are here" without competing with the strip's indicator pill. */
+.global-nav-cta.is-current {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--signal) 55%, transparent),
+    0 4px 18px color-mix(in srgb, var(--signal) 26%, transparent);
 }
 
 .global-nav-cta::before {
@@ -955,7 +985,7 @@ select {
 }
 
 .contact-btn:hover {
-  box-shadow: 0 0 14px rgba(6, 182, 212, 0.32);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--signal) 34%, transparent);
   transform: translateY(-1px);
 }
 
@@ -968,25 +998,52 @@ select {
   align-items: center;
 }
 
+/* The wordmark was blue→cyan (#3b82f6 → #06b6d4) while the entire rest of the site
+   runs on the teal/indigo signal pair — the brand read as a different palette than
+   the product around it. Now it resolves from the same two tokens. */
 .logo {
-  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  background: linear-gradient(135deg, var(--signal), var(--signal-2));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
 }
 
 .global-nav-logo-accent {
   color: var(--nav-accent);
 }
 
+/* Drawer glass. Shares the pill's token family (--nav-surface-scrolled / --nav-blur
+   / --nav-hairline); it previously read a parallel set of legacy aliases, so the two
+   surfaces could drift apart on a theme change. */
 .global-nav-mobile {
-  background-color: var(--nav-bg-scrolled);
+  background-color: var(--nav-surface-scrolled);
   backdrop-filter: blur(var(--nav-blur));
   -webkit-backdrop-filter: blur(var(--nav-blur));
-  border: 1px solid var(--nav-border);
+  border: 1px solid var(--nav-hairline);
   border-radius: var(--nav-pill-radius-lg);
+  box-shadow: var(--nav-shadow);
   transition: transform var(--nav-transition), opacity var(--nav-transition);
+}
+
+/* Dismiss target behind the open drawer. Also visually detaches the panel from the
+   page it covers, which the bare max-height collapse never did. */
+.nav-scrim {
+  position: fixed;
+  inset: 0;
+  /* Above page content (z-10) and the cursor glow (z-5), below the header (z-50) so
+     the pill and its hamburger stay lit while the page behind them dims. */
+  z-index: 40;
+  /* Its own token, not a mix of --void: --void is near-white in the light theme, so
+     deriving the scrim from it would brighten the page instead of dimming it. */
+  background: var(--nav-scrim);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--nav-transition), visibility var(--nav-transition);
+}
+
+.nav-scrim.is-open {
+  opacity: 1;
+  visibility: visible;
 }
 
 .project-card {

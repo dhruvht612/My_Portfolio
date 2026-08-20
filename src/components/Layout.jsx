@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { usePortfolio } from '../context/PortfolioContext'
-import { useActiveSection } from '../hooks/useActiveSection'
 import { usePageView } from '../hooks/usePageView'
 import SkipLink from './SkipLink'
 import Header from './Header'
@@ -26,30 +25,42 @@ export default function Layout() {
   usePageView()
   const portfolio = usePortfolio()
   const location = useLocation()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  /* Two refs rather than walking the DOM: the fill element takes the width, the track
+     element carries role="progressbar" and its aria-valuenow. Reaching for
+     `.parentElement` from here would couple Layout to Header's markup shape. */
   const scrollProgressRef = useRef(null)
+  const scrollProgressTrackRef = useRef(null)
 
   const pathname = location.pathname
-  const pathSection = pathname.slice(1) || 'home'
-  const activeSection = useActiveSection(pathSection)
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
   /* Mirrors isHeaderScrolled for the rAF callback: the scroll effect is recreated on
      every route change, so the current side of the hysteresis band has to live
      outside it. Kept in sync only where setIsHeaderScrolled is called. */
   const isCompactRef = useRef(false)
+  /* Cached scroll extent. Reading scrollHeight/clientHeight forces a synchronous
+     layout, and doing that inside the scroll rAF meant one forced reflow per frame
+     for the whole page. The extent only changes when content or the viewport does,
+     so it is measured on those events instead. */
+  const scrollExtentRef = useRef(0)
 
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
 
   useEffect(() => {
+    const measureExtent = () => {
+      const doc = document.documentElement
+      scrollExtentRef.current = doc.scrollHeight - doc.clientHeight
+    }
+
     let ticking = false
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const scrollableHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
-          const scrolled = scrollableHeight > 0 ? (window.scrollY / scrollableHeight) * 100 : 0
+          const extent = scrollExtentRef.current
+          const scrolled = extent > 0 ? (window.scrollY / extent) * 100 : 0
           if (scrollProgressRef.current) scrollProgressRef.current.style.width = `${scrolled}%`
+          scrollProgressTrackRef.current?.setAttribute('aria-valuenow', String(Math.round(scrolled)))
           // Only crosses the band edge -> only one setState per actual change.
           const y = window.scrollY
           const shouldFlip = isCompactRef.current ? y < COMPACT_EXIT : y > COMPACT_ENTER
@@ -62,13 +73,21 @@ export default function Layout() {
         ticking = true
       }
     }
+
+    measureExtent()
     handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    window.addEventListener('resize', measureExtent)
+    /* Lazy routes and images grow the document after mount; without this the bar
+       would be calibrated against the pre-hydration height for the whole visit. */
+    const resizeObserver = new ResizeObserver(measureExtent)
+    resizeObserver.observe(document.documentElement)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', measureExtent)
+      resizeObserver.disconnect()
+    }
   }, [pathname])
-
-  const toggleMenu = () => setIsMenuOpen((p) => !p)
-  const closeMenu = () => setIsMenuOpen(false)
 
   return (
     <div className="min-h-screen text-[var(--color-text)]" style={{ position: 'relative', background: 'transparent' }}>
@@ -76,15 +95,14 @@ export default function Layout() {
         <SkipLink />
         <Header
           navLinks={portfolio.navLinks}
-          activeSection={activeSection}
           isHeaderScrolled={isHeaderScrolled}
-          isMenuOpen={isMenuOpen}
-          onToggleMenu={toggleMenu}
-          onCloseMenu={closeMenu}
           scrollProgressRef={scrollProgressRef}
-          fixed={true}
+          scrollProgressTrackRef={scrollProgressTrackRef}
         />
-        <main id="main-content" className="pt-[88px] relative z-10 min-h-screen">
+        {/* Offset comes from the same token the nav geometry does, so the two cannot
+            drift. The previous hardcoded 88px was short of the real 108px expanded
+            height, tucking the top of every page under the pill. */}
+        <main id="main-content" className="nav-offset-top relative z-10 min-h-screen">
           <AnimatePresence mode="wait">
             <motion.div
               key={pathname}

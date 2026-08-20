@@ -115,6 +115,24 @@
   --nav-shadow: 0 10px 35px rgba(10, 14, 23, 0.35);
   --nav-surface-scrolled: rgba(2, 6, 23, 0.85);
   --nav-surface-hero: rgba(15, 23, 42, 0.38);
+  --nav-blur: 14px;
+  /* Dim behind the open mobile drawer. Always a darkening wash in both themes. */
+  --nav-scrim: rgba(2, 6, 23, 0.55);
+
+  /* Nav geometry. One source of truth for the pill height, the offset `main` needs
+     to clear the fixed header, and the scroll-margin in-page anchors need to land
+     below it. Expanded = header pad 16 + pill margin 20 + min-height 72. */
+  --nav-height: 108px;
+  --nav-height-compact: 84px;
+
+  /* Sheen wash on .global-nav::before. `screen` lifts a highlight over the dark
+     pill, but over the pale canvas it blows out to solid white — the light block
+     swaps to soft-light with tinted washes, the same pattern as --ambient-* above. */
+  --nav-wash-blend: screen;
+  --nav-wash-opacity: 0.55;
+  --nav-wash-warm: rgba(255, 255, 255, 0.16);
+  --nav-wash-cool: rgba(125, 211, 252, 0.14);
+  --nav-wash-sweep: rgba(255, 255, 255, 0.09);
 
   /* --- Glassmorphism (token-based) -------------------------------------- */
   --glass-bg: rgba(255, 255, 255, 0.05);
@@ -215,4 +233,13 @@
   --nav-shadow: 0 10px 30px rgba(15, 19, 32, 0.08);
   --nav-surface-scrolled: rgba(255, 255, 255, 0.88);
   --nav-surface-hero: rgba(255, 255, 255, 0.5);
+
+  /* Tinted washes under soft-light: keeps the pill's dimensionality without the
+     screen-blend blowout that turned the light-theme nav into a white slab. */
+  --nav-wash-blend: soft-light;
+  --nav-wash-opacity: 0.4;
+  --nav-wash-warm: rgba(13, 148, 136, 0.1);
+  --nav-wash-cool: rgba(79, 70, 229, 0.09);
+  --nav-wash-sweep: rgba(15, 19, 32, 0.05);
+  --nav-scrim: rgba(15, 19, 32, 0.35);
 }
