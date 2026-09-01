@@ -39,6 +39,7 @@ const AdminMessages = lazy(() => import('./pages/admin/AdminMessages'))
 const AdminEducation = lazy(() => import('./pages/admin/AdminEducation'))
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'))
 const AdminSystemHealth = lazy(() => import('./pages/admin/AdminSystemHealth'))
+const AdminCicd = lazy(() => import('./pages/admin/AdminCicd'))
 const AdminLogs = lazy(() => import('./pages/admin/AdminLogs'))
 const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'))
 const AdminNotifications = lazy(() => import('./pages/admin/AdminNotifications'))
@@ -206,6 +207,7 @@ export default function App() {
                   <Route path="education" element={<AdminEducation />} />
                   <Route path="analytics" element={<AdminAnalytics />} />
                   <Route path="system-health" element={<AdminSystemHealth />} />
+                  <Route path="cicd" element={<AdminCicd />} />
                   <Route path="logs" element={<AdminLogs />} />
                   <Route path="settings" element={<AdminSettings />} />
                   <Route path="notifications" element={<AdminNotifications />} />
