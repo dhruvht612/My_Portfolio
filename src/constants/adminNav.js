@@ -9,13 +9,20 @@ import {
   LayoutDashboard,
   Mail,
   Bell,
+  Rocket,
   ScrollText,
   Settings,
   Sparkles,
   UserRound,
 } from 'lucide-react'
 
-/** Sidebar navigation for the admin portal. */
+/**
+ * Sidebar navigation for the admin portal.
+ *
+ * AdminSidebar splits this list at index 8: the first eight entries render
+ * under "Primary" and everything after under "System". Insert new system pages
+ * at index 8 or later, or they will silently move into the primary group.
+ */
 export const ADMIN_NAV = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/admin/profile', label: 'Profile', icon: UserRound },
@@ -28,6 +35,7 @@ export const ADMIN_NAV = [
   { to: '/admin/education', label: 'Education', icon: GraduationCap },
   { to: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/admin/system-health', label: 'System health', icon: Activity },
+  { to: '/admin/cicd', label: 'CI/CD', icon: Rocket },
   { to: '/admin/logs', label: 'Logs', icon: ScrollText },
   { to: '/admin/notifications', label: 'Notifications', icon: Bell },
   { to: '/admin/settings', label: 'Settings', icon: Settings },
