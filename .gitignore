@@ -35,3 +35,5 @@ docs/*
 .impeccable
 # Test coverage
 coverage
+graphify-out
+
