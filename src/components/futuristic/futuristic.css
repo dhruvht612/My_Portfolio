@@ -244,7 +244,7 @@ html.dt-city-page{ scroll-behavior:auto; background:#04060b; }
 
 /* — 01 identity: a system initialising */
 .dt-city .id-grid{ display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:clamp(28px,6vw,110px); align-items:start; }
-.dt-city .id-grid h2{ max-width:16ch; }
+.dt-city .id-grid .display{ max-width:16ch; }
 .dt-city .id-copy{ display:grid; gap:20px; padding-top:6px; }
 .dt-city .id-copy .lead{ font-size:clamp(15px,1.16vw,19px); line-height:1.66; color:#c4cfdd; text-shadow:0 1px 20px rgba(2,4,8,.9); }
 .dt-city .boot{
@@ -268,7 +268,7 @@ html.dt-city-page{ scroll-behavior:auto; background:#04060b; }
 
 /* — 02 subsystems: each project a live window onto its own district */
 .dt-city .proj-intro{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.7fr); gap:clamp(28px,5vw,90px); align-items:end; margin-bottom:clamp(40px,7vh,84px); }
-.dt-city .proj-intro h2{ max-width:14ch; }
+.dt-city .proj-intro .display{ max-width:14ch; }
 .dt-city .systems{ display:grid; gap:clamp(56px,10vh,120px); }
 .dt-city .system{ display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); gap:clamp(24px,4vw,64px); align-items:center; }
 .dt-city .system:nth-child(even){ grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); }
@@ -319,7 +319,7 @@ html.dt-city-page{ scroll-behavior:auto; background:#04060b; }
 
 /* — 03 system log */
 .dt-city .log-head{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.7fr); gap:clamp(28px,5vw,90px); align-items:end; margin-bottom:clamp(34px,6vh,72px); }
-.dt-city .log-head h2{ max-width:14ch; }
+.dt-city .log-head .display{ max-width:14ch; }
 .dt-city .log{ border:1px solid var(--line-soft); background:rgba(3,6,12,.7); font-family:var(--f-mono); }
 .dt-city .log-bar{ display:flex; justify-content:space-between; gap:16px; padding:12px 18px; border-bottom:1px solid var(--line-soft);
   font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); }
@@ -351,6 +351,7 @@ html.dt-city-page{ scroll-behavior:auto; background:#04060b; }
 .dt-city .mods{ display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:1px; background:var(--line-soft); border:1px solid var(--line-soft); }
 .dt-city .mod{ grid-column:span 2; position:relative; padding:24px 24px 28px; background:rgba(3,6,12,.84); min-height:280px; }
 .dt-city .mod:nth-child(-n+2){ grid-column:span 3; }
+.dt-city .mods--3 .mod{ grid-column:span 2; }   /* three across, no orphan cell (the breakpoints below still win) */
 .dt-city .mod::before{ content:''; position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .55s var(--ease);
   background:linear-gradient(145deg, rgba(61,139,255,.12), transparent 58%); }
 .dt-city .mod:hover::before{ opacity:1; }
@@ -371,7 +372,7 @@ html.dt-city-page{ scroll-behavior:auto; background:#04060b; }
 /* — 05 connection */
 .dt-city .fin{ min-height:100svh; display:flex; flex-direction:column; justify-content:center; padding-bottom:clamp(40px,6vh,70px); }
 .dt-city .fin::before{ background:radial-gradient(90% 60% at 30% 46%, rgba(3,5,10,.5), rgba(3,5,10,.70) 56%, rgba(3,5,10,.92) 84%, rgba(3,5,10,0)); }
-.dt-city .fin h2{ font-size:clamp(42px,7.2vw,118px); line-height:.94; letter-spacing:-.03em; text-transform:uppercase; max-width:13ch; }
+.dt-city .fin .display{ font-size:clamp(42px,7.2vw,118px); line-height:.94; letter-spacing:-.03em; text-transform:uppercase; max-width:13ch; }
 .dt-city .fin-who{ display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 22px; margin-top:34px; }
 .dt-city .fin-who b{ font-family:var(--f-display); font-size:clamp(18px,1.6vw,24px); font-weight:400; }
 .dt-city .fin-links{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:clamp(34px,6vh,60px); border:1px solid var(--line-soft); }
@@ -385,6 +386,19 @@ html.dt-city-page{ scroll-behavior:auto; background:#04060b; }
 .dt-city .fin-links .sub a{ font-family:var(--f-mono); font-size:11px; letter-spacing:.04em; color:#b8c4d4; }
 .dt-city .fin-links .sub a:hover,.dt-city .fin-links .sub a:focus-visible{ color:var(--bone); text-decoration:underline; text-underline-offset:3px; }
 .dt-city .fin-actions{ display:flex; flex-wrap:wrap; align-items:center; gap:16px 28px; margin-top:30px; }
+/* the uplink form (/contact) */
+.dt-city .form{ display:grid; gap:18px; max-width:760px; margin-top:clamp(34px,6vh,60px); padding:22px 20px;
+  border:1px solid var(--line-soft); background:rgba(3,6,12,.72); }
+.dt-city .form h2,.dt-city .form label{ font-family:var(--f-mono); font-size:10.5px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--bone-dim); }
+.dt-city .form label{ display:grid; gap:8px; }
+.dt-city .form input,.dt-city .form textarea{ width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:2px; background:rgba(4,7,13,.85);
+  font-family:var(--f-body); font-size:15px; letter-spacing:0; text-transform:none; color:var(--bone); }
+.dt-city .form textarea{ min-height:150px; resize:vertical; }
+.dt-city .form input:focus-visible,.dt-city .form textarea:focus-visible{ border-color:var(--electric-soft); outline-offset:1px; }
+.dt-city .form :disabled{ opacity:.55; cursor:not-allowed; }
+.dt-city .form .fin-actions{ margin-top:4px; }
+.dt-city .form-status{ font-family:var(--f-mono); font-size:12px; color:var(--bone-dim); }
+.dt-city .form-status.err{ color:var(--signal-hot); }
 
 .dt-city .foot{ position:relative; margin-top:clamp(60px,10vh,120px); padding-top:24px; border-top:1px solid var(--line-soft); }
 .dt-city .foot-routes{ display:flex; flex-wrap:wrap; gap:10px 26px; }
@@ -398,6 +412,7 @@ html.dt-city-page{ scroll-behavior:auto; background:#04060b; }
 /* ============================================================= rail */
 .dt-city .rail{ position:fixed; right:calc(var(--pad) - 4px); top:50%; transform:translateY(-50%); z-index:45;
   display:flex; flex-direction:column; gap:12px; align-items:center; }
+.dt-city .rail:empty{ display:none; }
 .dt-city .rail button{ width:22px; height:12px; display:grid; place-items:center; }
 .dt-city .rail i{ display:block; width:14px; height:1px; background:rgba(214,226,242,.26); transition:.5s var(--ease-out); }
 .dt-city .rail button.on i{ width:22px; background:var(--bone); }

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { ArrowIcon, SectionHead, SplitHeading } from './shared'
 import { pad2, skillModules } from './portfolioSystems'
@@ -9,12 +9,13 @@ import { pad2, skillModules } from './portfolioSystems'
 export default function FuturisticSkills() {
   const { skillGroups, projects } = usePortfolio()
   const mods = useMemo(() => skillModules(skillGroups, projects), [skillGroups, projects])
+  const own = useLocation().pathname === '/skills'
 
   return (
     <section className="sec" id="skills" data-cam="4" data-name="Technology" aria-labelledby="skills-title">
       <SectionHead num="04" label="Technology" right={`${mods.length} modules`} />
       <div className="log-head">
-        <SplitHeading id="skills-title" className="display h-sec" lines={['The stack,', 'as infrastructure.']} />
+        <SplitHeading as={own ? 'h1' : 'h2'} id="skills-title" className="display h-sec" lines={['The stack,', 'as infrastructure.']} />
         <p className="body-lg" data-rv="up">
           Each module is one group from the skills record. The last is read from the projects: the tools they shipped
           with beyond those groups.
@@ -35,9 +36,11 @@ export default function FuturisticSkills() {
           </article>
         ))}
       </div>
-      <div className="log-foot" data-rv="fade">
-        <Link className="arrowlink" to="/skills"><span>Skills in detail</span><span className="ar"><ArrowIcon /></span></Link>
-      </div>
+      {own ? null : (
+        <div className="log-foot" data-rv="fade">
+          <Link className="arrowlink" to="/skills"><span>Skills in detail</span><span className="ar"><ArrowIcon /></span></Link>
+        </div>
+      )}
     </section>
   )
 }

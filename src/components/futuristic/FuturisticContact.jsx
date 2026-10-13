@@ -1,21 +1,24 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { ArrowIcon, SectionHead, SplitHeading } from './shared'
 
 const YEAR = new Date().getFullYear()
 const shown = (href) => href.replace(/^mailto:/, '').replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
 
-/* Scene 5 — the highest point: the city goes quiet, the core in the distance. */
-export default function FuturisticContact() {
+/* Scene 5 — the highest point: the city goes quiet, the core in the distance.
+   /contact passes the message form in as children. */
+export default function FuturisticContact({ children }) {
   const { heroSocials, altContactLinks, navLinks } = usePortfolio()
   const social = (name) => heroSocials.find((s) => s.tooltip === name)
   const links = ['GitHub', 'LinkedIn', 'Email'].map(social).filter(Boolean)
   const resumes = altContactLinks.filter((l) => /^resume/i.test(l.label))
+  const own = useLocation().pathname === '/contact'
 
   return (
     <section className="sec fin" id="contact" data-cam="5" data-name="Connection" aria-labelledby="contact-title">
       <SectionHead num="05" label="Connection" right="Uplink open" />
       <SplitHeading
+        as={own ? 'h1' : 'h2'}
         id="contact-title"
         className="display"
         lines={["Let's build", 'something', 'intelligent.']}
@@ -49,9 +52,11 @@ export default function FuturisticContact() {
       </div>
 
       <div className="fin-actions" data-rv="fade">
-        <Link className="cta cta--signal" to="/contact"><i aria-hidden="true" /><span>Send a message</span><ArrowIcon /></Link>
+        <Link className="cta cta--signal" to="/contact#message"><i aria-hidden="true" /><span>Send a message</span><ArrowIcon /></Link>
         <span className="mono"><span className="dot dot--live" aria-hidden="true" /> System online</span>
       </div>
+
+      {children}
 
       <footer className="foot">
         <nav className="foot-routes" aria-label="Site pages">

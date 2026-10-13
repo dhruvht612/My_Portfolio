@@ -29,6 +29,8 @@
      · three.js r149 (the exact runtime Kage ships) is loaded on demand
    ===================================================================== */
 
+/* served with an immutable cache header (vercel.json): rename the file on any
+   three.js upgrade, or visitors keep the old build */
 const THREE_SRC = '/kage/three.min.js'
 let threeLoading = null
 function loadThree() {
@@ -1684,10 +1686,13 @@ export function mountKageCity(root) {
   /* ============================================== 9 · scroll ↔ chapters */
   const $  = s => root.querySelector(s)
   const $$ = s => [].slice.call(root.querySelectorAll(s))
-  let SECS = []
+  let SECS = [], CAMV = []
   let anchors = [], maxScroll = 1, activeSec = 0
   function measure() {
     SECS = $$('[data-cam]')
+    /* each section names its own waypoint, so a one-section page parks the
+       camera at its district and a route change glides there */
+    CAMV = SECS.map(s => clamp(parseFloat(s.dataset.cam) || 0, 0, CAM.length - 1))
     maxScroll = Math.max(1, document.documentElement.scrollHeight - vpH())
     anchors = SECS.map((el, i) => {
       if (i === 0) return 0
@@ -1702,6 +1707,12 @@ export function mountKageCity(root) {
     for (let i = 0; i < anchors.length - 1; i++)
       if (y <= anchors[i + 1]) return i + (y - anchors[i]) / (anchors[i + 1] - anchors[i])
     return anchors.length - 1
+  }
+  /* section progress → position on the camera path */
+  function camAt(p) {
+    if (!CAMV.length) return RIG.prog
+    const i = Math.floor(p), j = Math.min(i + 1, CAMV.length - 1)
+    return lerp(CAMV[i], CAMV[j], p - i)
   }
 
   /* ============================================ 10 · the wordmark layout */
@@ -1766,13 +1777,7 @@ export function mountKageCity(root) {
      starts. Each piece gets its own window so the hero stands down one
      element at a time; the live window dissolves rather than fades. */
   function wireHeroExit() {
-    const hero = $('#hero'); if (!hero) return
-    const seq = [
-      { el: $('.peek'),      at: .00, span: .26, blur: 10 },
-      { el: $('.hero-cue'),  at: .10, span: .30, shift: true },
-      { el: $('.hero-side'), at: .40, span: .30 }
-    ].filter(o => o.el)
-    let active = false
+    let seq = [], active = false
     const apply = () => {
       const t = clamp(scrollY / Math.max(1, vpH() * .58), 0, 1)
       if (t <= 0) {
@@ -1793,28 +1798,40 @@ export function mountKageCity(root) {
         o.el.style.pointerEvents = a < .05 ? 'none' : ''
       })
     }
+    /* re-collected per page: the hero only exists on / */
+    WIRE.heroExit = () => {
+      seq = [
+        { el: $('.peek'),      at: .00, span: .26, blur: 10 },
+        { el: $('.hero-cue'),  at: .10, span: .30, shift: true },
+        { el: $('.hero-side'), at: .40, span: .30 }
+      ].filter(o => o.el)
+      active = true; apply()                 /* true: a hero kept from before gets its styles cleared at the top */
+    }
     on(window, 'scroll', apply, { passive: true })
     on(window, 'resize', apply, { passive: true })
-    apply()
+    WIRE.heroExit()
   }
 
   const scrollToY = y => scrollTo({ top: y, behavior: REDUCE ? 'auto' : 'smooth' })
   function wireNav() {
-    let last = 0
+    let last = 0, dots = []
     const rail = $('#rail')
-    const names = SECS.map(s => s.getAttribute('data-name') || 'Section')
-    if (rail) {
+    /* one dot per chapter; a single-chapter page gets none (the rail hides when empty) */
+    WIRE.buildRail = () => {
+      if (!rail) return
       rail.textContent = ''
-      SECS.forEach((s, i) => {
+      if (SECS.length > 1) SECS.forEach((s, i) => {
+        const name = s.getAttribute('data-name') || 'Section'
         const b = document.createElement('button')
         b.type = 'button'
-        b.innerHTML = '<i></i>'; b.title = names[i]
-        b.setAttribute('aria-label', 'Go to ' + names[i])
+        b.innerHTML = '<i></i>'; b.title = name
+        b.setAttribute('aria-label', 'Go to ' + name)
         b.addEventListener('click', () => { measure(); scrollToY(anchors[i]) })
         rail.appendChild(b)
       })
+      dots = $$('#rail button')
     }
-    const dots = $$('#rail button')
+    WIRE.buildRail()
     const links = $$('.nav-link')
     const burger = $('.nav-burger')
     const html = document.documentElement
@@ -1835,11 +1852,13 @@ export function mountKageCity(root) {
     if (burger) {
       on(burger, 'click', () => { if (vpW() > 820) return; setMenu(!nav.classList.contains('menu-open')) })
     }
+    WIRE.closeMenu = closeMenu
     links.forEach(link => on(link, 'click', closeMenu))
     on(window, 'keydown', e => { if (e.key === 'Escape') closeMenu() })
     on(window, 'resize', () => { if (vpW() > 820) closeMenu() }, { passive: true })
-    /* which chapter each link points at, read off its href — never positional */
-    const linkSec = () => links.map(l => SECS.indexOf(root.querySelector(l.getAttribute('href'))))
+    /* which chapter each link points at, read off its data-sec (the href is a
+       route now) — never positional */
+    const linkSec = () => links.map(l => l.dataset.sec ? SECS.indexOf(root.querySelector(l.dataset.sec)) : -1)
     let map = linkSec()
     const sync = () => {
       const y = scrollY
@@ -1852,11 +1871,8 @@ export function mountKageCity(root) {
       if (a !== activeSec || !dots[a] || !dots[a].classList.contains('on')) {
         activeSec = a
         dots.forEach((d, i) => d.classList.toggle('on', i === a))
-        links.forEach((l, i) => {
-          const hit = map[i] === a || (map[i] === 0 && a === 0)
-          l.classList.toggle('on', hit)
-          if (hit) l.setAttribute('aria-current', 'location'); else l.removeAttribute('aria-current')
-        })
+        /* visual only: aria-current is the router's (the page), set in React */
+        links.forEach((l, i) => l.classList.toggle('on', map[i] === a))
       }
     }
     on(window, 'scroll', sync, { passive: true })
@@ -1866,14 +1882,16 @@ export function mountKageCity(root) {
       const a = e.target.closest && e.target.closest('a[href^="#"]')
       if (!a || !root.contains(a)) return
       const href = a.getAttribute('href')
-      const t = href === '#top' ? null : root.querySelector(href)
+      let t = null
+      try { t = href === '#top' ? null : root.querySelector(href) } catch { return }   /* '#' placeholders */
       if (href !== '#top' && !t) return
       e.preventDefault()
       measure(); map = linkSec()
       const i = t ? SECS.indexOf(t) : 0
       const y = href === '#top' ? 0 : (i >= 0 ? anchors[i] : t.getBoundingClientRect().top + scrollY - 40)
       scrollToY(y)
-      if (history.replaceState) history.replaceState(null, '', href === '#top' ? location.pathname : href)
+      /* keep history.state: it is the router's (key/idx), and null breaks Back */
+      if (history.replaceState) history.replaceState(history.state, '', href === '#top' ? location.pathname : href)
       /* move focus with the view, for keyboard and screen-reader users */
       const target = t || $('#hero')
       if (target) { if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }) }
@@ -2194,7 +2212,7 @@ export function mountKageCity(root) {
         else if (avg < .0138 && PERF.scale < 1) { PERF.scale = Math.min(1, PERF.scale + .08); resize() }
       }
     }
-    RIG.prog = progressFor(scrollY)
+    RIG.prog = camAt(progressFor(scrollY))
     RIG.smooth = REDUCE ? RIG.prog : damp(RIG.smooth, RIG.prog, 5.2, dt)
     RIG.mx = damp(RIG.mx, REDUCE ? 0 : RIG.tmx, 2.6, dt)
     RIG.my = damp(RIG.my, REDUCE ? 0 : RIG.tmy, 2.6, dt)
@@ -2325,21 +2343,27 @@ export function mountKageCity(root) {
       measure()
       const n = clamp(parseInt(shot, 10) || 0, 0, SECS.length - 1)
       scrollTo(0, anchors[n])
-      RIG.smooth = RIG.prog = progressFor(anchors[n])
+      RIG.smooth = RIG.prog = camAt(progressFor(anchors[n]))
       if (preEl) preEl.classList.add('done')
     } else {
       if (preEl) preEl.classList.add('done')
       later(() => {
         document.documentElement.classList.remove('dt-city-locked')
         goToHash()
-        const heroItems = $('#hero') ? [].slice.call($('#hero').querySelectorAll('[data-rv], .mask-line')) : []
-        heroItems.forEach((e, i) => later(() => e.classList.add('rv-in'), REDUCE ? 0 : 120 + i * 95))
+        revealHero()
       }, REDUCE ? 0 : 340)
     }
     running = true; tPrev = performance.now()
     INTRO.t0 = shot !== null ? 0 : (REDUCE ? performance.now() - 4000 : performance.now())
     queue()
     window.__dtCity = { RIG: RIG, WORLD: WORLD, WORD: WORD, CAM: CAM, POST: POST, renderer: renderer, scene: scene, camera: camera, anchors: () => anchors }
+  }
+
+  /* the hero never waits on the observer: it opens in sequence, on boot and
+     on every return to / */
+  function revealHero() {
+    const items = $('#hero') ? [].slice.call($('#hero').querySelectorAll('[data-rv], .mask-line')) : []
+    items.forEach((e, i) => later(() => e.classList.add('rv-in'), REDUCE ? 0 : 120 + i * 95))
   }
 
   /* ----------------------------------------------------------- public API */
@@ -2350,6 +2374,18 @@ export function mountKageCity(root) {
     WIRE.syncNav()
     collectCards()
     if (root.classList.contains('no-webgl')) $$('[data-rv], .mask-line').forEach(e => e.classList.add('rv-in'))
+  }
+
+  /* The route changed under the same city: new sections, same world. The
+     camera glides to the new page's waypoint on its own (RIG.smooth damps). */
+  function setPage() {
+    if (disposed) return
+    RIG.focus = -1
+    WIRE.closeMenu()
+    if (!goToHash()) scrollTo(0, 0)
+    measure(); WIRE.buildRail(); WIRE.heroExit()
+    refresh()
+    if (preEl && preEl.classList.contains('done')) revealHero()   /* mid-boot, start() still does it */
   }
 
   function dispose() {
@@ -2378,5 +2414,5 @@ export function mountKageCity(root) {
   }
 
   boot()
-  return { refresh: refresh, dispose: dispose }
+  return { refresh: refresh, setPage: setPage, dispose: dispose }
 }

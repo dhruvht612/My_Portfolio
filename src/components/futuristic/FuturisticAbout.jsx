@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { SectionHead, SplitHeading } from './shared'
 
@@ -17,6 +18,7 @@ export default function FuturisticAbout() {
     focusAreas?.length ? ['Focus', focusAreas] : null,
     aboutTabs?.interests?.length ? ['Modules', aboutTabs.interests.map((i) => i.title)] : null,
   ].filter(Boolean)
+  const own = useLocation().pathname === '/about'
   const stats = [{ value: String(projects.length), label: 'Projects' }, ...(beyondStats ?? []).slice(0, 3)]
 
   return (
@@ -24,6 +26,7 @@ export default function FuturisticAbout() {
       <SectionHead num="01" label="Identity" right="AI core · init" />
       <div className="id-grid">
         <SplitHeading
+          as={own ? 'h1' : 'h2'}
           id="about-title"
           className="display h-sec"
           lines={["I'm Dhruv.", 'I build systems that think,', 'connect, and scale.']}

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { usePortfolio } from '../../context/PortfolioContext'
 import { ArrowIcon, SectionHead, SplitHeading } from './shared'
 import { experienceLog } from './portfolioSystems'
@@ -11,12 +11,13 @@ export default function FuturisticExperience() {
   const { experienceByOrg } = usePortfolio()
   const log = useMemo(() => experienceLog(experienceByOrg), [experienceByOrg])
   const active = log.filter((e) => e.live).length
+  const own = useLocation().pathname === '/experience'
 
   return (
     <section className="sec" id="experience" data-cam="3" data-name="System log" aria-labelledby="experience-title">
       <SectionHead num="03" label="System log" right={`${log.length} entries`} />
       <div className="log-head">
-        <SplitHeading id="experience-title" className="display h-sec" lines={['Every role,', 'logged.']} />
+        <SplitHeading as={own ? 'h1' : 'h2'} id="experience-title" className="display h-sec" lines={['Every role,', 'logged.']} />
         <p className="body-lg" data-rv="up">Roles from the record, newest first. Open an entry for the full log.</p>
       </div>
 
@@ -45,9 +46,11 @@ export default function FuturisticExperience() {
           </details>
         ))}
       </div>
-      <div className="log-foot" data-rv="fade">
-        <Link className="arrowlink" to="/experience"><span>Full experience record</span><span className="ar"><ArrowIcon /></span></Link>
-      </div>
+      {own ? null : (
+        <div className="log-foot" data-rv="fade">
+          <Link className="arrowlink" to="/experience"><span>Full experience record</span><span className="ar"><ArrowIcon /></span></Link>
+        </div>
+      )}
     </section>
   )
 }
