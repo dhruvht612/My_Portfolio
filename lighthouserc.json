@@ -3,7 +3,8 @@
     "collect": {
       "staticDistDir": "./dist",
       "numberOfRuns": 3,
-      "url": ["http://localhost/index.html"],
+      "url": ["http://localhost/", "http://localhost/contact"],
+      "isSinglePageApplication": true,
       "settings": {
         "preset": "desktop"
       }

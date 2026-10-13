@@ -45,7 +45,7 @@ export default class ErrorBoundary extends Component {
               Reload page
             </button>
             <a
-              href="/home"
+              href="/"
               className="state-layer rounded-[var(--radius)] border border-line-hi px-5 py-2.5 text-sm font-semibold text-ink"
             >
               Go home

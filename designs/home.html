@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<!--
+  Standalone design prototype — Home page.
+  Not wired into the Vite/React app. Pure HTML + CSS + vanilla JS (Canvas API,
+  requestAnimationFrame). No animation/3D libraries, per spec. Content mirrors
+  the real Landing.jsx + AetherFlowHero.jsx copy so the prototype reads as this
+  portfolio, not a generic template.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dhruv Thakar — Home (Design Prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --void: #050505;
+    --void-2: #080a0c;
+    --void-3: #0b0f12;
+    --cyan: #00d9ff;
+    --cyan-dim: #00b8d9;
+    --violet: #8a7cff;
+    --text-primary: #f4f6fb;
+    --text-secondary: #9aa3b8;
+    --text-faint: #5a6275;
+    --line: rgba(244, 246, 251, 0.1);
+    --glow-strength: 1;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--void);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  body { min-height: 100vh; }
+
+  #scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    display: block;
+  }
+
+  /* ---------------------------------------------------------------------
+     Content layer — real HTML, never drawn on canvas.
+     --------------------------------------------------------------------- */
+  .content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .skip-intro {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 20px;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 400ms ease, color 200ms ease, border-color 200ms ease;
+    pointer-events: none;
+  }
+
+  .skip-intro.is-visible { opacity: 1; pointer-events: auto; }
+  .skip-intro:hover { color: var(--cyan); border-color: rgba(0, 217, 255, 0.35); }
+  .skip-intro:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+  nav.site-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px clamp(20px, 4vw, 56px);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 900ms ease, transform 900ms ease;
+  }
+
+  body.is-revealed nav.site-nav { opacity: 1; transform: translateY(0); }
+
+  .nav-mark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+  }
+
+  .nav-links {
+    display: none;
+    list-style: none;
+    gap: 32px;
+  }
+
+  .nav-links a {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 200ms ease;
+  }
+
+  .nav-links a:hover { color: var(--text-primary); }
+
+  @media (min-width: 768px) {
+    .nav-links { display: flex; }
+  }
+
+  main.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 24px 80px;
+  }
+
+  .hero-inner {
+    max-width: 40rem;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 1100ms ease, transform 1100ms ease;
+  }
+
+  body.is-revealed .hero-inner { opacity: 1; transform: translateY(0); }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    margin-bottom: 28px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--text-secondary);
+    background: rgba(0, 217, 255, 0.06);
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 999px;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 8px 1px var(--cyan);
+  }
+
+  h1.name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 7vw, 4.75rem);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-bottom: 18px;
+    background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .role-line {
+    min-height: 1.7em;
+    margin-bottom: 20px;
+    font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+    font-weight: 600;
+    color: var(--cyan);
+    letter-spacing: 0.01em;
+  }
+
+  .role-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 2px;
+    background: var(--cyan);
+    vertical-align: text-bottom;
+    animation: blink 0.9s step-end infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  p.description {
+    max-width: 34rem;
+    margin: 0 auto 40px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease, background 200ms ease;
+  }
+
+  .btn-primary {
+    color: var(--void);
+    background: linear-gradient(135deg, var(--cyan), var(--cyan-dim));
+    box-shadow: 0 0 0 rgba(0, 217, 255, 0);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 217, 255, 0.25);
+  }
+
+  .btn-secondary {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--line);
+  }
+
+  .btn-secondary:hover {
+    border-color: rgba(0, 217, 255, 0.3);
+    color: var(--cyan);
+    transform: translateY(-1px);
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 1200ms ease 400ms;
+  }
+
+  body.is-revealed .scroll-cue { opacity: 0.5; }
+
+  .scroll-cue svg { animation: cue-drift 2.4s ease-in-out infinite; }
+
+  @keyframes cue-drift {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-cue svg { animation: none; }
+    .badge-dot { animation: none; }
+    .role-cursor { animation: none; }
+    nav.site-nav, .hero-inner, .scroll-cue { transition-duration: 1ms; }
+  }
+</style>
+</head>
+<body>
+  <canvas id="scene" aria-hidden="true"></canvas>
+
+  <button type="button" class="skip-intro" id="skip-intro">Skip intro</button>
+
+  <div class="content">
+    <nav class="site-nav" aria-label="Primary">
+      <span class="nav-mark">Dhruv Thakar</span>
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Projects</a></li>
+        <li><a href="#">Experience</a></li>
+        <li><a href="#">Skills</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <main class="hero" id="main-content">
+      <div class="hero-inner">
+        <span class="badge"><span class="badge-dot" aria-hidden="true"></span>Open to Opportunities</span>
+        <h1 class="name">Dhruv Thakar</h1>
+        <p class="role-line" id="role-line" aria-live="polite"><span class="role-cursor" aria-hidden="true"></span></p>
+        <p class="description">
+          I build accessible, human-centered digital experiences across web, data, and AI.
+          Explore my projects, leadership journey, and the technologies I use to bring ideas to life.
+        </p>
+        <div class="cta-row">
+          <a href="#" class="btn btn-primary">View My Projects</a>
+          <a href="#" class="btn btn-secondary">Download Resume</a>
+        </div>
+      </div>
+      <div class="scroll-cue" aria-hidden="true">
+        <svg width="18" height="28" viewBox="0 0 18 28" fill="none">
+          <rect x="1" y="1" width="16" height="26" rx="8" stroke="var(--text-faint)" stroke-width="1.5" />
+          <circle cx="9" cy="8" r="2" fill="var(--cyan)" />
+        </svg>
+      </div>
+    </main>
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* =====================================================================
+       CONFIG — every tunable in one place.
+       ===================================================================== */
+    const CONFIG = {
+      focalLength: 480,
+      maxDepth: 2200,
+      particleCount: { desktop: 160, mobile: 55 },
+      connectionDistance: 130,
+      cyan: '0, 217, 255',
+      violet: '138, 124, 255',
+      fogFar: 2000,
+      mouseParallaxMax: 18,
+      mouseEase: 0.06,
+      scrollDriftMax: 40,
+      scenes: {
+        intro: 2200,
+        awakening: 2800,
+        travel: 3000,
+        convergence: 1900,
+        reveal: 1300,
+      },
+      cameraSpeed: {
+        intro: 0.12,
+        awakening: 0.3,
+        travel: 1.5,
+        convergence: 0.45,
+        reveal: 0.05,
+        portfolio: 0.09,
+      },
+    };
+
+    const canvas = document.getElementById('scene');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return; // no canvas support — content is plain HTML/CSS and still usable
+
+    const reducedMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const fineMq = window.matchMedia('(pointer: fine)');
+    const wideMq = window.matchMedia('(min-width: 768px)');
+
+    let w = 0, h = 0, dpr = 1, cx = 0, cy = 0;
+
+    /* =====================================================================
+       Camera — position/rotation live as a single depth offset + subtle
+       mouse-driven tilt. Every value the scenes touch is a target that gets
+       eased toward each frame; nothing snaps.
+       ===================================================================== */
+    const camera = {
+      speed: CONFIG.cameraSpeed.intro,
+      speedTarget: CONFIG.cameraSpeed.intro,
+      depth: 0, // total distance travelled — subtracted from particle z
+      tiltX: 0, tiltY: 0, tiltXTarget: 0, tiltYTarget: 0,
+      converge: 0, convergeTarget: 0, // 0..1 pull-to-center strength
+    };
+
+    /* The signal light's apparent depth/brightness are per-scene TARGETS the
+       draw loop eases toward — deliberately decoupled from camera.depth (which
+       grows without bound for the whole session). Tying them to camera.depth
+       made the glow keep swelling forever instead of receding once the
+       portfolio content takes over. */
+    const signal = { depth: 1100, depthTarget: 1100, intensity: 0, intensityTarget: 0 };
+    const SIGNAL_TARGETS = {
+      intro: { depth: 1100, intensity: 0.55 },
+      awakening: { depth: 650, intensity: 0.8 },
+      travel: { depth: 780, intensity: 0.4 },
+      convergence: { depth: 260, intensity: 1 },
+      reveal: { depth: 260, intensity: 1 },
+      portfolio: { depth: 900, intensity: 0.16 },
+    };
+
+    /* =====================================================================
+       Particle pool — fixed-size array, mutated in place every frame.
+       Fields match the spec: x/y/z/vx/vy/vz/size/opacity/brightness/life.
+       ===================================================================== */
+    let particles = [];
+    let signalParticle = null; // the single distant cyan point in Scene 1
+
+    function rand(min, max) { return min + Math.random() * (max - min); }
+
+    function spawnParticle(p, opts = {}) {
+      p.x = rand(-w * 0.9, w * 0.9);
+      p.y = rand(-h * 0.9, h * 0.9);
+      p.z = opts.nearSpawn ? rand(200, 600) : rand(600, CONFIG.maxDepth);
+      p.vx = rand(-0.04, 0.04);
+      p.vy = rand(-0.04, 0.04);
+      p.size = rand(1, 2.6);
+      p.maxOpacity = rand(0.35, 1);
+      p.opacity = 0; // fades in — never pops
+      p.brightness = Math.random() > 0.82 ? 1 : 0.6; // few "front" particles read brighter
+      p.noiseOffset = Math.random() * Math.PI * 2;
+      p.life = 0;
+    }
+
+    function buildParticles(count) {
+      particles = new Array(count);
+      for (let i = 0; i < count; i++) {
+        const p = {};
+        spawnParticle(p);
+        p.z = rand(200, CONFIG.maxDepth); // seed at random depths, not all at max
+        particles[i] = p;
+      }
+    }
+
+    /* =====================================================================
+       Scene manager — six named scenes, each owning camera speed, particle
+       density/behaviour and how strongly the field converges to the centre.
+       Auto-advances on a timer; the reduced-motion path skips straight to
+       PORTFOLIO with a static, sparse frame.
+       ===================================================================== */
+    const SCENE_ORDER = ['intro', 'awakening', 'travel', 'convergence', 'reveal', 'portfolio'];
+    let sceneIndex = 0;
+    let sceneElapsed = 0;
+    let activeCount = 0; // how many particles are "live" (fading in over Awakening)
+
+    function currentScene() { return SCENE_ORDER[sceneIndex]; }
+
+    function enterScene(name) {
+      camera.speedTarget = CONFIG.cameraSpeed[name] ?? camera.speedTarget;
+      const sig = SIGNAL_TARGETS[name];
+      if (sig) { signal.depthTarget = sig.depth; signal.intensityTarget = sig.intensity; }
+      if (name === 'awakening') activeCount = 0;
+      if (name === 'travel') activeCount = particles.length;
+      if (name === 'convergence') camera.convergeTarget = 1;
+      if (name === 'reveal') {
+        camera.convergeTarget = 0; // release the pull — the light does the rest
+        flashUntil = performance.now() + 900;
+      }
+      if (name === 'portfolio') {
+        document.body.classList.add('is-revealed');
+        skipBtn.classList.remove('is-visible');
+      }
+    }
+
+    function advanceScene(dtMs) {
+      sceneElapsed += dtMs;
+      const name = currentScene();
+      const duration = CONFIG.scenes[name];
+      if (duration && sceneElapsed >= duration && sceneIndex < SCENE_ORDER.length - 1) {
+        sceneIndex++;
+        sceneElapsed = 0;
+        enterScene(currentScene());
+      }
+    }
+
+    function skipToPortfolio() {
+      sceneIndex = SCENE_ORDER.length - 1;
+      sceneElapsed = 0;
+      camera.speedTarget = CONFIG.cameraSpeed.portfolio;
+      camera.speed = camera.speedTarget;
+      camera.converge = 0;
+      camera.convergeTarget = 0;
+      signal.depth = signal.depthTarget = SIGNAL_TARGETS.portfolio.depth;
+      signal.intensity = signal.intensityTarget = SIGNAL_TARGETS.portfolio.intensity;
+      activeCount = particles.length;
+      particles.forEach((p) => { p.opacity = p.maxOpacity; });
+      enterScene('portfolio');
+    }
+
+    /* =====================================================================
+       Resize / DPR
+       ===================================================================== */
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      w = window.innerWidth;
+      h = window.innerHeight;
+      cx = w / 2;
+      cy = h / 2;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      buildParticles(wideMq.matches ? CONFIG.particleCount.desktop : CONFIG.particleCount.mobile);
+    }
+
+    /* =====================================================================
+       Pointer parallax (desktop, fine pointer only) + scroll drift
+       ===================================================================== */
+    const pointer = { x: 0, y: 0 };
+    function onPointerMove(e) {
+      if (!fineMq.matches) return;
+      pointer.x = (e.clientX / w - 0.5) * 2;
+      pointer.y = (e.clientY / h - 0.5) * 2;
+      camera.tiltXTarget = pointer.y * 6;
+      camera.tiltYTarget = pointer.x * 8;
+    }
+
+    let scrollProgress = 0;
+    function onScroll() {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      scrollProgress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+    }
+
+    /* =====================================================================
+       Draw loop
+       ===================================================================== */
+    let flashUntil = 0;
+
+    function projectPoint(p, depthOffset, tiltX, tiltY) {
+      const z = p.z - depthOffset;
+      if (z <= 1) return null;
+      const scale = CONFIG.focalLength / z;
+      const sx = cx + (p.x + tiltY * z * 0.02) * scale;
+      const sy = cy + (p.y + tiltX * z * 0.02) * scale;
+      return { x: sx, y: sy, scale, z };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+
+      // Base atmosphere — near-black with the faintest cool wash, never a flat void.
+      const bgGrad = ctx.createRadialGradient(cx, cy * 0.85, 0, cx, cy * 0.85, Math.max(w, h) * 0.75);
+      bgGrad.addColorStop(0, '#0b0f12');
+      bgGrad.addColorStop(1, '#050505');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      const depthOffset = camera.depth;
+
+      // Depth-sort so near particles draw over far ones.
+      const drawList = [];
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        const proj = projectPoint(p, depthOffset, camera.tiltX, camera.tiltY);
+        if (!proj || proj.x < -80 || proj.x > w + 80 || proj.y < -80 || proj.y > h + 80) continue;
+        drawList.push({ p, proj });
+      }
+      drawList.sort((a, b) => b.proj.z - a.proj.z);
+
+      // Network connections first (behind the nodes), restrained opacity.
+      const showConnections = currentScene() !== 'travel'; // spec: fewer connections at high speed
+      if (showConnections) {
+        ctx.lineWidth = 1;
+        for (let i = 0; i < drawList.length; i++) {
+          for (let j = i + 1; j < drawList.length; j++) {
+            const a = drawList[i].proj, b = drawList[j].proj;
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const d2 = dx * dx + dy * dy;
+            if (d2 < CONFIG.connectionDistance * CONFIG.connectionDistance) {
+              const t = 1 - Math.sqrt(d2) / CONFIG.connectionDistance;
+              const alpha = t * 0.16 * Math.min(a.scale, b.scale) * drawList[i].p.opacity;
+              if (alpha <= 0.002) continue;
+              ctx.strokeStyle = `rgba(${CONFIG.cyan}, ${alpha})`;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // Particles — additive glow for the brighter "front" layer, flat fill for the rest.
+      for (const { p, proj } of drawList) {
+        const size = p.size * proj.scale * 1.6;
+        const fog = Math.max(0, 1 - proj.z / CONFIG.fogFar);
+        const alpha = p.opacity * fog;
+        if (alpha <= 0.01) continue;
+        const color = p.brightness > 0.8 ? CONFIG.cyan : CONFIG.violet;
+        ctx.globalCompositeOperation = p.brightness > 0.8 ? 'lighter' : 'source-over';
+        ctx.fillStyle = `rgba(${color}, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(proj.x, proj.y, Math.max(0.6, size), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-over';
+      }
+
+      // The signal — a single distant cyan point, present from Scene 1, and the
+      // convergence target for every particle at the climax.
+      const signalScale = CONFIG.focalLength / signal.depth;
+      const sigX = cx;
+      const sigY = cy - h * 0.04;
+      const flashBoost = performance.now() < flashUntil ? 0.55 : 0;
+      const coreAlpha = Math.min(1, signal.intensity + flashBoost);
+      const glowRadius = (36 + signal.intensity * 90 + flashBoost * 130) * Math.max(0.45, signalScale * 0.55);
+      const glow = ctx.createRadialGradient(sigX, sigY, 0, sigX, sigY, Math.max(1, glowRadius));
+      glow.addColorStop(0, `rgba(${CONFIG.cyan}, ${coreAlpha})`);
+      glow.addColorStop(0.35, `rgba(${CONFIG.cyan}, ${coreAlpha * 0.28})`);
+      glow.addColorStop(1, 'rgba(0, 217, 255, 0)');
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(sigX, sigY, glowRadius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+
+      // Vignette — keeps the edges dark so the centre reads as the only light source.
+      const vig = ctx.createRadialGradient(cx, cy, Math.min(w, h) * 0.25, cx, cy, Math.max(w, h) * 0.75);
+      vig.addColorStop(0, 'rgba(0,0,0,0)');
+      vig.addColorStop(1, 'rgba(0,0,0,0.55)');
+      ctx.fillStyle = vig;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    /* =====================================================================
+       Update — physics/behaviour per particle, gated by scene.
+       ===================================================================== */
+    function update(dtMs) {
+      const dt = dtMs / 16.67; // normalise to ~60fps steps
+      camera.speed += (camera.speedTarget - camera.speed) * 0.02 * dt;
+      camera.depth += camera.speed * dt * 4;
+      camera.tiltX += (camera.tiltXTarget - camera.tiltX) * CONFIG.mouseEase;
+      camera.tiltY += (camera.tiltYTarget - camera.tiltY) * CONFIG.mouseEase;
+      camera.converge += (camera.convergeTarget - camera.converge) * 0.03 * dt;
+      signal.depth += (signal.depthTarget - signal.depth) * 0.02 * dt;
+      signal.intensity += (signal.intensityTarget - signal.intensity) * 0.025 * dt;
+
+      const scene = currentScene();
+      const fadeInCount = scene === 'awakening'
+        ? Math.min(particles.length, Math.round((sceneElapsed / CONFIG.scenes.awakening) * particles.length))
+        : (scene === 'intro' ? Math.round(particles.length * 0.08) : particles.length);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        const targetOpacity = i < fadeInCount ? p.maxOpacity : 0;
+        p.opacity += (targetOpacity - p.opacity) * 0.04 * dt;
+
+        if (camera.converge > 0.02) {
+          // Pull gently toward the signal instead of drifting freely.
+          p.x += (0 - p.x) * 0.01 * camera.converge * dt;
+          p.y += (0 - p.y * 0.3 - (cy - h * 0.04 - cy) - p.y) * 0.01 * camera.converge * dt;
+        } else {
+          p.x += p.vx * dt * (scene === 'travel' ? 2.4 : 1);
+          p.y += p.vy * dt * (scene === 'travel' ? 2.4 : 1) + Math.sin(p.noiseOffset + performance.now() * 0.0002) * 0.02 * dt;
+        }
+
+        // Recycle once a particle passes the camera.
+        if (p.z - camera.depth <= 1) {
+          spawnParticle(p, { nearSpawn: false });
+          p.z = camera.depth + CONFIG.maxDepth * rand(0.7, 1);
+        }
+      }
+    }
+
+    /* =====================================================================
+       Role carousel — same typing-effect behaviour as Landing.jsx, plain JS.
+       ===================================================================== */
+    const ROLES = [
+      'Computer Science Student',
+      'Full-Stack Developer',
+      'Community Builder',
+      'Embedded Systems Enthusiast',
+    ];
+    const roleLine = document.getElementById('role-line');
+    const roleCursor = roleLine.querySelector('.role-cursor');
+    let roleIdx = 0, charIdx = 0, deleting = false;
+
+    function tickRole() {
+      const current = ROLES[roleIdx];
+      if (!deleting && charIdx < current.length) charIdx++;
+      else if (!deleting && charIdx === current.length) { setTimeout(() => { deleting = true; tickRole(); }, 1800); return; }
+      else if (deleting && charIdx > 0) charIdx--;
+      else { deleting = false; roleIdx = (roleIdx + 1) % ROLES.length; }
+
+      roleLine.textContent = current.slice(0, charIdx);
+      roleLine.appendChild(roleCursor);
+      const delay = deleting ? 40 : 80;
+      setTimeout(tickRole, delay);
+    }
+
+    /* =====================================================================
+       Boot
+       ===================================================================== */
+    const skipBtn = document.getElementById('skip-intro');
+    skipBtn.addEventListener('click', skipToPortfolio);
+
+    let raf = 0;
+    let lastT = performance.now();
+
+    function loop(t) {
+      const dtMs = Math.min(48, t - lastT); // clamp so a stalled tab can't lurch on resume
+      lastT = t;
+      advanceScene(dtMs);
+      update(dtMs);
+      draw();
+      raf = requestAnimationFrame(loop);
+    }
+
+    function start() {
+      resize();
+      if (reducedMq.matches) {
+        skipToPortfolio();
+        draw();
+        return; // single static frame — no rAF loop at all
+      }
+      skipBtn.classList.add('is-visible');
+      enterScene(currentScene());
+      lastT = performance.now();
+      raf = requestAnimationFrame(loop);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(raf); }
+      else if (!reducedMq.matches) { lastT = performance.now(); raf = requestAnimationFrame(loop); }
+    });
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    reducedMq.addEventListener('change', (e) => { if (e.matches) skipToPortfolio(); });
+
+    start();
+    tickRole();
+  })();
+  </script>
+</body>
+</html>

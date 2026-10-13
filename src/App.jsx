@@ -6,22 +6,19 @@ import { ThemeProvider } from './context/ThemeContext'
 import { useAuth } from './hooks/useAuth'
 import ParticlesBackground from './components/ui/particles-bg'
 import CursorGlow from './components/ui/cursor-glow'
-import SkipLink from './components/SkipLink'
 import ErrorBoundary from './components/ErrorBoundary'
-import Landing from './components/Landing'
-import Layout from './components/Layout'
+import CityLayout from './components/futuristic/CityLayout'
+import HomePage from './pages/HomePage'
+import AboutPage from './pages/AboutPage'
+import ProjectsPage from './pages/ProjectsPage'
+import ExperiencePage from './pages/ExperiencePage'
+import SkillsPage from './pages/SkillsPage'
+import ContactPage from './pages/ContactPage'
 import './index.css'
 
-// Lazy-loaded page components for better initial bundle size
-const HomePage = lazy(() => import('./pages/HomePage'))
-const AboutPage = lazy(() => import('./pages/AboutPage'))
-const ProjectsPage = lazy(() => import('./pages/ProjectsPage'))
-const BeyondPage = lazy(() => import('./pages/BeyondPage'))
-const ExperiencePage = lazy(() => import('./pages/ExperiencePage'))
-const EducationPage = lazy(() => import('./pages/EducationPage'))
-const CertificationsPage = lazy(() => import('./pages/CertificationsPage'))
-const SkillsPage = lazy(() => import('./pages/SkillsPage'))
-const ContactPage = lazy(() => import('./pages/ContactPage'))
+/* The public pages are eager on purpose: they all render inside one
+   persistent city, and a lazy page suspending under the global Suspense
+   would blank the whole layout, canvas included, on every first visit. */
 const DevSupabaseStatus = import.meta.env.DEV ? lazy(() => import('./pages/DevSupabaseStatus')) : null
 const StyleGuide = import.meta.env.DEV ? lazy(() => import('./pages/StyleGuide')) : null
 
@@ -67,16 +64,8 @@ function PageLoader() {
   )
 }
 
-function LandingRoute() {
-  return (
-    <div className="min-h-screen text-[var(--color-text)] relative z-10" style={{ background: 'transparent' }}>
-      <SkipLink />
-      <Landing />
-    </div>
-  )
-}
-
-/** Public site: static backdrop + particles + glass. Authenticated admin (`/admin/*` except login): backdrop only. */
+/** The old design's backdrop, kept for the routes still on it: particles + glass on 404 and the dev pages,
+    backdrop only in the authenticated admin. The city routes bring their own WebGL world. */
 function AmbientLayers() {
   const { pathname } = useLocation()
   // Decorative layers mount after the browser is idle so first paint is content, not canvases.
@@ -91,7 +80,7 @@ function AmbientLayers() {
     return () => window.clearTimeout(id)
   }, [])
 
-  if (!ready) return null
+  if (!ready || !/^\/(admin|404|dev|styleguide)(\/|$)/.test(pathname)) return null
   const adminApp = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')
   /* The admin console is dark-only (see .admin-scope in styles/tokens.css). The
      backdrop renders outside that subtree, so it has to opt in separately or a light
@@ -141,7 +130,7 @@ function NotFoundPage() {
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link
-            to="/home"
+            to="/"
             className="theme-btn theme-btn-primary px-6 py-3 text-sm"
           >
             <i className="fas fa-home mr-2" aria-hidden />
@@ -178,7 +167,19 @@ export default function App() {
             <ErrorBoundary>
             <Suspense fallback={<PageLoader />}>
               <Routes>
-                <Route path="/" element={<LandingRoute />} />
+                <Route element={<CityLayout />}>
+                  <Route index element={<HomePage />} />
+                  <Route path="projects" element={<ProjectsPage />} />
+                  <Route path="experience" element={<ExperiencePage />} />
+                  <Route path="about" element={<AboutPage />} />
+                  <Route path="skills" element={<SkillsPage />} />
+                  <Route path="contact" element={<ContactPage />} />
+                  {/* old URLs; inside the group so following one never reboots the city */}
+                  <Route path="home" element={<Navigate to="/" replace />} />
+                  <Route path="education" element={<Navigate to="/about#education" replace />} />
+                  <Route path="certifications" element={<Navigate to="/about#certifications" replace />} />
+                  <Route path="beyond" element={<Navigate to="/about#beyond" replace />} />
+                </Route>
                 {import.meta.env.DEV && DevSupabaseStatus ? (
                   <Route path="dev/supabase" element={<DevSupabaseStatus />} />
                 ) : null}
@@ -212,17 +213,6 @@ export default function App() {
                   <Route path="settings" element={<AdminSettings />} />
                   <Route path="notifications" element={<AdminNotifications />} />
                   <Route path="account" element={<AdminAccountProfile />} />
-                </Route>
-                <Route element={<Layout />}>
-                  <Route path="home" element={<HomePage />} />
-                  <Route path="about" element={<AboutPage />} />
-                  <Route path="projects" element={<ProjectsPage />} />
-                  <Route path="beyond" element={<BeyondPage />} />
-                  <Route path="experience" element={<ExperiencePage />} />
-                  <Route path="education" element={<EducationPage />} />
-                  <Route path="certifications" element={<CertificationsPage />} />
-                  <Route path="skills" element={<SkillsPage />} />
-                  <Route path="contact" element={<ContactPage />} />
                 </Route>
                 <Route path="404" element={<NotFoundPage />} />
                 <Route path="*" element={<Navigate to="/404" replace />} />
