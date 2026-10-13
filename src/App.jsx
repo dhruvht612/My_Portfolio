@@ -91,7 +91,8 @@ function AmbientLayers() {
     return () => window.clearTimeout(id)
   }, [])
 
-  if (!ready) return null
+  // The city page on /home brings its own WebGL backdrop.
+  if (!ready || pathname === '/home') return null
   const adminApp = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')
   /* The admin console is dark-only (see .admin-scope in styles/tokens.css). The
      backdrop renders outside that subtree, so it has to opt in separately or a light
@@ -213,8 +214,8 @@ export default function App() {
                   <Route path="notifications" element={<AdminNotifications />} />
                   <Route path="account" element={<AdminAccountProfile />} />
                 </Route>
+                <Route path="home" element={<HomePage />} />
                 <Route element={<Layout />}>
-                  <Route path="home" element={<HomePage />} />
                   <Route path="about" element={<AboutPage />} />
                   <Route path="projects" element={<ProjectsPage />} />
                   <Route path="beyond" element={<BeyondPage />} />

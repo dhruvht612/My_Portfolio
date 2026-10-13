@@ -1,9 +1,5 @@
-import Hero from '../components/Hero'
+import FuturisticPortfolio from '../components/futuristic/FuturisticPortfolio'
 
 export default function HomePage() {
-  return (
-    <div className="relative z-10 min-h-screen bg-transparent">
-      <Hero />
-    </div>
-  )
+  return <FuturisticPortfolio />
 }

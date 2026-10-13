@@ -37,3 +37,5 @@ docs/*
 coverage
 graphify-out
 
+# Playwright MCP screenshots and logs
+.playwright-mcp/
