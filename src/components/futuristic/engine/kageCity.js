@@ -48,10 +48,19 @@ function loadThree() {
   return threeLoading
 }
 
+/* A software rasteriser (SwiftShader, llvmpipe, Windows' Basic Render
+   Driver) takes seconds per frame of this scene and hangs the page; the
+   no-WebGL city is the better experience there. ?swgl=1 keeps WebGL anyway
+   (headless review runs on SwiftShader). */
+const SOFTWARE_GL = /swiftshader|llvmpipe|softpipe|software|basic render/i
 function webglAvailable() {
   try {
     const c = document.createElement('canvas')
-    return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')))
+    const gl = window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))
+    if (!gl) return false
+    if (new URLSearchParams(location.search).get('swgl') === '1') return true
+    const ext = gl.getExtension('WEBGL_debug_renderer_info')
+    return !(ext && SOFTWARE_GL.test(String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL))))
   } catch {
     return false
   }
