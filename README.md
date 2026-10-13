@@ -2,13 +2,14 @@
 
 # Dhruv Thakar — Portfolio & Admin CMS
 
-**A production-ready personal portfolio with a Supabase-backed admin portal, animated public pages, and reusable UI patterns.**
+**A personal portfolio that runs as one live WebGL city, with a Supabase-backed admin CMS behind it.**
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-thakardhruv.me-14b8a6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.thakardhruv.me/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-thakardhruv.me-e0231c?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.thakardhruv.me/)
 [![Repository](https://img.shields.io/badge/Source-GitHub-0f172a?style=for-the-badge&logo=github)](https://github.com/dhruvht612/My_Portfolio)
 [![GitHub stars](https://img.shields.io/github/stars/dhruvht612/My_Portfolio?style=social)](https://github.com/dhruvht612/My_Portfolio/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/dhruvht612/My_Portfolio?style=social)](https://github.com/dhruvht612/My_Portfolio/forks)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
+[![three.js](https://img.shields.io/badge/three.js-r149-000000?style=flat-square&logo=threedotjs&logoColor=white)](https://threejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -25,6 +26,7 @@
 - [Why I built this](#why-i-built-this)
 - [Overview](#overview)
 - [Live demo & routes](#live-demo--routes)
+- [How the city works](#how-the-city-works)
 - [Featured projects](#featured-projects)
 - [UI & UX](#ui--ux)
 - [Tech stack](#tech-stack)
@@ -48,9 +50,13 @@
 
 ## Screenshots
 
-| Homepage | Mobile |
+| Home (`/`) | Mobile |
 | :---: | :---: |
-| [![Homepage](docs/screenshots/homepage.png)](https://www.thakardhruv.me/) | [![Mobile](docs/screenshots/mobile.png)](https://www.thakardhruv.me/) |
+| [![Home: the city overview](docs/screenshots/homepage.png)](https://www.thakardhruv.me/) | [![Mobile: the experience log](docs/screenshots/mobile.png)](https://www.thakardhruv.me/experience) |
+
+| Projects | About · Education |
+| :---: | :---: |
+| [![Projects: subsystems with live camera windows](docs/screenshots/projects.png)](https://www.thakardhruv.me/projects) | [![About: education record](docs/screenshots/about.png)](https://www.thakardhruv.me/about#education) |
 
 | Admin dashboard | Analytics |
 | :---: | :---: |
@@ -66,15 +72,17 @@ Most portfolio templates felt static and difficult to maintain at scale. I wante
 
 This project became both my portfolio and an experiment in reusable frontend/admin architecture using React, Supabase, and modular UI systems.
 
+The October 2026 redesign took the public side further: instead of a set of separate pages, the whole site is one night city rendered in WebGL. Every page is a district of it, and moving between pages flies the camera across town.
+
 ---
 
 ## Overview
 
-This repository is both a **public portfolio** and a **full content-management admin** for the same site. Visitors get multi-page navigation, motion-driven sections, and project discovery; you get an auth-protected `/admin` area to edit profile, experience, projects, skills, certifications, blog posts, education, messages, and analytics—without redeploying for every copy change.
+This repository is both a **public portfolio** and a **full content-management admin** for the same site. Visitors walk through a live 3D city; you get an auth-protected `/admin` area to edit profile, experience, projects, skills, certifications, blog posts, education, messages, and analytics without redeploying for every copy change.
 
 | Surface | What you get |
 | --- | --- |
-| **Public site** | Hero, About, Projects, Beyond, Experience, Education, Certifications, Skills, Contact |
+| **Public site** | One persistent WebGL city under six pages: Home, Projects, Experience, About (with Education, Certifications, Beyond), Skills, Contact |
 | **Admin CMS** | CRUD workspaces, multi-step forms, markdown editor, image upload, analytics charts |
 | **Data layer** | Supabase-first with static fallback when env vars are missing |
 
@@ -84,21 +92,50 @@ This repository is both a **public portfolio** and a **full content-management a
 
 **Production:** [https://www.thakardhruv.me/](https://www.thakardhruv.me/)
 
-| Link | Path |
-| --- | --- |
-| **Portfolio (home)** | `/` · `/home` |
-| **About** | `/about` |
-| **Projects** | `/projects` |
-| **Beyond** | `/beyond` |
-| **Experience** | `/experience` |
-| **Education** | `/education` |
-| **Certifications** | `/certifications` |
-| **Skills** | `/skills` |
-| **Contact** | `/contact` |
-| **Admin login** | `/admin/login` |
-| **Admin dashboard** | `/admin` |
+| Page | Path | Where the camera stands |
+| --- | --- | --- |
+| **Home** | `/` | The full walk: all six scenes in order |
+| **About** | `/about` (sections `#education`, `#certifications`, `#beyond`) | The AI core |
+| **Projects** | `/projects` | The project network |
+| **Experience** | `/experience` | The highway (system log) |
+| **Skills** | `/skills` | The infrastructure |
+| **Contact** | `/contact` (form at `#message`) | The highest point |
+| **Admin login** | `/admin/login` | — (classic design) |
+| **Admin dashboard** | `/admin` | — (classic design) |
+
+Old URLs still work: `/home` → `/`, and `/education`, `/certifications`, `/beyond` → their sections on `/about`.
 
 **Local preview:** `http://localhost:5173` after `npm run dev`.
+
+---
+
+## How the city works
+
+The public site is a single WebGL scene that never reloads between pages.
+
+- **One engine, mounted once.** `CityLayout` (`src/components/futuristic/CityLayout.jsx`) mounts the engine (`engine/kageCity.js`) when you first land, and every public route renders inside it through `<Outlet />`. Navigating swaps the HTML on top; the city underneath stays up.
+- **Sections choose the camera.** Each page section carries `data-cam="n"`, a waypoint on one camera path: `0` city overview, `1` AI core, `2` project network, `3` system log, `4` technology, `5` connection. Home has all six, so scrolling walks the path. A subpage has one, so the camera parks at its district, and a route change glides there.
+- **Live windows.** Elements marked `data-view` (the hero's core feed, each project's frame) are rendered by the engine with their own cameras and composited into the page at their DOM position.
+- **Readable first.** All content is plain semantic HTML from the portfolio data; the 3D layer is decoration and never holds information on its own.
+- **Fallbacks.**
+  - Without WebGL, or on a software renderer (SwiftShader, llvmpipe), the site serves a static night backdrop with all content revealed, so nothing hangs on machines without a usable GPU.
+  - Reduced-motion users get no camera drift and instant cuts between districts.
+  - Touch devices default to a lighter quality profile, and an adaptive governor lowers resolution when frames run slow.
+
+Query parameters for reviewing and debugging (read once, on load):
+
+| Param | Effect |
+| --- | --- |
+| `q=low` / `q=high` | Quality profile (touch devices default to `low`) |
+| `post=0` | Skip the bloom / grading post-processing chain |
+| `shadow=0` | Disable shadows |
+| `dpr=1.2` | Cap the device pixel ratio |
+| `adapt=0` | Lock resolution (turn off the adaptive governor) |
+| `nogl=1` | Force the no-WebGL fallback |
+| `swgl=1` | Keep WebGL even on a software renderer (headless review) |
+| `shot=0`–`5` | Jump straight to a scene with everything revealed (screenshots) |
+
+The engine is ported from the ThreeUI **Kage** landing-page engine (MIT). three.js r149 is vendored at `public/kage/three.min.js` and served with an immutable cache header, so **rename the file on any three.js upgrade**.
 
 ---
 
@@ -126,31 +163,42 @@ Goal CRUD, Plaid (sandbox) bank sync, real-time progress from categorized transa
 
 ### Portfolio & admin CMS (this repo)
 
-The site you are reading about: animated public pages, contact inbox in Supabase, analytics dashboard, system health probes, and workspace-style admin modules (profile, projects, skills, education, notifications, settings).
+The site you are reading about: a WebGL city as the public site, a Supabase contact inbox, analytics dashboard, system health probes, and workspace-style admin modules (profile, projects, skills, education, notifications, settings).
 
 | | |
 | --- | --- |
-| **Stack** | React 19, Vite 7, Tailwind, Supabase, React Hook Form, Zod, Recharts |
-| **Focus** | CMS-in-a-portfolio, reusable admin primitives |
+| **Stack** | React 19, three.js, Vite 7, Supabase, Tailwind, React Hook Form, Zod, Recharts |
+| **Focus** | Real-time 3D on a content site, CMS-in-a-portfolio, reusable admin primitives |
 
 ### More builds (on the site)
 
+- **Internix** — AI internship copilot
+- **Connectly** — real-time multi-room communication platform
+- **Before the Appointment** — health translator (frontend)
+- **Farm Flight**
+- **Book Catalog System**
 - **QR Code Generator** — Node.js CLI with Inquirer and `qr-image`
-- **Huffman file compression** — Java OOP + data structures demo
+- **File compression tool** — Huffman coding, Java OOP + data structures
 
 ---
 
 ## UI & UX
 
-Designed for clarity, motion, and keyboard-friendly use—not a generic template dump.
+Designed for clarity, motion, and keyboard-friendly use, not a generic template.
 
-- **Motion & depth** — Framer Motion sections (`AnimatedSection`), particle/space backgrounds, parallax cards, preloader
-- **Navigation** — Sticky header, scroll progress, mobile drawer, skip link, scroll-to-top
-- **Projects UX** — Category filters, badges, tech chips, live/code links, skill-to-project mapping
-- **Theme** — Light/dark toggle with persistent `dark` class on `<html>`
-- **Accessibility** — Focus rings, `aria-pressed` on filters, contrast-aware palette, semantic landmarks
-- **Admin UX** — Command palette, keyboard shortcuts overlay, empty states, confirm dialogs, loading skeletons, toast feedback
-- **Responsive** — Public and admin layouts adapt from mobile through desktop sidebars
+- **The city.** Scroll-driven camera through a procedural night megacity: an AI core tower, elevated highways with traffic, flying vehicles, holographic panels, rain, bloom and grading. The 3D wordmark and the live camera windows are part of the same scene.
+- **Navigation.**
+  - Six-link bar with a burger sheet under 820px, and a scene rail on Home.
+  - Route changes glide the camera; in-page links scroll to their scene.
+  - Skip link and focus management.
+- **Typography & tone.** Space Grotesk, DM Sans and JetBrains Mono, self-hosted; system-log styling (boot readouts, `<details>` logs, module grids).
+- **Contact.** A native, labelled form posting to Supabase, with inline validation and a status region.
+- **Accessibility.**
+  - Semantic landmarks and one `h1` per page.
+  - `aria-current` on the active page.
+  - Reduced-motion support; all content stays readable without WebGL.
+- **Admin UX.** Command palette, keyboard shortcuts overlay, empty states, confirm dialogs, loading skeletons, toast feedback.
+- **Responsive.** Lighter rendering profile on touch devices; admin layouts adapt from mobile through desktop sidebars.
 
 ---
 
@@ -158,14 +206,15 @@ Designed for clarity, motion, and keyboard-friendly use—not a generic template
 
 | Layer | Technologies |
 | --- | --- |
-| **UI** | React 19, React Router 7, Framer Motion, Lucide |
+| **UI** | React 19, React Router 7, three.js r149 (WebGL city), Framer Motion (admin), Lucide |
 | **Build** | Vite 7, ESLint 9 |
-| **Styling** | Tailwind CSS 3, custom design tokens / glass panels |
+| **Styling** | Scoped city stylesheet (`futuristic.css`), Tailwind CSS 3 for admin |
 | **Backend** | Supabase (Postgres, Auth, Storage, RLS) |
 | **Forms** | React Hook Form, Zod, `@hookform/resolvers` |
 | **Content** | `react-markdown`, `remark-gfm` |
-| **Analytics** | Recharts, `date-fns`, page-view tracking |
-| **Quality** | ESLint, static fallback data in `src/data/` |
+| **Analytics** | Supabase `page_views`, Vercel Web Analytics, Recharts, `date-fns` |
+| **Quality** | Vitest + Testing Library, GitHub Actions (lint, test, build, bundle budget), Lighthouse CI, Dependabot |
+| **Hosting** | Vercel |
 
 ---
 
@@ -173,13 +222,13 @@ Designed for clarity, motion, and keyboard-friendly use—not a generic template
 
 High-level data flow for the portfolio + admin CMS.
 
-<!-- When ready, add: ![Architecture diagram](docs/architecture.png) -->
-*Optional: add a polished diagram at `docs/architecture.png`. Mermaid below renders on GitHub today.*
-
 ```mermaid
 flowchart TB
   subgraph Client["Browser (Vite + React)"]
-    Public["Public pages\n/ · /projects · /contact …"]
+    subgraph City["CityLayout · mounted once"]
+      Engine["kageCity engine\nthree.js r149 · WebGL"]
+      Pages["Pages via Outlet\n/ · /projects · /experience\n/about · /skills · /contact"]
+    end
     Admin["Admin CMS\n/admin · CRUD workspaces"]
   end
 
@@ -192,22 +241,23 @@ flowchart TB
 
   Fallback["Static fallback\nsrc/data/*"]
 
-  Public --> Admin
-  Public --> DB
+  Pages -->|data-cam waypoints| Engine
+  Pages --> DB
+  Pages --> Analytics
   Admin --> Auth
   Admin --> DB
   Admin --> Storage
-  Public --> Analytics
   DB -.->|env missing| Fallback
-  Public -.-> Fallback
+  Pages -.-> Fallback
 ```
 
 | Layer | Responsibility |
 | --- | --- |
-| **Public SPA** | Routed pages, animations, project filters, contact form |
+| **City shell** | Mounts the engine once, tells it when the route changes, sets page titles |
+| **Public pages** | Plain HTML sections from portfolio data; each names its camera waypoint |
 | **Admin SPA** | Auth-gated CRUD, wizards, markdown, uploads, charts |
 | **Supabase** | Source of truth for portfolio content, messages, analytics |
-| **Fallback** | Local JSON modules when Supabase is not configured |
+| **Fallback** | Local data modules when Supabase is not configured |
 
 ---
 
@@ -217,16 +267,19 @@ Planned improvements (issues and PRs welcome):
 
 | Status | Feature |
 | --- | --- |
-| 🔲 | **Public blog** — `/blog` and `/blog/:slug` on the portfolio site |
-| 🔲 | **Real-time admin** — Supabase subscriptions for live list updates |
-| 🔲 | **SEO per post** — Open Graph tags, descriptions, `og:image` from storage |
-| 🔲 | **Scheduled publishing** — future `published_at` for blog/content |
-| 🔲 | **Admin audit log** — who changed what and when |
-| 🔲 | **Role-based access** — limited admin roles for collaborators |
-| 🔲 | **Advanced analytics** — geography, sessions, bounce rate, export CSV/PDF |
-| 🔲 | **Image transforms** — Supabase Image Transformation for uploads |
-| 🔲 | **Contact webhooks** — Edge Function sync for notifications |
-| 🔲 | **Architecture diagram asset** — `docs/architecture.png` for README |
+| 🔲 | **Retire the classic site code**: remove the pre-redesign pages and components still in `src/components/` |
+| 🔲 | **City feature parity**: project filters, search and detail view; skill → project links; experience impact details; résumé downloads on About |
+| 🔲 | **Back/forward scroll restoration** across city pages |
+| 🔲 | **`sitemap.xml` and `robots.txt`**, plus a new `og:image` of the city |
+| 🔲 | **Public blog**: `/blog` and `/blog/:slug` on the portfolio site |
+| 🔲 | **Real-time admin**: Supabase subscriptions for live list updates |
+| 🔲 | **SEO per post**: Open Graph tags, descriptions, `og:image` from storage |
+| 🔲 | **Scheduled publishing**: future `published_at` for blog/content |
+| 🔲 | **Admin audit log**: who changed what and when |
+| 🔲 | **Role-based access**: limited admin roles for collaborators |
+| 🔲 | **Advanced analytics**: geography, sessions, bounce rate, export CSV/PDF |
+| 🔲 | **Image transforms**: Supabase Image Transformation for uploads |
+| 🔲 | **Contact webhooks**: Edge Function sync for notifications |
 
 ---
 
@@ -234,17 +287,17 @@ Planned improvements (issues and PRs welcome):
 
 Fork or copy these patterns into other React projects.
 
-### Public components (`src/components/`)
+### The city (`src/components/futuristic/`)
 
-| Component | Use case |
+| Module | Use case |
 | --- | --- |
-| `AnimatedSection` | Viewport-triggered fade/slide with stagger |
-| `Hero` / `Landing` | Typing roles, CTAs, stats |
-| `Projects` | Filterable project grid |
-| `Skills` / `SkillProgressBar` | Animated proficiency bars |
-| `SpaceBackground` | Layered ambient background |
-| `SkipLink` / `ScrollToTop` | A11y + navigation helpers |
-| `Toast` / `ChatWidget` | Feedback and lightweight chat UI |
+| `engine/kageCity.js` | `mountKageCity(root)` → `{ refresh, setPage, dispose }`: a WebGL scene driven by the page's own `[data-cam]` sections, with full GPU cleanup on dispose |
+| `CityLayout` | Persistent route shell: one engine across routes, per-page titles, page views |
+| `FuturisticNavigation` / `FuturisticHUD` | Router-aware nav bar; canvas host, preloader, scene rail, cursor |
+| `FuturisticHero` … `FuturisticContact` | Section components: one scene each, data from `usePortfolio()` |
+| `FuturisticAboutExtras` | Education, certifications and beyond, as system-log sections |
+| `FuturisticContactForm` | Native form → Supabase `contact_submissions` |
+| `portfolioSystems.js` | Pure mappers from portfolio data to the city's "systems" (tested) |
 
 ### Admin primitives (`src/components/admin/`)
 
@@ -265,7 +318,7 @@ Fork or copy these patterns into other React projects.
 | --- | --- |
 | `button` / `input` / `badge` | Base controls |
 | `glowing-shadow` / `holographic-card` | Card emphasis |
-| `particles-bg` | Background effects |
+| `particles-bg` | Background effects (admin login and 404) |
 | `modern-animated-sign-in` | Auth screen polish |
 | `interactive-logs-table-shadcnui` | Dense data tables |
 
@@ -277,13 +330,16 @@ Schemas in `src/schemas/` mirror admin forms and can be reused for API validatio
 
 Use this repo as a **starter for portfolio + CMS**, not only a résumé site.
 
-- **Supabase-first CMS** — Edit content in production without touching JSON files
-- **Graceful degradation** — Public pages still render from `src/data/` when Supabase is not configured
-- **Documented backend plan** — See `docs/backend-integration-plan.md` for tables, RLS, and migrations
-- **Seed & verify scripts** — `npm run seed`, `npm run verify:phase5` for reproducible setup
-- **Vercel-ready build** — Production build fails fast if Supabase env is missing on Vercel (see `vite.config.js`)
+- **Supabase-first CMS**: edit content in production without touching JSON files.
+- **Graceful degradation**:
+  - Public pages still render from `src/data/` when Supabase is not configured.
+  - The city falls back to static HTML without a usable GPU.
+- **A mountable WebGL engine**: a scroll-driven three.js scene that reads its camera path from the DOM, survives route changes, and cleans up after itself.
+- **Documented backend plan**: see `docs/backend-integration-plan.md` for tables, RLS, and migrations.
+- **Seed & verify scripts**: `npm run seed` and `npm run verify:phase5` for reproducible setup.
+- **Vercel-ready build**: the production build fails fast if Supabase env is missing on Vercel (see `vite.config.js`).
 
-**Good fits for forking:** developer portfolios, student project hubs, small team “about + work” sites with an internal admin.
+**Good fits for forking:** developer portfolios, student project hubs, small team "about + work" sites with an internal admin.
 
 ---
 
@@ -291,9 +347,9 @@ Use this repo as a **starter for portfolio + CMS**, not only a résumé site.
 
 Suggestions, issues, and forks are welcome. If you build on top of this project, feel free to open a PR or share your version.
 
-1. Fork the repo and create a branch (`git checkout -b feature/your-idea`)
-2. Make your changes and run `npm run lint`
-3. Open a pull request with a short description of what you changed
+1. Fork the repo and create a branch (`git checkout -b feature/your-idea`).
+2. Make your changes, then run `npm run lint:ci` and `npm run test:run`.
+3. Open a pull request with a short description of what you changed. CI runs lint, tests, the build and the bundle budget, and Lighthouse audits `/` and `/contact`.
 
 ---
 
@@ -318,9 +374,10 @@ Your profile presentation matters almost as much as the repo itself.
 
 ### Prerequisites
 
-- **Node.js** 18+
+- **Node.js** 22 (see `.nvmrc`)
 - **npm**
 - (Optional) **Supabase** project for live CMS and contact inbox
+- A browser with WebGL and a GPU to see the city (everything else works without one)
 
 ### Install and run
 
@@ -363,13 +420,14 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key   # scripts only — never expos
 | Variable | Scope | Purpose |
 | --- | --- | --- |
 | `VITE_SUPABASE_URL` | Client | Supabase project URL |
-| `VITE_SUPABASE_ANON_KEY` | Client | Public anon key |
+| `VITE_SUPABASE_ANON_KEY` | Client | Public anon key (`VITE_SUPABASE_PUBLISHABLE_KEY` also accepted) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Node scripts | Seed / migrate / verify |
 | `VITE_HEALTH_CHECK_ORIGIN` | Client | Admin system-health frontend probe |
 | `VITE_API_URL` | Client | Optional API health card |
 
 - `VITE_*` values are embedded in the client bundle.
 - Never commit real service-role keys.
+- Without the Supabase values the site still runs on static data, but the contact form shows as offline.
 
 ---
 
@@ -381,6 +439,11 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key   # scripts only — never expos
 | `npm run build` | Production build → `dist/` |
 | `npm run preview` | Preview production build |
 | `npm run lint` | ESLint |
+| `npm run lint:ci` | ESLint with CI's warning cap |
+| `npm test` | Vitest in watch mode |
+| `npm run test:run` | Vitest, single run |
+| `npm run test:coverage` | Vitest with coverage |
+| `npm run size` | Gzip bundle budget check (`--update` to re-seed `bundle-budget.json`) |
 | `npm run seed` | Seed Supabase from local portfolio data |
 | `npm run migrate-assets` | Asset upload / migration workflow |
 | `npm run verify:phase5` | Verify Supabase phase-5 setup |
@@ -392,19 +455,26 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key   # scripts only — never expos
 ```text
 .
 ├── src/
-│   ├── components/       # Public, admin, and ui kits
+│   ├── components/
+│   │   ├── futuristic/     # The city: CityLayout, sections, styles
+│   │   │   └── engine/     # kageCity.js, the WebGL engine
+│   │   ├── admin/          # Admin primitives
+│   │   └── ui/             # UI kit
 │   ├── pages/              # Route pages (public + /admin)
 │   ├── hooks/              # Auth, CRUD, analytics, Supabase
 │   ├── context/            # Portfolio data provider
 │   ├── lib/                # Supabase client and adapters
-│   ├── schemas/          # Zod schemas for admin forms
+│   ├── schemas/            # Zod schemas for admin forms
 │   ├── scripts/            # Seed, migrate, verify
 │   ├── constants/          # Routes, nav, UI tokens
 │   └── data/               # Static fallback content
+├── public/
+│   ├── kage/               # Vendored three.js r149
+│   └── fonts/              # Self-hosted DM Sans, Space Grotesk, JetBrains Mono
+├── scripts/                # Bundle budget check
+├── .github/workflows/      # CI, Lighthouse, npm audit
 ├── docs/
-│   ├── screenshots/        # README screenshots
-│   └── architecture.png    # optional diagram (README)
-├── public/                 # Static assets
+│   └── screenshots/        # README screenshots
 └── package.json
 ```
 
@@ -412,16 +482,16 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key   # scripts only — never expos
 
 ## Recent commits
 
-| Commit | Summary | When |
+| Commit | Summary | Date |
 | --- | --- | --- |
-| `d0578bd` | Admin skills management — new components and insights | ~3 days ago |
-| `2598c0e` | ProfileWorkspace for admin profile management | ~4 days ago |
-| `2d0b71d` | Admin account identity workspace revamp | ~4 days ago |
-| `30853be` | Admin projects UI components and styles | ~5 days ago |
-| `59703fa` | Student workspace in admin education | ~5 days ago |
-| `5dcd010` | Dashboard ambient effects and activity feed | recent |
-| `1d4b4d8` | System health observability features | recent |
-| `b2f9ca9` | README and portfolio structure refresh | recent |
+| `8be572a` | Merge #28: the city redesign goes live | 2026-10-13 |
+| `10bc824` | Serve the no-WebGL city on software-rendered WebGL | 2026-10-13 |
+| `a237f87` | Multi-page site on one persistent city | 2026-10-13 |
+| `e0cf9de` | City redesign, single-page baseline | 2026-10-13 |
+| `e5ae5d7` | 3D design standalone HTML prototype | 2026-09-25 |
+| `899dee1` | Merge #21: CI/CD pipeline | 2026-09-23 |
+| `a64ea48` | Production dependency updates | 2026-09-21 |
+| `66cb8ac` | AGENTS and FEATURES documentation | 2026-09-10 |
 
 Full history: [`git log`](https://github.com/dhruvht612/My_Portfolio/commits/main)
 
@@ -435,19 +505,21 @@ Full history: [`git log`](https://github.com/dhruvht612/My_Portfolio/commits/mai
 | [`docs/content-management.md`](docs/content-management.md) | CMS workflows |
 | [`docs/backend-integration-plan.md`](docs/backend-integration-plan.md) | Supabase schema and RLS |
 | [`docs/deployment.md`](docs/deployment.md) | Hosting (Vercel, Netlify, GitHub Pages) |
+| [`docs/ci-cd.md`](docs/ci-cd.md) | CI pipeline, required checks, bundle budget |
 | [`docs/phase5-runbook.md`](docs/phase5-runbook.md) | Phase-5 verification runbook |
 
 ---
 
 ## Deployment
 
-1. Run `npm run build`.
-2. Deploy the `dist/` folder (Vercel recommended).
-3. Set **SPA rewrites** so client routes serve `index.html`.
-4. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the host’s environment settings.
-5. Configure Supabase RLS policies, storage buckets, and run `npm run seed` if needed.
+The site deploys to **Vercel** from `main`; `vercel.json` already holds the SPA rewrite and cache headers.
 
-Details: [`docs/deployment.md`](docs/deployment.md)
+1. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to the Vercel project for **both Production and Preview**. The build fails on purpose without them.
+2. Open a PR: CI must pass **Lint, test, build**; Lighthouse and the Vercel preview run alongside.
+3. Merge to `main` to deploy. To undo a bad release, use **Instant Rollback** in Vercel, then revert the merge on `main` so the code matches what's live.
+4. Configure Supabase RLS policies, storage buckets, and run `npm run seed` if needed.
+
+Details: [`docs/deployment.md`](docs/deployment.md) · [`docs/ci-cd.md`](docs/ci-cd.md)
 
 ---
 
@@ -455,18 +527,23 @@ Details: [`docs/deployment.md`](docs/deployment.md)
 
 | Issue | Check |
 | --- | --- |
+| City shows a flat night backdrop, no 3D | WebGL is unavailable or software-rendered (see `chrome://gpu`); this is the intended fallback. `?swgl=1` forces WebGL anyway |
+| City looks soft or low-resolution | The adaptive governor lowered resolution because frames were slow (DevTools open counts); `?adapt=0` locks it |
 | 404 on refresh in production | SPA fallback / rewrite rules |
 | Admin login fails | Supabase URL, anon key, and auth users |
 | Empty admin or public data | RLS policies, seed script, table names |
+| Contact form says it's offline | Supabase env vars missing in this environment |
 | Contact inbox empty | `contact_submissions` insert policy |
-| Vercel build fails on Supabase | Env vars on Production + redeploy |
+| Vercel build fails on Supabase | Env vars on Production **and** Preview + redeploy |
 | Stale styles or modules | `rm -rf node_modules && npm install` |
 
 ---
 
 ## License
 
-[MIT](LICENSE) — use, fork, and adapt with attribution.
+[MIT](LICENSE): use, fork, and adapt with attribution.
+
+Third-party: the city engine is ported from the ThreeUI "Kage" landing page (MIT License, Copyright (c) 2026 Meng To); three.js is MIT-licensed by its authors.
 
 ---
 

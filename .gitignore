@@ -32,6 +32,8 @@ docs/*
 # one-time GitHub and Vercel setup that is not reproducible from the repo. Remove this
 # line if you would rather keep the whole folder local.
 !docs/ci-cd.md
+# The README embeds these, so new ones must not be silently ignored.
+!docs/screenshots/
 .impeccable
 # Test coverage
 coverage
