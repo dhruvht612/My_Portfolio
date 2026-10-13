@@ -39,3 +39,5 @@ graphify-out
 
 # Playwright MCP screenshots and logs
 .playwright-mcp/
+
+Redesign_Prompt.txt
