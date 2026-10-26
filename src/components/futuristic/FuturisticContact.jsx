@@ -61,6 +61,7 @@ export default function FuturisticContact({ children }) {
       <footer className="foot">
         <nav className="foot-routes" aria-label="Site pages">
           {navLinks.filter((l) => l.id !== 'home').map((l) => <Link key={l.id} to={l.path}>{l.label}</Link>)}
+          <Link to="/admin" rel="nofollow">Admin panel</Link>
         </nav>
         <div className="foot-base">
           <span>© {YEAR} Dhruv Thakar</span>
