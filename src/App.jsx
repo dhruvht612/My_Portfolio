@@ -9,6 +9,7 @@ import CursorGlow from './components/ui/cursor-glow'
 import ErrorBoundary from './components/ErrorBoundary'
 import CityLayout from './components/futuristic/CityLayout'
 import HomePage from './pages/HomePage'
+import RouteSeo from './components/RouteSeo'
 import AboutPage from './pages/AboutPage'
 import ProjectsPage from './pages/ProjectsPage'
 import ExperiencePage from './pages/ExperiencePage'
@@ -159,6 +160,7 @@ function NotFoundPage() {
 export default function App() {
   return (
     <BrowserRouter>
+      <RouteSeo />
       <ThemeProvider>
       <div className="min-h-screen text-[var(--color-text)]" style={{ position: 'relative', background: 'transparent' }}>
         <AmbientLayers />

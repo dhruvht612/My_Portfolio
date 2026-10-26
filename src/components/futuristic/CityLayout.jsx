@@ -8,15 +8,6 @@ import FuturisticHUD from './FuturisticHUD'
 import FuturisticNavigation from './FuturisticNavigation'
 import './futuristic.css'
 
-const NAME = 'Dhruv Thakar'
-const TITLES = {
-  '/': `${NAME} — Software Engineer / AI Builder`,
-  '/projects': `Projects · ${NAME}`,
-  '/experience': `Experience · ${NAME}`,
-  '/about': `About · ${NAME}`,
-  '/skills': `Skills · ${NAME}`,
-  '/contact': `Contact · ${NAME}`,
-}
 
 /* DHRUV THAKAR // AI SYSTEM. One city under every public page: the Kage
    engine mounts once here and stays up across routes. Each page is plain,
@@ -31,7 +22,6 @@ export default function CityLayout() {
 
   useEffect(() => {
     const html = document.documentElement
-    const prevTitle = document.title
     html.classList.add('dt-city-page')
     if (!window.location.hash) window.scrollTo(0, 0)
     const engine = mountKageCity(rootRef.current)
@@ -40,7 +30,6 @@ export default function CityLayout() {
       engine.dispose()
       engineRef.current = null
       html.classList.remove('dt-city-page')
-      document.title = prevTitle
     }
   }, [])
 
@@ -50,10 +39,6 @@ export default function CityLayout() {
   useLayoutEffect(() => {
     engineRef.current?.setPage()
   }, [key])
-
-  useEffect(() => {
-    document.title = TITLES[pathname] ?? TITLES['/']
-  }, [pathname])
 
   /* Supabase data lands after the first paint: re-measure the scenes and
      pick up any live windows the new markup brought with it */
